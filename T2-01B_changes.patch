@@ -1,0 +1,761 @@
+diff --git a/request_ai_agent_h6_v0/app.py b/request_ai_agent_h6_v0/app.py
+index ae9e1fb..a979389 100644
+--- a/request_ai_agent_h6_v0/app.py
++++ b/request_ai_agent_h6_v0/app.py
+@@ -55,7 +55,7 @@ from .rag_qa import looks_like_current_input_question, run_rag_qa, summarize_cur
+ from .review_pipeline import build_final_review, state_with_final_review
+ from .request_state_store import RequestNotFoundError, RequestStateSnapshot, RequestStateStore, RequestVersionConflictError
+ from .schema import ANALYSIS_OVERVIEW_SPECS, CONDITION_FIELD_SPECS, get_public_schema
+-from .state import apply_analysis_overview_defaults, create_initial_state, field_value, generate_request_no, make_field
++from .state import apply_analysis_overview_defaults, create_initial_state, decision_use_is_complete, field_value, generate_request_no, make_field
+ from .ui import HTML_TEMPLATE
+ from .validator import state_with_validation
+ from .word_export import DOCX_MIMETYPE, build_word_docx, word_filename
+@@ -442,7 +442,7 @@ def _context_fieldset_state(raw_state: Mapping[str, Any], raw_context: Mapping[s
+     return _derive_state(state), fieldset
+ STAGE_KEYS = ("analysis_overview", "geometry", "conditions", "case_matrix")
+ STAGE_LABELS = {
+-    "analysis_overview": "해석 개요",
++    "analysis_overview": "해석 요청 내용",
+     "geometry": "형상/모델 정보",
+     "conditions": "해석조건",
+     "case_matrix": "Case Matrix",
+@@ -510,7 +510,8 @@ def _stage_progress(raw_state: Mapping[str, Any]) -> dict[str, Any]:
+     overview_filled = 0
+     overview_missing: list[str] = []
+     for key, label in ANALYSIS_FIELD_LABELS.items():
+-        if _field_is_user_provided(overview.get(key)):
++        is_complete = decision_use_is_complete(overview.get(key)) if key == "decision_use" else _field_is_user_provided(overview.get(key))
++        if is_complete:
+             overview_filled += 1
+         else:
+             overview_missing.append(label)
+@@ -2431,6 +2432,12 @@ def create_app(*, orchestrator_extractor: Extractor | None = None) -> Flask:
+                 400,
+             )
+         state = apply_patch_operations(base_state, operations)
++        if any(_clean_text(_as_mapping(operation).get("path")) == "analysis_overview.decision_use" for operation in operations):
++            overview = dict(_as_mapping(state.get(SECTION_ANALYSIS_OVERVIEW)))
++            decision_use = dict(_as_mapping(overview.get("decision_use")))
++            decision_use["source"] = "agent_approved"
++            overview["decision_use"] = decision_use
++            state[SECTION_ANALYSIS_OVERVIEW] = state_with_validation(state)[SECTION_ANALYSIS_OVERVIEW]
+         response, state = _response_payload_with_notifications(state, timestamp_key="applied_at")
+         response.update(
+             {
+diff --git a/request_ai_agent_h6_v0/constants.py b/request_ai_agent_h6_v0/constants.py
+index 7093dc9..cff1485 100644
+--- a/request_ai_agent_h6_v0/constants.py
++++ b/request_ai_agent_h6_v0/constants.py
+@@ -117,9 +117,9 @@ ANALYSIS_OVERVIEW_FIELD_DEFS = (
+     {"key": "model_suffix", "label": "모델명(Model Suffix)", "required": False},
+     {"key": "request_date", "label": "의뢰 요청일", "required": False, "value_type": "date"},
+     {"key": "desired_completion_date", "label": "희망 완료일", "required": False, "value_type": "date"},
+-    {"key": "request_description", "label": "요청 내용", "required": True, "track_progress": True},
+-    {"key": "decision_use", "label": "의사결정 활용", "required": True, "track_progress": True},
+-    {"key": "additional_result_request", "label": "추가 결과 요청", "required": False},
++    {"key": "request_description", "label": "해석을 요청하게 된 상황과 확인할 내용", "required": True, "track_progress": True},
++    {"key": "decision_use", "label": "결과 활용 목적", "required": True, "track_progress": True},
++    {"key": "additional_result_request", "label": "결과에서 더 확인하고 싶은 내용", "required": False},
+ )
+ 
+ GEOMETRY_INPUT_KEYS = (
+diff --git a/request_ai_agent_h6_v0/state.py b/request_ai_agent_h6_v0/state.py
+index 8d3f598..948fc96 100644
+--- a/request_ai_agent_h6_v0/state.py
++++ b/request_ai_agent_h6_v0/state.py
+@@ -61,6 +61,31 @@ HEX_SPEC_DEFAULTS = {
+     "fpi": "14FPI",
+ }
+ 
++DECISION_USE_CODES = (
++    "problem_analysis",
++    "design_review",
++    "performance_validation",
++    "other",
++    "undecided",
++)
++DECISION_USE_LEGACY_CODES = {
++    "design_selection": "design_review",
++    "change_applicability": "design_review",
++    "root_cause": "problem_analysis",
++    "improvement_direction": "problem_analysis",
++    "phenomenon_review": "problem_analysis",
++    "performance_requirement": "performance_validation",
++    "other": "other",
++    "undecided": "undecided",
++}
++DECISION_USE_DISPLAY = {
++    "problem_analysis": "문제·현상 분석",
++    "design_review": "설계·변경 검토",
++    "performance_validation": "성능·시험 검증",
++    "other": "기타",
++    "undecided": "아직 결정하지 못함",
++}
++
+ 
+ REQUEST_CONTEXT_KEYS = (
+     "business_unit",
+@@ -294,6 +319,59 @@ def apply_analysis_overview_defaults(raw_state: Mapping[str, Any]) -> State:
+     return state
+ 
+ 
++def normalize_decision_use_field(raw: Any, *, default: Field | None = None) -> Field:
++    """Preserve Field Value metadata while migrating decision_use to its catalog."""
++
++    raw_field = raw if isinstance(raw, Mapping) else {}
++    value = raw_field.get("value", raw)
++    value_map = value if isinstance(value, Mapping) else {}
++    source = _clean_text(raw_field.get("source")) or ("legacy" if not isinstance(raw, Mapping) else VALUE_SOURCE_USER)
++    note = _clean_text(raw_field.get("note"))
++    primary_code = _clean_text(value_map.get("primary_code"))
++    custom_text = _clean_text(value_map.get("custom_text"))
++
++    if not primary_code:
++        legacy_text = _clean_text(value)
++        mapped = DECISION_USE_LEGACY_CODES.get(legacy_text, legacy_text if legacy_text in DECISION_USE_CODES else "")
++        primary_code = mapped or ("other" if legacy_text else "")
++        if primary_code == "other" and legacy_text:
++            custom_text = legacy_text
++            source = "legacy" if not _clean_text(raw_field.get("source")) else source
++    if primary_code not in DECISION_USE_CODES:
++        custom_text = custom_text or primary_code
++        primary_code = "other" if custom_text else ""
++        source = "legacy" if not _clean_text(raw_field.get("source")) else source
++
++    custom_text = custom_text if primary_code == "other" else ""
++    is_selected = bool(primary_code)
++    status = FIELD_STATUS_PROVIDED if is_selected else FIELD_STATUS_MISSING
++    validity = "invalid" if not is_selected or (primary_code == "other" and not custom_text) else ("unverified" if primary_code == "undecided" else "valid")
++    confirmation_status = _clean_text(raw_field.get("confirmation_status"))
++    if confirmation_status not in {"not_required", "pending", "confirmed"}:
++        confirmation_status = "not_required"
++    display_value = DECISION_USE_DISPLAY.get(primary_code, "")
++    if primary_code == "other" and custom_text:
++        display_value = f"{display_value}: {custom_text}"
++    return {
++        "value": {"primary_code": primary_code, "custom_text": custom_text or None},
++        "display_value": display_value,
++        "status": status,
++        "source": source,
++        "validity": validity,
++        "confirmation_status": confirmation_status,
++        "note": note,
++    }
++
++
++def decision_use_is_complete(field: Any) -> bool:
++    normalized = normalize_decision_use_field(field)
++    value = normalized["value"]
++    primary_code = value["primary_code"]
++    return primary_code in {"problem_analysis", "design_review", "performance_validation"} or (
++        primary_code == "other" and bool(value["custom_text"])
++    )
++
++
+ def infer_field_status(value: Any) -> str:
+     if value is None:
+         return FIELD_STATUS_MISSING
+@@ -550,7 +628,7 @@ def _sanitize_field_section(
+         raw_value = raw_map.get(spec.key)
+         if raw_value is None and spec.legacy_key:
+             raw_value = raw_map.get(spec.legacy_key)
+-        section[spec.key] = sanitize_field(raw_value, default=default)
++        section[spec.key] = normalize_decision_use_field(raw_value, default=default) if spec.key == "decision_use" else sanitize_field(raw_value, default=default)
+     return section
+ 
+ 
+diff --git a/request_ai_agent_h6_v0/ui.py b/request_ai_agent_h6_v0/ui.py
+index 913f500..bedcbb6 100644
+--- a/request_ai_agent_h6_v0/ui.py
++++ b/request_ai_agent_h6_v0/ui.py
+@@ -11,37 +11,39 @@ HTML_TEMPLATE = r"""<!doctype html>
+   <title>CAE Request Assistant __APP_VERSION__</title>
+   <style>
+     :root{
+-      --ink:#172523;
+-      --muted:#637875;
+-      --bg:#eef3f1;
+-      --paper:#fffdf9;
+-      --line:#d8d1c8;
+-      --brand:#0b625d;
+-      --brand-strong:#084844;
+-      --accent:#b36a32;
+-      --danger:#b9443c;
+-      --warning:#a15d18;
+-      --ok:#147753;
+-      --blue:#315f8a;
+-      --soft:#f7faf8;
+-      --shadow:0 10px 24px rgba(20,36,33,.10);
++      --ink:#17212b;
++      --muted:#5d6975;
++      --bg:#eef2f5;
++      --paper:#ffffff;
++      --line:#d5dde5;
++      --brand:#1f5f91;
++      --brand-strong:#194f78;
++      --accent:#0b57d0;
++      --danger:#a12b2b;
++      --warning:#8a5a00;
++      --ok:#176b45;
++      --blue:#1f5f91;
++      --soft:#f6f8fa;
++      --shadow:0 4px 16px rgba(31,50,69,.07);
+     }
+     *{box-sizing:border-box}
+     html,body{height:100%}
+     body{
+       margin:0;
+       color:var(--ink);
+-      background:linear-gradient(135deg,#eef3f1 0%,#f7f2e9 55%,#eef4f8 100%);
+-      font-family:"Segoe UI",Arial,sans-serif;
++      background:var(--bg);
++      font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
++      font-size:15px;
++      line-height:1.45;
+       overflow:hidden;
+     }
+     button,input,textarea,select{font:inherit}
+     [hidden]{display:none!important}
+     button{
+-      min-height:34px;
+-      border:1px solid var(--line);
+-      border-radius:8px;
+-      background:#fffaf2;
++      min-height:36px;
++      border:1px solid #aab7c3;
++      border-radius:7px;
++      background:var(--paper);
+       color:var(--ink);
+       cursor:pointer;
+       font-size:13px;
+@@ -49,22 +51,24 @@ HTML_TEMPLATE = r"""<!doctype html>
+       padding:7px 11px;
+     }
+     button.primary{border-color:var(--brand);background:var(--brand);color:#fff}
+-    button.danger{border-color:#e4b7b2;background:#fff2f0;color:var(--danger)}
++    button.danger{border-color:#e0bcbc;background:#fff1f1;color:var(--danger)}
+     button.icon{width:34px;padding:0;display:grid;place-items:center}
+     button.ghost{background:#fff;border-color:#e1ddd6}
+     button:disabled{opacity:.48;cursor:not-allowed}
+     input,textarea,select{
+       width:100%;
+       min-width:0;
+-      border:1px solid #d3cbc0;
+-      border-radius:8px;
+-      background:#fffdf8;
++      min-height:36px;
++      border:1px solid #aab7c3;
++      border-radius:7px;
++      background:var(--paper);
+       color:var(--ink);
+       padding:8px 9px;
+       font-size:13px;
+     }
+     textarea{min-height:70px;resize:vertical;line-height:1.45}
+-    label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:800;color:#334b48}
++    label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:800;color:var(--ink)}
++    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #0b57d0;outline-offset:2px}
+     .topbar{
+       height:48px;
+       padding:6px 16px;
+@@ -129,7 +133,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+     .rail-head{padding:12px;border-bottom:1px solid var(--line);background:#fff8ef}
+     .rail-list{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+     .main{display:grid;grid-template-rows:auto minmax(0,1fr)}
+-    .workspace-shell{min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px}
++    .workspace-shell{min-width:0;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;overflow:hidden}
+     .workspace-bar{
+       min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+       padding:6px 10px;border:1px solid rgba(25,38,36,.13);border-radius:8px;background:var(--paper);box-shadow:var(--shadow);
+@@ -137,18 +141,29 @@ HTML_TEMPLATE = r"""<!doctype html>
+     .workspace-bar-copy{display:flex;align-items:baseline;gap:8px;min-width:0}
+     .workspace-bar-copy strong{font-size:13px;color:#173b38;white-space:nowrap}
+     .workspace-bar-copy span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+-    .step-navigation{border:1px solid rgba(25,38,36,.13);border-radius:8px;background:var(--paper);box-shadow:var(--shadow);overflow:hidden}
+-    .screen-map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));min-height:42px}
+-    .screen-map-item{display:flex;align-items:center;gap:6px;min-width:0;padding:7px 9px;border-left:1px solid var(--line);font-size:12px;font-weight:900;color:#294642;cursor:pointer}
+-    .screen-map-item:first-child{border-left:0}
+-    .screen-map-item[aria-current="page"]{background:#ecf7f4;color:var(--brand-strong);box-shadow:inset 0 -3px 0 var(--brand)}
++    .step-navigation{min-width:0}
++    .screen-map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;min-height:96px;padding:0;background:transparent;isolation:isolate}
++    .screen-map-item{
++      position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;
++      padding:10px 19px 9px 25px;border:0;background:#f0f1f3;color:#4d5560;font-size:13px;font-weight:800;
++      line-height:1.2;text-align:center;cursor:pointer;clip-path:polygon(17px 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,17px 100%,0 50%);
++    }
++    .screen-map-item:first-child{padding-left:18px;border-radius:12px 0 0 12px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%)}
++    .screen-map-item:last-child{padding-right:18px;border-radius:0 12px 12px 0;clip-path:polygon(17px 0,100% 0,100% 100%,17px 100%,0 50%)}
++    .screen-map-item:hover:not([aria-disabled="true"]){background:#e3e7ec;color:#273f5b}
++    .screen-map-item:focus-visible{z-index:1;outline:3px solid rgba(49,95,138,.45);outline-offset:-3px}
++    .screen-map-item[aria-current="page"]{background:linear-gradient(135deg,#3978ce,#285da9);color:#fff}
+     .screen-map-item[aria-disabled="true"]{opacity:.56;cursor:not-allowed}
+-    .screen-map-number{color:var(--brand);font-size:11px;white-space:nowrap}
+-    .screen-map-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
++    .screen-map-number{font-size:31px;font-weight:500;line-height:.96;letter-spacing:-.04em;white-space:nowrap}
++    .screen-map-label{max-width:100%;overflow-wrap:anywhere}
+     .legacy-stage-rail{display:none}
+     .screen-group{min-width:0}
+     .screen-heading{margin:0 0 8px;font-size:13px;color:#526461}
+     .screen-heading span{color:#173b38}
++    .title-with-icon{display:flex;align-items:center;gap:7px}
++    .title-icon{width:22px;height:22px;display:inline-grid;flex:0 0 22px;place-items:center;border:1px solid #c8d8d3;border-radius:6px;background:#edf7f4;color:var(--brand)}
++    .title-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
++    .screen-heading-code{color:#526461!important}
+     .hero{
+       padding:12px;
+       border-bottom:1px solid var(--line);
+@@ -173,11 +188,12 @@ HTML_TEMPLATE = r"""<!doctype html>
+       font-size:12px;
+       line-height:1.45;
+     }
+-    .workspace{min-height:0;overflow:auto;padding:12px}
++    .workspace{min-height:0;overflow:auto;scrollbar-gutter:stable;padding:12px}
+     .workspace-tab{display:none;min-height:0}
+     .workspace-tab.active{display:block}
+     .workspace-form{
+-      width:min(100%,820px);
++      width:100%;
++      max-width:1120px;
+       margin:0 auto;
+     }
+     .request-prep-card{
+@@ -297,10 +313,24 @@ HTML_TEMPLATE = r"""<!doctype html>
+     .section.open .chev{transform:rotate(90deg)}
+     .section-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+-    .grid.compact{grid-template-columns:repeat(2,minmax(0,1fr))}
++    .grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
+     .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+     .wide{grid-column:1/-1}
+     .custom-input{margin-top:5px}
++    .form-subgroup{display:grid;gap:8px}
++    .form-subgroup + .form-subgroup{margin-top:13px}
++    .form-subgroup-title{margin:0;color:var(--muted);font-size:12px;font-weight:800}
++    .decision-use-group{border:0;margin:0;padding:0;display:grid;gap:9px}
++    .decision-use-group legend{padding:0;color:var(--ink);font-size:14px;font-weight:800}
++    .decision-use-help{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
++    .decision-use-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
++    .decision-use-option{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;margin:0;border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:10px;cursor:pointer}
++    .decision-use-option:has(input:checked){border-color:var(--brand);background:#e7f0f8}
++    .decision-use-option input{width:auto;margin-top:2px}
++    .decision-use-option strong{display:block;color:var(--ink);font-size:13px}
++    .decision-use-option small{display:block;margin-top:3px;color:var(--muted);font-size:12px;line-height:1.4}
++    .decision-use-custom{margin:0 0 0 27px}
++    .decision-use-undecided{margin:0;color:#70440e;font-size:12px;line-height:1.45}
+     .custom-input[hidden]{display:none}
+     .subhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 7px}
+     .subhead strong{font-size:12px;color:#274b48}
+@@ -466,9 +496,8 @@ HTML_TEMPLATE = r"""<!doctype html>
+     }
+     @media (max-width:1180px){
+       .topbar{height:auto;grid-template-columns:1fr;align-items:start}
+-      .screen-map{grid-template-columns:repeat(3,minmax(0,1fr))}
+-      .screen-map-item:nth-child(4){border-left:0}
+-      .hero-row,.grid,.grid.two,.condition-grid,.heat-exchanger-grid,.review-grid,.prep-head,.prep-quick-grid{grid-template-columns:1fr}
++      .hero-row,.condition-grid,.heat-exchanger-grid,.review-grid,.prep-head,.prep-quick-grid{grid-template-columns:1fr}
++      .grid,.grid.compact,.grid.two,.decision-use-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+       .prep-actions{justify-content:flex-start}
+     }
+     @media (max-width:1039px){
+@@ -480,6 +509,46 @@ HTML_TEMPLATE = r"""<!doctype html>
+       }
+       .layout.agent-hidden .agent-dock{display:grid;opacity:0;pointer-events:none;transform:translateX(calc(100% + 24px));visibility:hidden}
+     }
++    @media (max-width:720px){
++      .screen-map{grid-template-columns:repeat(3,minmax(0,1fr));min-height:0}
++      .screen-map-item{min-height:82px}
++      .screen-map-item:nth-child(4){padding-left:18px;border-radius:12px 0 0 12px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%)}
++      .screen-map-item:nth-child(3){padding-right:18px;border-radius:0 12px 12px 0;clip-path:polygon(17px 0,100% 0,100% 100%,17px 100%,0 50%)}
++      .grid,.grid.compact,.grid.two,.decision-use-options{grid-template-columns:1fr}
++    }
++    /* T2-01A: completed Shell, SCREEN-01/02, and Agent Dock share the design-lock surface system. */
++    .topbar,.workspace-bar,.panel,.section,.request-prep-card,.prep-step,.prep-summary,.context-chip-bar,.context-lock-gate,.gate{border-color:var(--line);background:var(--paper)}
++    .topbar{border-bottom-color:var(--line);background:var(--paper)}
++    .brand-mark{background:var(--brand)}
++    .workspace-bar{box-shadow:none}
++    .panel{border-radius:10px;box-shadow:var(--shadow)}
++    .hero,.section-head{background:var(--soft)}
++    .hero h2,.prep-head h3,.prep-step-title strong,.section h3,.workspace-bar-copy strong,.screen-heading span{color:var(--ink)}
++    .request-prep-card,.section{border-radius:10px}
++    .prep-head{padding:11px 13px;border-bottom-color:var(--line);background:var(--soft)}
++    .prep-summary,.context-chip-bar{background:#edf4fb;border-color:#c9dbe9}
++    .context-lock-gate,.gate{border-color:#aab7c3;background:var(--soft);color:var(--ink)}
++    .prep-choice,.prep-choice.selected{border-color:#aab7c3;background:var(--paper);color:var(--ink)}
++    .prep-choice.selected{border-color:var(--brand);background:#e7f0f8;color:var(--brand)}
++    .section-head{min-height:42px;padding:8px 11px}
++    .section-body{border-top-color:var(--line);padding:11px 13px}
++    .chip{border-color:var(--line);background:var(--soft);color:var(--muted)}
++    .chip.info{border-color:#c9dbe9;background:#edf4fb;color:var(--brand)}
++    .chip.required{border-color:#ead3a2;background:#fff8e8;color:var(--warning)}
++    .title-icon{border-color:#c9dbe9;border-radius:7px;background:#e7f0f8;color:var(--brand)}
++    .screen-heading{margin:0 0 8px;font-size:22px;font-weight:800;line-height:1.15;color:var(--muted)}
++    .screen-heading-code{font-size:12px;font-weight:800;color:var(--muted)!important}
++    .screen-action-bar{position:sticky;bottom:0;z-index:2;display:flex;justify-content:space-between;gap:10px;margin-top:8px;padding:9px 0 1px;border-top:1px solid var(--line);background:linear-gradient(to bottom,rgba(238,242,245,0),var(--bg) 22%)}
++    .screen-action-bar button{min-width:136px}
++    .agent-dock{background:#f7fbff;border-color:#b9cedf}
++    .chat-head,.chat-input{background:#f7fbff;border-color:#b9cedf}
++    .chat-log{background:#f7fbff}
++    .msg.assistant,.proposal-card,.proposal-list li{border-color:var(--line);background:var(--paper)}
++    .msg.user{background:#e7f0f8;color:var(--ink)}
++    .stage-assist-title,.proposal-card strong{color:var(--ink)}
++    .stage-assist-action,.quick-actions button{border-color:#aab7c3;background:var(--paper);color:var(--ink)}
++    .quick-action-card{border-color:#c9dbe9;background:#edf4fb}
++    .quick-action-title{color:var(--brand-strong)}
+   </style>
+ </head>
+ <body>
+@@ -516,7 +585,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+           <span class="screen-map-item" data-screen="SCREEN-03"><span class="screen-map-number">03</span><span class="screen-map-label">해석 제품</span></span>
+           <span class="screen-map-item" data-screen="SCREEN-04"><span class="screen-map-number">04</span><span class="screen-map-label">해석 조건</span></span>
+           <span class="screen-map-item" data-screen="SCREEN-05"><span class="screen-map-number">05</span><span class="screen-map-label">Case Matrix</span></span>
+-          <span class="screen-map-item" data-screen="SCREEN-06"><span class="screen-map-number">06</span><span class="screen-map-label">전체 확인</span></span>
++          <span class="screen-map-item" data-screen="SCREEN-06"><span class="screen-map-number">06</span><span class="screen-map-label">전체 확인·Preview·Word</span></span>
+         </div>
+         <div class="legacy-stage-rail" id="stageRail" aria-label="기존 의뢰 작성 단계별 진행률"></div>
+       </nav>
+@@ -536,14 +605,14 @@ HTML_TEMPLATE = r"""<!doctype html>
+         <div class="workspace-tab active" id="tab-write">
+           <div class="workspace-form" id="formView">
+           <section class="screen-group" data-screen="SCREEN-01" aria-labelledby="screen01Heading">
+-          <h2 class="screen-heading" id="screen01Heading">SCREEN-01 <span>의뢰 대상·시작</span></h2>
++          <h2 class="screen-heading title-with-icon" id="screen01Heading"><span class="title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2"></circle><path d="M12 3V1M21 12h2M12 23v-2M1 12h2"></path></svg></span><span class="screen-heading-code">SCREEN-01</span> <span>의뢰 대상·시작</span></h2>
+           <section class="request-prep-card" id="requestPrepCard">
+             <div class="prep-head">
+               <div>
+                 <h3>해석의뢰 시작하기</h3>
+                 <p>제품과 확인 목적에 따라 필요한 입력항목이 자동으로 달라집니다. 먼저 의뢰 대상을 확인합니다.</p>
+               </div>
+-              <div class="prep-actions"><button class="ghost" id="contextChangeBtn" type="button" hidden>의뢰대상 변경</button></div>
++              <div class="prep-actions"><button class="ghost" id="contextChangeBtn" type="button" hidden>의뢰대상 변경</button><button class="primary" id="nextRequestContentBtn" type="button" data-screen-action="SCREEN-02" hidden>다음: 요청 내용</button></div>
+             </div>
+             <div class="prep-body">
+               <div class="prep-flow" id="guidedPrepFlow">
+@@ -595,19 +664,33 @@ HTML_TEMPLATE = r"""<!doctype html>
+           </div>
+           </section>
+ 
+-          <section class="screen-group" data-screen="SCREEN-02" aria-labelledby="screen02Heading">
+-          <h2 class="screen-heading" id="screen02Heading">SCREEN-02 <span>요청 내용</span></h2>
++          <section class="screen-group request-content-screen" data-screen="SCREEN-02" aria-labelledby="screen02Heading">
++          <h2 class="screen-heading title-with-icon" id="screen02Heading"><span class="title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"></path><path d="M15 4v4h4M9 12h6M9 16h6"></path></svg></span><span class="screen-heading-code">SCREEN-02</span> <span>해석 요청 내용</span></h2>
+           <section class="section open" id="section-basic" data-section="basic_info">
+-            <div class="section-head" data-toggle-section="section-basic">
+-              <div class="section-title"><span class="chev">▶</span><h3>기본 정보</h3></div>
++            <div class="section-head">
++              <div class="section-title"><h3>의뢰 기본 정보</h3></div>
+               <div class="section-meta" id="meta-basic_info"></div>
+             </div>
+             <div class="section-body">
+-              <div class="grid compact">
+-                <label>사업부<select data-dropdown-path="basic_info.division"></select><input class="custom-input" data-path="basic_info.division" /></label>
+-                <label>부서<input data-path="basic_info.department" /></label>
+-                <label>요청자<input data-path="basic_info.requester_name" /></label>
+-                <label>직급<select data-dropdown-path="basic_info.requester_role"></select><input class="custom-input" data-path="basic_info.requester_role" /></label>
++              <div class="form-subgroup">
++                <p class="form-subgroup-title">요청자 정보</p>
++                <div class="grid compact">
++                  <label>사업부<select data-dropdown-path="basic_info.division"></select><input class="custom-input" data-path="basic_info.division" /></label>
++                  <label>부서<input data-path="basic_info.department" /></label>
++                  <label>요청자<input data-path="basic_info.requester_name" /></label>
++                  <label>직급<select data-dropdown-path="basic_info.requester_role"></select><input class="custom-input" data-path="basic_info.requester_role" /></label>
++                </div>
++              </div>
++              <div class="form-subgroup">
++                <p class="form-subgroup-title">프로젝트·일정 정보</p>
++                <div class="grid compact">
++                  <label>프로젝트명(PMS)<input data-path="analysis_overview.project_name" /></label>
++                  <label>개발 등급<select data-dropdown-path="analysis_overview.development_grade"></select><input class="custom-input" data-path="analysis_overview.development_grade" /></label>
++                  <label>NPI 단계<select data-dropdown-path="analysis_overview.npi_stage"></select><input class="custom-input" data-path="analysis_overview.npi_stage" /></label>
++                  <label>모델명(Model Suffix)<input data-path="analysis_overview.model_suffix" /></label>
++                  <label>의뢰 요청일<input data-path="analysis_overview.request_date" type="date" /></label>
++                  <label>희망 완료일<input data-path="analysis_overview.desired_completion_date" type="date" /></label>
++                </div>
+               </div>
+             </div>
+           </section>
+@@ -618,25 +701,40 @@ HTML_TEMPLATE = r"""<!doctype html>
+           </div>
+ 
+           <section class="section" id="section-overview" data-section="analysis_overview">
+-            <div class="section-head" data-toggle-section="section-overview">
+-              <div class="section-title"><span class="chev">▶</span><h3>해석 개요</h3></div>
++            <div class="section-head">
++              <div class="section-title"><h3>해석 요청 내용</h3></div>
+               <div class="section-meta" id="meta-analysis_overview"></div>
+             </div>
+             <div class="section-body">
+-              <div class="grid">
+-                <label>프로젝트명(PMS)<input data-path="analysis_overview.project_name" /></label>
+-                <label>개발 등급<select data-dropdown-path="analysis_overview.development_grade"></select><input class="custom-input" data-path="analysis_overview.development_grade" /></label>
+-                <label>NPI 단계<select data-dropdown-path="analysis_overview.npi_stage"></select><input class="custom-input" data-path="analysis_overview.npi_stage" /></label>
+-                <label>모델명(Model Suffix)<input data-path="analysis_overview.model_suffix" /></label>
+-                <label>의뢰 요청일<input data-path="analysis_overview.request_date" type="date" /></label>
+-                <label>희망 완료일<input data-path="analysis_overview.desired_completion_date" type="date" /></label>
+-                <label class="wide">요청 내용<textarea data-path="analysis_overview.request_description"></textarea></label>
+-                <label>의사결정 활용<textarea data-path="analysis_overview.decision_use"></textarea></label>
+-                <label>추가 결과 요청<textarea data-path="analysis_overview.additional_result_request"></textarea></label>
+-                <div class="wide empty" id="analysisResultGuidance">해석유형을 선택하면 결과 안내를 표시합니다.</div>
++              <div class="form-subgroup">
++                <label class="wide">해석을 요청하게 된 상황과 확인할 내용 <span class="chip required">필수</span><textarea data-path="analysis_overview.request_description" rows="7" placeholder="기존 Louver를 신규 형상으로 변경하려 하며, 각도별 기류각과 풍량 차이를 확인하고자 합니다."></textarea></label>
++                <p class="decision-use-help">이슈 또는 변경 배경과, 해석으로 확인하거나 비교하려는 내용을 함께 작성해 주세요.</p>
++              </div>
++              <fieldset class="decision-use-group" aria-describedby="decisionUseHelp decisionUseUndecided">
++                <legend>결과 활용 목적 <span class="chip required">필수</span></legend>
++                <p class="decision-use-help">해석 결과를 주로 어떤 목적으로 활용하시나요?</p>
++                <div class="decision-use-options" id="decisionUseOptions">
++                  <label class="decision-use-option"><input type="radio" name="decision_use" value="problem_analysis" aria-describedby="decisionUseProblemDescription" /><span><strong>문제·현상 분석</strong><small id="decisionUseProblemDescription">발생 현상의 수준과 원인을 파악하고 개선 방향을 검토합니다.</small></span></label>
++                  <label class="decision-use-option"><input type="radio" name="decision_use" value="design_review" aria-describedby="decisionUseDesignDescription" /><span><strong>설계·변경 검토</strong><small id="decisionUseDesignDescription">설계안이나 변경안을 비교하고 적용 여부를 판단합니다.</small></span></label>
++                  <label class="decision-use-option"><input type="radio" name="decision_use" value="performance_validation" aria-describedby="decisionUsePerformanceDescription" /><span><strong>성능·시험 검증</strong><small id="decisionUsePerformanceDescription">성능 수준을 확인하거나 시험 결과를 예측·대체·보완합니다.</small></span></label>
++                  <label class="decision-use-option"><input type="radio" name="decision_use" value="other" /><span><strong>기타</strong></span></label>
++                  <label class="decision-use-option"><input type="radio" name="decision_use" value="undecided" /><span><strong>아직 결정하지 못함</strong></span></label>
++                </div>
++                <label class="decision-use-custom" id="decisionUseCustomWrap" hidden>기타 목적 직접 입력<input id="decisionUseCustom" maxlength="120" /></label>
++                <p class="decision-use-help" id="decisionUseHelp">둘 이상의 목적에 해당하면 최종적으로 판단하려는 대표 목적 하나를 선택합니다.</p>
++                <p class="decision-use-undecided" id="decisionUseUndecided" hidden>제출 전 대표 목적을 다시 확인해 주세요.</p>
++              </fieldset>
++              <div class="form-subgroup" id="analysisResultGuidance" aria-live="polite">해석유형을 선택하면 결과 안내를 표시합니다.</div>
++              <div class="form-subgroup">
++                <label class="wide">결과에서 더 확인하고 싶은 내용 <span class="chip info">선택</span><textarea data-path="analysis_overview.additional_result_request" placeholder="기준 제품과 비교 제품의 발생 영역 차이도 함께 확인해 주세요."></textarea></label>
++                <p class="decision-use-help">결과에서 함께 확인하고 싶은 내용이 있다면 작성해 주세요. 없으면 입력하지 않아도 됩니다.</p>
+               </div>
+             </div>
+           </section>
++          <div class="screen-action-bar" aria-label="요청 내용 단계 이동">
++            <button class="ghost" type="button" data-screen-action="SCREEN-01">이전: 의뢰 대상·시작</button>
++            <button class="primary" type="button" data-screen-action="SCREEN-03">다음: 해석 제품</button>
++          </div>
+           </section>
+ 
+           <section class="screen-group" data-screen="SCREEN-03" aria-labelledby="screen03Heading">
+@@ -705,7 +803,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+ 
+     <aside class="panel chat agent-dock" id="agentDock" data-shell="AgentDock" aria-labelledby="agentDockHeading">
+       <div class="chat-head">
+-        <div id="agentDockHeading" tabindex="-1"><strong class="stage-assist-title">Agent</strong></div>
++        <div id="agentDockHeading" class="title-with-icon" tabindex="-1"><span class="title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19a7 7 0 0 1 14 0"></path><circle cx="12" cy="8" r="4"></circle><path d="M4 12v3M20 12v3"></path></svg></span><strong class="stage-assist-title">Agent</strong></div>
+         <button class="ghost" id="agentHideBtn" type="button" aria-controls="agentDock" aria-expanded="true">Agent 숨기기</button>
+       </div>
+       <div class="chat-log" id="chatLog">
+@@ -754,6 +852,19 @@ HTML_TEMPLATE = r"""<!doctype html>
+     const $ = (id) => document.getElementById(id);
+     const basicKeys = ["division","department","requester_name","requester_role"];
+     const overviewKeys = ["project_name","development_grade","npi_stage","model_suffix","request_date","desired_completion_date","request_description","decision_use","additional_result_request"];
++    const overviewInputKeys = overviewKeys.filter(key => key !== "decision_use");
++    const decisionUseCatalog = {
++      problem_analysis:"문제·현상 분석",
++      design_review:"설계·변경 검토",
++      performance_validation:"성능·시험 검증",
++      other:"기타",
++      undecided:"아직 결정하지 못함",
++    };
++    const decisionUseLegacyCodes = {
++      design_selection:"design_review", change_applicability:"design_review", root_cause:"problem_analysis",
++      improvement_direction:"problem_analysis", phenomenon_review:"problem_analysis",
++      performance_requirement:"performance_validation", other:"other", undecided:"undecided",
++    };
+     const prepAnalysisTypes = ["이슬맺힘","일반 유동 해석","열유동 해석","열교환기 유속 프로파일"];
+     const defaultBusinessUnits = ["SAC","RAC","Aircare","Chiller"];
+     const defaultPlatformFallbacks = ["미정","잘 모르겠어요"];
+@@ -772,7 +883,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+       "conditions.outlet_condition": ["pressure outlet"],
+     };
+     const sectionOrder = [
+-      ["analysis_overview","해석개요","section-overview"],
++      ["analysis_overview","해석 요청 내용","section-overview"],
+       ["geometry","제품형상","section-geometry"],
+       ["conditions","해석조건","section-conditions"],
+       ["case_matrix","Case Matrix","section-case"],
+@@ -878,6 +989,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+       return src.display_value || ({unknown:"紐⑤쫫", none:"?놁쓬", skipped:"skip"}[src.status] || "");
+     }
+     function fieldDisplayValue(field, fallback=""){
++      if (asObj(asObj(field).value).primary_code) return decisionUseDisplay(field) || fallback;
+       const value = fieldValue(field, "");
+       if (String(value ?? "").trim()) return value;
+       const display = statusDisplay(field);
+@@ -894,6 +1006,60 @@ HTML_TEMPLATE = r"""<!doctype html>
+     function setStatus(text){ $("saveStatus") ? $("saveStatus").textContent = text : null; }
+     function notify(text){ pushMessage("assistant", text); }
+ 
++    function normalizeDecisionUse(field){
++      const raw = asObj(field);
++      const rawValue = Object.prototype.hasOwnProperty.call(raw, "value") ? raw.value : field;
++      const value = asObj(rawValue);
++      let primaryCode = String(value.primary_code || "").trim();
++      let customText = String(value.custom_text || "").trim();
++      if (!primaryCode) {
++        const legacy = typeof rawValue === "string" ? rawValue.trim() : "";
++        primaryCode = decisionUseLegacyCodes[legacy] || (Object.prototype.hasOwnProperty.call(decisionUseCatalog, legacy) ? legacy : (legacy ? "other" : ""));
++        if (primaryCode === "other" && legacy && !decisionUseLegacyCodes[legacy]) customText = legacy;
++      }
++      if (!Object.prototype.hasOwnProperty.call(decisionUseCatalog, primaryCode)) {
++        customText = customText || primaryCode;
++        primaryCode = customText ? "other" : "";
++      }
++      return {primary_code:primaryCode, custom_text:primaryCode === "other" ? customText : ""};
++    }
++
++    function decisionUseDisplay(field){
++      const value = normalizeDecisionUse(field);
++      return value.primary_code === "other" && value.custom_text ? `${decisionUseCatalog.other}: ${value.custom_text}` : (decisionUseCatalog[value.primary_code] || "");
++    }
++
++    function selectedDecisionUseCode(){ return document.querySelector('input[name="decision_use"]:checked')?.value || ""; }
++
++    function renderDecisionUseAuxiliary(code=selectedDecisionUseCode()){
++      const customWrap = $("decisionUseCustomWrap"), undecided = $("decisionUseUndecided");
++      if (customWrap) customWrap.hidden = code !== "other";
++      if (undecided) undecided.hidden = code !== "undecided";
++    }
++
++    function syncDecisionUseEditor(field){
++      const value = normalizeDecisionUse(field);
++      document.querySelectorAll('input[name="decision_use"]').forEach(input => { input.checked = input.value === value.primary_code; });
++      if ($("decisionUseCustom")) $("decisionUseCustom").value = value.custom_text;
++      renderDecisionUseAuxiliary(value.primary_code);
++    }
++
++    function collectDecisionUseField(){
++      const previous = asObj(asObj(requestState.analysis_overview).decision_use);
++      const primaryCode = selectedDecisionUseCode();
++      const customText = $("decisionUseCustom")?.value.trim() || "";
++      const validity = !primaryCode || (primaryCode === "other" && !customText) ? "invalid" : (primaryCode === "undecided" ? "unverified" : "valid");
++      return {
++        value:{primary_code:primaryCode, custom_text:primaryCode === "other" ? customText || null : null},
++        display_value:primaryCode === "other" && customText ? `${decisionUseCatalog.other}: ${customText}` : (decisionUseCatalog[primaryCode] || ""),
++        status:primaryCode ? "provided" : "missing",
++        source:"user",
++        validity,
++        confirmation_status:previous.confirmation_status || "not_required",
++        note:previous.note || "",
++      };
++    }
++
+     function optionsForPath(path){
+       const fromSchema = asArray(asObj(schema.ui_options)[path]);
+       return fromSchema.length ? fromSchema : asArray(dropdownOptions[path]);
+@@ -1073,6 +1239,8 @@ HTML_TEMPLATE = r"""<!doctype html>
+       if (prepBody) prepBody.hidden = locked;
+       const changeButton = $("contextChangeBtn");
+       if (changeButton) changeButton.hidden = !locked;
++      const nextButton = $("nextRequestContentBtn");
++      if (nextButton) nextButton.hidden = !locked;
+       renderContextChip();
+       if (locked) return;
+       const unitOptions = businessUnitOptions();
+@@ -1212,6 +1380,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+       adoptStateFromResponse(data);
+       syncEditorFromState();
+       pushMessage("assistant", data.assistant || "선택한 조합 기준으로 입력항목이 준비됐습니다.");
++      navigateScreen("SCREEN-02");
+     }
+ 
+ 
+@@ -1551,12 +1720,13 @@ HTML_TEMPLATE = r"""<!doctype html>
+         syncDropdownForPath(`basic_info.${key}`, value);
+       });
+       const overview = asObj(requestState.analysis_overview);
+-      overviewKeys.forEach(key => {
++      overviewInputKeys.forEach(key => {
+         const input = pathInput("analysis_overview", key);
+         const value = fieldDisplayValue(overview[key]);
+         if (input) input.value = value;
+         syncDropdownForPath(`analysis_overview.${key}`, value);
+       });
++      syncDecisionUseEditor(overview.decision_use);
+       const geometry = asObj(requestState.geometry);
+       renderProductCards(geometry.base_product, geometry.comparison_products);
+       renderConditionFields();
+@@ -1596,7 +1766,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+         if (!response.ok || data.ok === false) throw new Error(data.message || "결과 안내를 조회하지 못했습니다.");
+         root.innerHTML = `<strong>해석 결과 안내</strong><p>${esc(data.guidance || "")}</p>`;
+       } catch (err) {
+-        root.innerHTML = `<strong>해석 결과 안내를 조회하지 못했습니다.</strong><p>잠시 후 다시 시도해 주세요.</p><button class="ghost" type="button" id="retryAnalysisResultGuidance">재시도</button>`;
++        root.innerHTML = `<strong>해석 결과 안내를 불러오지 못했습니다.</strong><p>잠시 후 다시 시도해 주세요.</p><button class="ghost" type="button" id="retryAnalysisResultGuidance">다시 시도</button>`;
+       }
+     }
+ 
+@@ -1643,7 +1813,8 @@ HTML_TEMPLATE = r"""<!doctype html>
+         case_matrix: { ...asObj(requestState.case_matrix), rows: collectCaseRows() },
+       };
+       basicKeys.forEach(key => { const input = pathInput("basic_info", key); next.basic_info[key] = input ? input.value : ""; });
+-      overviewKeys.forEach(key => { const input = pathInput("analysis_overview", key); next.analysis_overview[key] = input ? input.value : ""; });
++      overviewInputKeys.forEach(key => { const input = pathInput("analysis_overview", key); next.analysis_overview[key] = input ? input.value : ""; });
++      next.analysis_overview.decision_use = collectDecisionUseField();
+       return next;
+     }
+ 
+@@ -1756,7 +1927,12 @@ HTML_TEMPLATE = r"""<!doctype html>
+       const stage = asObj(asObj(asObj(requestState.stage_progress).stages)[section]);
+       if (Number.isFinite(stage.completion_percent)) return Number(stage.completion_percent);
+       if (section === "basic_info") return percentProvided(asObj(requestState.basic_info), ["division","requester_name"], ["request_no","department","requester_role"]);
+-      if (section === "analysis_overview") return percentProvided(asObj(requestState.analysis_overview), ["request_description","decision_use"], ["project_name","development_grade","npi_stage","model_suffix","request_date","desired_completion_date","additional_result_request"]);
++      if (section === "analysis_overview") {
++        const overview = asObj(requestState.analysis_overview);
++        const decision = normalizeDecisionUse(overview.decision_use);
++        const decisionComplete = ["problem_analysis","design_review","performance_validation"].includes(decision.primary_code) || (decision.primary_code === "other" && Boolean(decision.custom_text));
++        return Math.round(((isProvided(overview.request_description) ? 1 : 0) + (decisionComplete ? 1 : 0)) / 2 * 100);
++      }
+       if (section === "geometry") {
+         const g = asObj(requestState.geometry);
+         const comparisons = asArray(g.comparison_products);
+@@ -2953,6 +3129,8 @@ HTML_TEMPLATE = r"""<!doctype html>
+         if (quickAction) { runChatQuickAction(quickAction.dataset.chatQuickAction || "").catch(err => pushMessage("assistant", `빠른 실행 실패: ${err.message}`)); return; }
+         const rec = event.target.closest("button[data-recommend-choice]");
+         if (rec) { selectAnalysisType(rec.dataset.recommendChoice).catch(err => pushMessage("assistant", `추천 선택 실패: ${err.message}`)); return; }
++        const screenAction = event.target.closest("button[data-screen-action]");
++        if (screenAction) { navigateScreen(screenAction.dataset.screenAction || "SCREEN-01"); return; }
+         const stage = event.target.closest("button[data-scroll-target]");
+         if (stage) { navigateProgressStage(stage); return; }
+         const screen = event.target.closest(".screen-map-item[data-screen]");
+@@ -3010,6 +3188,7 @@ HTML_TEMPLATE = r"""<!doctype html>
+         else if (event.target.matches("#quickProductGroupSelect")) updateRequestContextDraft("product_group", event.target.value);
+         else if (event.target.matches("#quickPlatformSelect")) updateRequestContextDraft("platform", event.target.value);
+         else if (event.target.matches("#quickAnalysisTypeSelect")) updateRequestContextDraft("analysis_type", event.target.value);
++        else if (event.target.matches('input[name="decision_use"]')) { renderDecisionUseAuxiliary(event.target.value); schedulePreviewRefresh(); }
+         else if (event.target.matches("select[data-dropdown-path]")) handleDropdownChange(event.target);
+         else if (event.target.matches("select[data-condition-select]")) handleConditionSelectChange(event.target);
+         else if (event.target.matches("select[data-case-field]")) refreshPreview();
+diff --git a/request_ai_agent_h6_v0/validator.py b/request_ai_agent_h6_v0/validator.py
+index 96283fb..bfc0895 100644
+--- a/request_ai_agent_h6_v0/validator.py
++++ b/request_ai_agent_h6_v0/validator.py
+@@ -20,7 +20,7 @@ from .constants import (
+ )
+ from .geometry_engine import state_with_geometry_axis
+ from .schema import ANALYSIS_OVERVIEW_SPECS, BASIC_INFO_SPECS, FieldSpec
+-from .state import field_value, sanitize_state
++from .state import decision_use_is_complete, field_value, normalize_decision_use_field, sanitize_state
+ 
+ 
+ ValidationResult = dict[str, Any]
+@@ -185,6 +185,28 @@ def _validate_required_field_section(
+         if not spec.required:
+             continue
+         field = section.get(spec.key)
++        if section_key == SECTION_ANALYSIS_OVERVIEW and spec.key == "decision_use":
++            if decision_use_is_complete(field):
++                continue
++            decision = normalize_decision_use_field(field)
++            primary_code = decision["value"]["primary_code"]
++            message = "Select a primary result-use purpose."
++            if primary_code == "other":
++                message = "Provide the custom result-use purpose for 기타."
++            elif primary_code == "undecided":
++                message = "Confirm the primary result-use purpose before submission."
++            _add_issue(
++                result,
++                SEVERITY_BLOCKING,
++                code=f"{section_key}.{spec.key}.required_missing",
++                section=section_key,
++                path=f"{section_key}.{spec.key}",
++                field_key=spec.key,
++                field_label=spec.label,
++                message=message,
++                action="Select one result-use purpose and complete 기타 when selected.",
++            )
++            continue
+         if _field_is_provided(field):
+             continue
+         code = f"{section_key}.{spec.key}.required_missing"

@@ -1,0 +1,3433 @@
+{
+  "taxonomy_version": "2026-08-23",
+  "source": "총조립도 분류체계.xlsx",
+  "row_count": 251,
+  "variant_count": 72,
+  "division_counts": {
+    "Air Care": 23,
+    "Chiller": 2,
+    "RAC": 43,
+    "SAC": 183
+  },
+  "division_rules": {
+    "SAC": {
+      "platform_selection_mode": "catalog"
+    },
+    "RAC": {
+      "platform_selection_mode": "derived_from_product_lineup"
+    },
+    "Air Care": {
+      "platform_selection_mode": "derived_from_product_lineup"
+    },
+    "Chiller": {
+      "platform_selection_mode": "catalog"
+    }
+  },
+  "paths": [
+    {
+      "taxonomy_id": "PTX-6ECF24A1F046",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Circulator",
+      "platform": "Air Circulator",
+      "chassis": "Aero Tower",
+      "display_path": "Air Care > Air Circulator > Air Circulator > Aero Tower",
+      "variants": [
+        {
+          "variant_id": "PVX-1C68861395D7",
+          "label": "Heater"
+        }
+      ],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-19A166E309E7",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Circulator",
+      "platform": "Air Circulator",
+      "chassis": "Ceiling Fan(Santorini)",
+      "display_path": "Air Care > Air Circulator > Air Circulator > Ceiling Fan(Santorini)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-EEE2C11B8B82",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Aero Booster(GP1)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Aero Booster(GP1)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7F894E5BB48D",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Aero Furniture(F2)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Aero Furniture(F2)",
+      "variants": [
+        {
+          "variant_id": "PVX-C44DDF986571",
+          "label": "Round"
+        },
+        {
+          "variant_id": "PVX-A980338165E0",
+          "label": "Track"
+        }
+      ],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3BC243025D0F",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc B",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc B",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E61B351217B8",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc D(1st)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc D(1st)",
+      "variants": [
+        {
+          "variant_id": "PVX-7C20F7E9C5C2",
+          "label": "1 Tier"
+        },
+        {
+          "variant_id": "PVX-A10E04DC6BB0",
+          "label": "1 Tier+Booster"
+        },
+        {
+          "variant_id": "PVX-8F01D53CB556",
+          "label": "2 Tiers"
+        },
+        {
+          "variant_id": "PVX-D3EB17942100",
+          "label": "2 Tiers+Booster"
+        }
+      ],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-051F207A0CDE",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc D(2nd)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc D(2nd)",
+      "variants": [
+        {
+          "variant_id": "PVX-3E29145F8DDF",
+          "label": "1 Tier"
+        },
+        {
+          "variant_id": "PVX-EAD41228721A",
+          "label": "1 Tier+Booster"
+        },
+        {
+          "variant_id": "PVX-5F02B35697FD",
+          "label": "2 Tiers"
+        },
+        {
+          "variant_id": "PVX-BFCB89E6FCB8",
+          "label": "2 Tiers+Booster"
+        }
+      ],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-6BF0A7CF3BEE",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc M(1st)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc M(1st)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C49FBA47FB39",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc M(2nd)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc M(2nd)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B6DF4FF5FE45",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc P",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc P",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9B49AA372072",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc S",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc S",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-09E7A0CE1794",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc T",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc T",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-ED6320D1EDB1",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc W",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc W",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-80657B15D832",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Montblanc W2",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Montblanc W2",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B67B4C0EC1D0",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Cleaner",
+      "platform": "Air Cleaner",
+      "chassis": "Signature(G+)",
+      "display_path": "Air Care > Air Cleaner > Air Cleaner > Signature(G+)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F31AECA863B1",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Washer",
+      "platform": "Air Washer",
+      "chassis": "Aero Moisture",
+      "display_path": "Air Care > Air Washer > Air Washer > Aero Moisture",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C8E898A4129A",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Washer",
+      "platform": "Air Washer",
+      "chassis": "Hydro Tower",
+      "display_path": "Air Care > Air Washer > Air Washer > Hydro Tower",
+      "variants": [
+        {
+          "variant_id": "PVX-C136E2998467",
+          "label": "Essential"
+        }
+      ],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-5F84632FAA65",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Washer",
+      "platform": "Air Washer",
+      "chassis": "Nile",
+      "display_path": "Air Care > Air Washer > Air Washer > Nile",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2B7A0FC99223",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Air Washer",
+      "platform": "Air Washer",
+      "chassis": "Roly Poly",
+      "display_path": "Air Care > Air Washer > Air Washer > Roly Poly",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-715B1AE73C6A",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Dehumidifier",
+      "platform": "Dehumidifier",
+      "chassis": "Kalahari Grande(DHL)",
+      "display_path": "Air Care > Dehumidifier > Dehumidifier > Kalahari Grande(DHL)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-53978CDEDA66",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Dehumidifier",
+      "platform": "Dehumidifier",
+      "chassis": "Kalahari Inverter(DHK)",
+      "display_path": "Air Care > Dehumidifier > Dehumidifier > Kalahari Inverter(DHK)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-55DAEC71D1BC",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Dehumidifier",
+      "platform": "Dehumidifier",
+      "chassis": "Mojave(DHM)",
+      "display_path": "Air Care > Dehumidifier > Dehumidifier > Mojave(DHM)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8F68F203404E",
+      "division_code": "AIR_CARE",
+      "division": "Air Care",
+      "product_lineup": "Dehumidifier",
+      "platform": "Dehumidifier",
+      "chassis": "Sahara(DHS)",
+      "display_path": "Air Care > Dehumidifier > Dehumidifier > Sahara(DHS)",
+      "variants": [],
+      "aliases": [
+        "Aircare",
+        "에어케어"
+      ],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-4A38E4B9B903",
+      "division_code": "CHILLER",
+      "division": "Chiller",
+      "product_lineup": "Screw",
+      "platform": "Air Cooled",
+      "chassis": null,
+      "display_path": "Chiller > Screw > Air Cooled > null",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-17D62FF74046",
+      "division_code": "CHILLER",
+      "division": "Chiller",
+      "product_lineup": "Screw",
+      "platform": "Water Cooled",
+      "chassis": null,
+      "display_path": "Chiller > Screw > Water Cooled > null",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CF9845A7A130",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Crown(PH)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Crown(PH)",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F8D83EBA80F4",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Dual(PM)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Dual(PM)",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F35B27A475D1",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Khan(PN)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Khan(PN)",
+      "variants": [
+        {
+          "variant_id": "PVX-5B994AC1FAD7",
+          "label": "PN2"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-72E8B791112E",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Next Winner(PL)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Next Winner(PL)",
+      "variants": [
+        {
+          "variant_id": "PVX-5AF6BC66527E",
+          "label": "PL2"
+        },
+        {
+          "variant_id": "PVX-C11761C0EED8",
+          "label": "PL3"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D01105E01624",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Signature(PP)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Signature(PP)",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E1BE549E83E1",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Floor Standing",
+      "platform": "Floor Standing",
+      "chassis": "Wind Flex(PQ)",
+      "display_path": "RAC > Floor Standing > Floor Standing > Wind Flex(PQ)",
+      "variants": [
+        {
+          "variant_id": "PVX-F61BD5B27713",
+          "label": "2nd Generation"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-5CAC06589FFC",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "U06A",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > U06A",
+      "variants": [
+        {
+          "variant_id": "PVX-83C196B92425",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A8628DE2B181",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "U12A",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > U12A",
+      "variants": [
+        {
+          "variant_id": "PVX-504366C4FC8C",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7370C6C0F8AD",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "U18A",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > U18A",
+      "variants": [
+        {
+          "variant_id": "PVX-61EFCED28923",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-765856B511FE",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "U24A",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > U24A",
+      "variants": [
+        {
+          "variant_id": "PVX-9393B319C6DB",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-275E75318D76",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "U36A",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > U36A",
+      "variants": [
+        {
+          "variant_id": "PVX-D154A9EBC979",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A19A5FD518AF",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "UE",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > UE",
+      "variants": [
+        {
+          "variant_id": "PVX-6FAD852B46F1",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-97F48DAE3FA9",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Out Door Unit",
+      "platform": "Out Door Unit",
+      "chassis": "UE1+(U30A)",
+      "display_path": "RAC > Out Door Unit > Out Door Unit > UE1+(U30A)",
+      "variants": [
+        {
+          "variant_id": "PVX-C497EAC7AFA8",
+          "label": "H/Pump"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C10DF32EA2CC",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "PTAC",
+      "platform": "PTAC",
+      "chassis": "YA",
+      "display_path": "RAC > PTAC > PTAC > YA",
+      "variants": [
+        {
+          "variant_id": "PVX-2CAB394524F1",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8F55F51E2DDD",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Portable",
+      "platform": "Portable",
+      "chassis": "PA",
+      "display_path": "RAC > Portable > Portable > PA",
+      "variants": [
+        {
+          "variant_id": "PVX-16B64B557432",
+          "label": "Dual Duct"
+        },
+        {
+          "variant_id": "PVX-18407BB06B3D",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0B8A62524AF1",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Portable",
+      "platform": "Portable",
+      "chassis": "PB",
+      "display_path": "RAC > Portable > Portable > PB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-6E9038ED9760",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Through The Wall",
+      "platform": "Through The Wall",
+      "chassis": "XB",
+      "display_path": "RAC > Through The Wall > Through The Wall > XB",
+      "variants": [
+        {
+          "variant_id": "PVX-CD283524D1F3",
+          "label": "Friedrich"
+        },
+        {
+          "variant_id": "PVX-A2C500A94693",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-60D1D2B3BF69",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "S0",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > S0",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B12FF60B2632",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "S1",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > S1",
+      "variants": [
+        {
+          "variant_id": "PVX-7385FCEBD97B",
+          "label": "Artcool"
+        },
+        {
+          "variant_id": "PVX-57F3F792153A",
+          "label": "E"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-BD041DF48D22",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "S2",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > S2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7E1E7015636B",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "S5",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > S5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B35A26BBDCEF",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SA",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SA",
+      "variants": [
+        {
+          "variant_id": "PVX-225E851F67E9",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-5D30C8E402D6",
+          "label": "R"
+        },
+        {
+          "variant_id": "PVX-B65C9111EE0D",
+          "label": "Semi-R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E06563B31E59",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SE",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SE",
+      "variants": [
+        {
+          "variant_id": "PVX-323FECC1906F",
+          "label": "Artcool"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9A83B59D83E2",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SF",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CD3FF9E63A93",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SJ",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SJ",
+      "variants": [
+        {
+          "variant_id": "PVX-17CE38637206",
+          "label": "Artcool"
+        },
+        {
+          "variant_id": "PVX-05DF022AFA2C",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-D7E528FBFB72",
+          "label": "R"
+        },
+        {
+          "variant_id": "PVX-37B6EAA77B5C",
+          "label": "Semi R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-ADA7A057CA62",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SK",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SK",
+      "variants": [
+        {
+          "variant_id": "PVX-51316BEF8362",
+          "label": "Artcool"
+        },
+        {
+          "variant_id": "PVX-D1F8CAC0BB43",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-54F702392160",
+          "label": "R"
+        },
+        {
+          "variant_id": "PVX-C90028AE2F30",
+          "label": "Semi R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-99092D4E9C40",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SL",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SL",
+      "variants": [
+        {
+          "variant_id": "PVX-916116CEC028",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-18BC7A2B959A",
+          "label": "R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0D6F98631049",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SR",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SR",
+      "variants": [
+        {
+          "variant_id": "PVX-C0C88415D2DD",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-CC84674401FC",
+          "label": "R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1229FC42475A",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SV",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SV",
+      "variants": [
+        {
+          "variant_id": "PVX-227501901262",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-2BDE2F199B23",
+          "label": "R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1ABFE9768111",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "SW",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > SW",
+      "variants": [
+        {
+          "variant_id": "PVX-A254A9ABFAC6",
+          "label": "A"
+        },
+        {
+          "variant_id": "PVX-0822AEB504BE",
+          "label": "E"
+        },
+        {
+          "variant_id": "PVX-31C8D72DFD30",
+          "label": "R"
+        },
+        {
+          "variant_id": "PVX-693074571A6E",
+          "label": "Semi R"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A7966FEF2060",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Wall Mounted",
+      "platform": "Wall Mounted",
+      "chassis": "Signature(S7)",
+      "display_path": "RAC > Wall Mounted > Wall Mounted > Signature(S7)",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-DB746311327F",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Water Heater",
+      "platform": "Water Heater",
+      "chassis": "RF",
+      "display_path": "RAC > Water Heater > Water Heater > RF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8BBE7420382B",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "W1",
+      "display_path": "RAC > Window > Window > W1",
+      "variants": [
+        {
+          "variant_id": "PVX-9A823E676DE3",
+          "label": "C(Grille)"
+        },
+        {
+          "variant_id": "PVX-B3279955865E",
+          "label": "F(Dot)"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CCB6CB1FDE46",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "W2",
+      "display_path": "RAC > Window > Window > W2",
+      "variants": [
+        {
+          "variant_id": "PVX-D7550A65A39A",
+          "label": "C(Grille)"
+        },
+        {
+          "variant_id": "PVX-3369C1699A5A",
+          "label": "F(Dot)"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B517212E640F",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WB",
+      "display_path": "RAC > Window > Window > WB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-ACFA116E743F",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WC",
+      "display_path": "RAC > Window > Window > WC",
+      "variants": [
+        {
+          "variant_id": "PVX-F9B125FB2B6F",
+          "label": "Friedrich"
+        },
+        {
+          "variant_id": "PVX-7541EA48C5CA",
+          "label": "H/Pump"
+        },
+        {
+          "variant_id": "PVX-CAA032BE3CEF",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0EF64A9AD333",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WG",
+      "display_path": "RAC > Window > Window > WG",
+      "variants": [
+        {
+          "variant_id": "PVX-05F86B8C9EFD",
+          "label": "Friedrich"
+        },
+        {
+          "variant_id": "PVX-F9AA8A22DF04",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-21281930AF1C",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WL",
+      "display_path": "RAC > Window > Window > WL",
+      "variants": [
+        {
+          "variant_id": "PVX-44181D3AA14C",
+          "label": "Inverter"
+        },
+        {
+          "variant_id": "PVX-10EE190EC9EF",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8EA6F3531131",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WN",
+      "display_path": "RAC > Window > Window > WN",
+      "variants": [
+        {
+          "variant_id": "PVX-2150E90981B4",
+          "label": "C"
+        },
+        {
+          "variant_id": "PVX-23075342102C",
+          "label": "Friedrich"
+        },
+        {
+          "variant_id": "PVX-47BBCBCCDD37",
+          "label": "H/Pump"
+        },
+        {
+          "variant_id": "PVX-F440915F13FB",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CC6886D145CA",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WS",
+      "display_path": "RAC > Window > Window > WS",
+      "variants": [
+        {
+          "variant_id": "PVX-E088BBC879D7",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-21F8C0881272",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WT",
+      "display_path": "RAC > Window > Window > WT",
+      "variants": [
+        {
+          "variant_id": "PVX-7138D48A1152",
+          "label": "Inverter"
+        },
+        {
+          "variant_id": "PVX-AED67904D02B",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7883D7703C9F",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WU",
+      "display_path": "RAC > Window > Window > WU",
+      "variants": [
+        {
+          "variant_id": "PVX-326AEC846F08",
+          "label": "Inverter"
+        },
+        {
+          "variant_id": "PVX-0B0829620275",
+          "label": "LG"
+        }
+      ],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C7AFEB9248AB",
+      "division_code": "RAC",
+      "division": "RAC",
+      "product_lineup": "Window",
+      "platform": "Window",
+      "chassis": "WX",
+      "display_path": "RAC > Window > Window > WX",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B564D2A910AC",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "DOAS",
+      "chassis": "DB",
+      "display_path": "SAC > Applied > DOAS > DB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-BC3EFB1604B2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "DOAS",
+      "chassis": "DD(RTU)",
+      "display_path": "SAC > Applied > DOAS > DD(RTU)",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-906F2CEDDB97",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "DOAS",
+      "chassis": "M3",
+      "display_path": "SAC > Applied > DOAS > M3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-36C0240EF978",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "DUCT(Applied)",
+      "chassis": "L3",
+      "display_path": "SAC > Applied > DUCT(Applied) > L3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-781CEF39870D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "DUCT(Applied)",
+      "chassis": "M1",
+      "display_path": "SAC > Applied > DUCT(Applied) > M1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-111132D06383",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "KB",
+      "display_path": "SAC > Applied > SPK > KB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D3607F2FBB83",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "KC",
+      "display_path": "SAC > Applied > SPK > KC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2D5A315CF893",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "KD",
+      "display_path": "SAC > Applied > SPK > KD",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-542831F7A561",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "KE",
+      "display_path": "SAC > Applied > SPK > KE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AECCD033E7A4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "SP05",
+      "display_path": "SAC > Applied > SPK > SP05",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-667ECA617AE4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "SP10",
+      "display_path": "SAC > Applied > SPK > SP10",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7F781A607ADD",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "SPK",
+      "chassis": "SP15",
+      "display_path": "SAC > Applied > SPK > SP15",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2DEEACAD8DB5",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "STANDARD AHU",
+      "chassis": "AH10",
+      "display_path": "SAC > Applied > STANDARD AHU > AH10",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-929E7B08B225",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "STANDARD AHU",
+      "chassis": "AH15",
+      "display_path": "SAC > Applied > STANDARD AHU > AH15",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-4EF2FA843DD6",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "STANDARD AHU",
+      "chassis": "AH20",
+      "display_path": "SAC > Applied > STANDARD AHU > AH20",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C02C0450FD8F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "STANDARD AHU",
+      "chassis": "AH7.5",
+      "display_path": "SAC > Applied > STANDARD AHU > AH7.5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B3638622D417",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZA",
+      "display_path": "SAC > Applied > Ventilation > ZA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-64B846AFFB1D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZB",
+      "display_path": "SAC > Applied > Ventilation > ZB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-BE32D21039B1",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZB1",
+      "display_path": "SAC > Applied > Ventilation > ZB1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8860839EB4E2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZB3",
+      "display_path": "SAC > Applied > Ventilation > ZB3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-783BF5CEDBC2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZC05",
+      "display_path": "SAC > Applied > Ventilation > ZC05",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-40668CCAA58E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZC10",
+      "display_path": "SAC > Applied > Ventilation > ZC10",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-6E51167C4844",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZD",
+      "display_path": "SAC > Applied > Ventilation > ZD",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-46E2D060964F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZE",
+      "display_path": "SAC > Applied > Ventilation > ZE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2EE668CCE31F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZE2",
+      "display_path": "SAC > Applied > Ventilation > ZE2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-188F1EEB46F5",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZF",
+      "display_path": "SAC > Applied > Ventilation > ZF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C81118783FFA",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZF2",
+      "display_path": "SAC > Applied > Ventilation > ZF2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-55F4B445043F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZG",
+      "display_path": "SAC > Applied > Ventilation > ZG",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FF895EADF32B",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZR01A",
+      "display_path": "SAC > Applied > Ventilation > ZR01A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3F417FB3A60B",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZR1",
+      "display_path": "SAC > Applied > Ventilation > ZR1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-ABA395802476",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZV",
+      "display_path": "SAC > Applied > Ventilation > ZV",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C59D08012CF2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Applied",
+      "platform": "Ventilation",
+      "chassis": "ZX10",
+      "display_path": "SAC > Applied > Ventilation > ZX10",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FE42671AC14C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "GHP",
+      "platform": "Top Discharge(GHP)",
+      "chassis": "UPC",
+      "display_path": "SAC > GHP > Top Discharge(GHP) > UPC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FF1E1915E1A4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "U24A",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > U24A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C6C13D6F0B31",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "U36A",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > U36A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9BF8576EECBF",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "U60A",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > U60A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FA241EB47DF5",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "UN36A",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > UN36A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-80252E77485C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "UN36B",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > UN36B",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F1C965C29620",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "UN60A",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > UN60A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-688FD7F86515",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Side Discharge(Heating)",
+      "chassis": "UN60B",
+      "display_path": "SAC > Heating > Side Discharge(Heating) > UN60B",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-628BFB188329",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Split",
+      "chassis": "K1",
+      "display_path": "SAC > Heating > Split > K1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-82C437EA5493",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Split",
+      "chassis": "K3",
+      "display_path": "SAC > Heating > Split > K3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F80477A228BD",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "System Boiler(Heating)",
+      "chassis": "K2",
+      "display_path": "SAC > Heating > System Boiler(Heating) > K2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0EA772323519",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Water heater",
+      "chassis": "K5",
+      "display_path": "SAC > Heating > Water heater > K5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-38E86DD3CBB7",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Heating",
+      "platform": "Water heater",
+      "chassis": "RF",
+      "display_path": "SAC > Heating > Water heater > RF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D67D2B6E0D81",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "AHU(Multi)",
+      "chassis": "15RT",
+      "display_path": "SAC > Multi > AHU(Multi) > 15RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-BFA0F71F5994",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TC",
+      "display_path": "SAC > Multi > CST(Multi) > TC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-EC59A829CEEC",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TG",
+      "display_path": "SAC > Multi > CST(Multi) > TG",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B9F8BD2489F3",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TM",
+      "display_path": "SAC > Multi > CST(Multi) > TM",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9C7134020BC6",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TN",
+      "display_path": "SAC > Multi > CST(Multi) > TN",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C911F8BF1799",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TP",
+      "display_path": "SAC > Multi > CST(Multi) > TP",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-5E815D2C9CF4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TQ",
+      "display_path": "SAC > Multi > CST(Multi) > TQ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E8F1956F8076",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TR",
+      "display_path": "SAC > Multi > CST(Multi) > TR",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-517C2C552882",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TT",
+      "display_path": "SAC > Multi > CST(Multi) > TT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-87FFFDDE257E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "CST(Multi)",
+      "chassis": "TU",
+      "display_path": "SAC > Multi > CST(Multi) > TU",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D0E0E666FCE1",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Commercial Stand(Multi)",
+      "chassis": "PM",
+      "display_path": "SAC > Multi > Commercial Stand(Multi) > PM",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C809B8D0A19C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "B9",
+      "display_path": "SAC > Multi > Duct(Multi) > B9",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-82AA8DA9FA2F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "L1",
+      "display_path": "SAC > Multi > Duct(Multi) > L1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-94658BBC4BE7",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "L2",
+      "display_path": "SAC > Multi > Duct(Multi) > L2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B1CC71446469",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "L3",
+      "display_path": "SAC > Multi > Duct(Multi) > L3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-717BBF3AE5F5",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "L5",
+      "display_path": "SAC > Multi > Duct(Multi) > L5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-22B27B4FD58C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "L6",
+      "display_path": "SAC > Multi > Duct(Multi) > L6",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-45537080085F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "M1",
+      "display_path": "SAC > Multi > Duct(Multi) > M1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-71B0B73FA161",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "M1A",
+      "display_path": "SAC > Multi > Duct(Multi) > M1A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-66BDF4DBA75A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "M2",
+      "display_path": "SAC > Multi > Duct(Multi) > M2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1D6ADF94645A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Duct(Multi)",
+      "chassis": "M3",
+      "display_path": "SAC > Multi > Duct(Multi) > M3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9B4680BBBE4B",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U18A",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U18A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-787853B48343",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U24A",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U24A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C35D39B38807",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U36A",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U36A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-172E25C410E8",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U5",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F04A457FD89D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U60A",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U60A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1B095AE717B9",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "U80A",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > U80A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E04C94B9F483",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Side Discharge(Multi)",
+      "chassis": "UE",
+      "display_path": "SAC > Multi > Side Discharge(Multi) > UE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1C540A2AE40B",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "V.AHU",
+      "chassis": "NJ",
+      "display_path": "SAC > Multi > V.AHU > NJ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AFA26EE403DB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "V.AHU",
+      "chassis": "NK",
+      "display_path": "SAC > Multi > V.AHU > NK",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-48261CCD5434",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "Artcool",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > Artcool",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3D4D09C06663",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "S0",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > S0",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9BFFE25AF3BB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "S1",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > S1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-37AB8CBF3D54",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "SA",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > SA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8976A0CE1346",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "SF",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > SF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AF3B93D8FBC4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "SJ",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > SJ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CA1B1FDAED7C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "SK",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > SK",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CAB12F8430E8",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi",
+      "platform": "Wall Mounted(Multi)",
+      "chassis": "STD+",
+      "display_path": "SAC > Multi > Wall Mounted(Multi) > STD+",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F1E183635EBC",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "AHU",
+      "chassis": "10RT",
+      "display_path": "SAC > Multi V > AHU > 10RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-18C440B1498D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "AHU",
+      "chassis": "15RT",
+      "display_path": "SAC > Multi V > AHU > 15RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-ED99DC610EAB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "AHU",
+      "chassis": "20RT",
+      "display_path": "SAC > Multi V > AHU > 20RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2C98DC3CF482",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "AHU",
+      "chassis": "7.5RT",
+      "display_path": "SAC > Multi V > AHU > 7.5RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-51E387E37A5E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TA",
+      "display_path": "SAC > Multi V > CST(Multi V) > TA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-27D969910DC1",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TG",
+      "display_path": "SAC > Multi V > CST(Multi V) > TG",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-94709AFD6ACA",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TQ",
+      "display_path": "SAC > Multi V > CST(Multi V) > TQ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-944314D5B171",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TR",
+      "display_path": "SAC > Multi V > CST(Multi V) > TR",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A1B75D0F3F3B",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TS",
+      "display_path": "SAC > Multi V > CST(Multi V) > TS",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C158A289B39E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TT",
+      "display_path": "SAC > Multi V > CST(Multi V) > TT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-02FB467F584A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TU",
+      "display_path": "SAC > Multi V > CST(Multi V) > TU",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A1A6FB9BEDD6",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CST(Multi V)",
+      "chassis": "TY",
+      "display_path": "SAC > Multi V > CST(Multi V) > TY",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E881D1AD290A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CVT(Multi V)",
+      "chassis": "VM1",
+      "display_path": "SAC > Multi V > CVT(Multi V) > VM1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3ED43EC83971",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "CVT(Multi V)",
+      "chassis": "VM2",
+      "display_path": "SAC > Multi V > CVT(Multi V) > VM2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-54419B88F831",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Console",
+      "chassis": "QA",
+      "display_path": "SAC > Multi V > Console > QA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-30DB1FFC40F0",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "B8",
+      "display_path": "SAC > Multi V > Duct(Multi V) > B8",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-705A9C879F0C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "BH",
+      "display_path": "SAC > Multi V > Duct(Multi V) > BH",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CE06D56FDA96",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "L1",
+      "display_path": "SAC > Multi V > Duct(Multi V) > L1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A0065C3671FF",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "L2",
+      "display_path": "SAC > Multi V > Duct(Multi V) > L2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F58D377387EC",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "L3",
+      "display_path": "SAC > Multi V > Duct(Multi V) > L3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AA8F859EF65E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "L4",
+      "display_path": "SAC > Multi V > Duct(Multi V) > L4",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-DD3D74C8E250",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "M1",
+      "display_path": "SAC > Multi V > Duct(Multi V) > M1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AAB87D493123",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "M2",
+      "display_path": "SAC > Multi V > Duct(Multi V) > M2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-80F50336CB0D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "M3",
+      "display_path": "SAC > Multi V > Duct(Multi V) > M3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FA019A2DFD07",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "NA",
+      "display_path": "SAC > Multi V > Duct(Multi V) > NA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0875A478F6C7",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "NB",
+      "display_path": "SAC > Multi V > Duct(Multi V) > NB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3FC5F7D523DB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Duct(Multi V)",
+      "chassis": "NC",
+      "display_path": "SAC > Multi V > Duct(Multi V) > NC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-25F4AC3776FF",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Floor Stand",
+      "chassis": "CE",
+      "display_path": "SAC > Multi V > Floor Stand > CE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-77F694523193",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Floor Stand",
+      "chassis": "CF",
+      "display_path": "SAC > Multi V > Floor Stand > CF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B9967375299A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "HR Unit",
+      "chassis": "HR",
+      "display_path": "SAC > Multi V > HR Unit > HR",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1CD493CFE909",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Multi V Water",
+      "chassis": "UWB",
+      "display_path": "SAC > Multi V > Multi V Water > UWB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E5CE588F2A4C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Multi V Water",
+      "chassis": "UWC",
+      "display_path": "SAC > Multi V > Multi V Water > UWC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3F8311771262",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U24A",
+      "display_path": "SAC > Multi V > Side Discharge > U24A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-740EC3A13436",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U3",
+      "display_path": "SAC > Multi V > Side Discharge > U3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C52F5A8766DB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U30A",
+      "display_path": "SAC > Multi V > Side Discharge > U30A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B1DE3AACAD1C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U36A",
+      "display_path": "SAC > Multi V > Side Discharge > U36A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D2B536CEAF0C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U4",
+      "display_path": "SAC > Multi V > Side Discharge > U4",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F625E9CB471C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U5",
+      "display_path": "SAC > Multi V > Side Discharge > U5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8411CCB95B0E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U60A",
+      "display_path": "SAC > Multi V > Side Discharge > U60A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-FAACE6DF316E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U7",
+      "display_path": "SAC > Multi V > Side Discharge > U7",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-BF981F6F01D0",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Side Discharge",
+      "chassis": "U80A",
+      "display_path": "SAC > Multi V > Side Discharge > U80A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-77EBB990D570",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "System Boiler(Multi V)",
+      "chassis": "K3",
+      "display_path": "SAC > Multi V > System Boiler(Multi V) > K3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-4FCD9554399C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "System Boiler(Multi V)",
+      "chassis": "K5",
+      "display_path": "SAC > Multi V > System Boiler(Multi V) > K5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-829F943BC483",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UX2",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UX2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E6657BE474A2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UX5",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UX5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F83F9DCD2662",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UX6",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UX6",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AB1779FA679D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UXA",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UXA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7E30F6670080",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UXB",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UXB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-32F3AE939272",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Top Discharge(Multi V)",
+      "chassis": "UXC",
+      "display_path": "SAC > Multi V > Top Discharge(Multi V) > UXC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E0324091A3C6",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "V-AHU",
+      "chassis": "NJ",
+      "display_path": "SAC > Multi V > V-AHU > NJ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-E514F3DC9053",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Wall Mounted(Multi V)",
+      "chassis": "SJ",
+      "display_path": "SAC > Multi V > Wall Mounted(Multi V) > SJ",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-24481E0A55E9",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Wall Mounted(Multi V)",
+      "chassis": "SK",
+      "display_path": "SAC > Multi V > Wall Mounted(Multi V) > SK",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-2DC3F3DC7E07",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Multi V",
+      "platform": "Wall Mounted(Multi V)",
+      "chassis": "SR",
+      "display_path": "SAC > Multi V > Wall Mounted(Multi V) > SR",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-034EF5E2CBEF",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "BG GGBD",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > BG GGBD",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-13E3CDE98D87",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "BR GGBD",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > BR GGBD",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-9C2099454299",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TM",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TM",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-475AC5BC6624",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TM-A",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TM-A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-98047B520DA4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TN",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TN",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-79FAD5F134F3",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TP",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TP",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0DF1F9BB0365",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TP-B",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TP-B",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A72473E25FDE",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TT",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-5660A42382B7",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TU",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TU",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-78B72DE7649D",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CST(Single CAC)",
+      "chassis": "TY",
+      "display_path": "SAC > Single CAC > CST(Single CAC) > TY",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-AD189CA14DD8",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CVT",
+      "chassis": "VE",
+      "display_path": "SAC > Single CAC > CVT > VE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-432DCDDB3B2C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CVT",
+      "chassis": "VM1",
+      "display_path": "SAC > Single CAC > CVT > VM1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-DC946DF55241",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "CVT",
+      "chassis": "VM2",
+      "display_path": "SAC > Single CAC > CVT > VM2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-20B0C2928B69",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "P80A",
+      "display_path": "SAC > Single CAC > Commercial Stand > P80A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8A5E47B6C721",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PF",
+      "display_path": "SAC > Single CAC > Commercial Stand > PF",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-63E83D5794A6",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PF2",
+      "display_path": "SAC > Single CAC > Commercial Stand > PF2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CD17D8C789E2",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PN",
+      "display_path": "SAC > Single CAC > Commercial Stand > PN",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D8A4DECF73ED",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PR4",
+      "display_path": "SAC > Single CAC > Commercial Stand > PR4",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-548CA57EFC79",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PR5",
+      "display_path": "SAC > Single CAC > Commercial Stand > PR5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C5F39342492E",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PS1",
+      "display_path": "SAC > Single CAC > Commercial Stand > PS1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A20201C9A501",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PT2",
+      "display_path": "SAC > Single CAC > Commercial Stand > PT2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C9FE9E504563",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Commercial Stand",
+      "chassis": "PT3",
+      "display_path": "SAC > Single CAC > Commercial Stand > PT3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-370E27950666",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "B7",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > B7",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3E9907928E55",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "B8",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > B8",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-84ACF2267A87",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "M1",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > M1",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-496B6A737A04",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "M2",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > M2",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A05642447DE4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "M3",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > M3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-5AB38DD56B64",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "MA",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > MA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-DC6E870926D8",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "NA",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > NA",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-D4D329C9B0CD",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "NB",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > NB",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-F27C0836291A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Duct(Single CAC)",
+      "chassis": "NC",
+      "display_path": "SAC > Single CAC > Duct(Single CAC) > NC",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-3091EC462803",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U12A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U12A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-A659D7C53EDB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U18A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U18A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-501C27458446",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U24A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U24A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-0B74E95D31DC",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U3",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U3",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-CD3B1C9C0BF9",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U36A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U36A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-044F131D67F8",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U4",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U4",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-46462F7A55AB",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U48A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U48A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-B768803F8F8A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U5",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U5",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-7A42AB8081F1",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U60A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U60A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-6719CC425A26",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U7",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U7",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-8B6FE6F2B798",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "U80A",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > U80A",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-C2E11FD99E7A",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Side Discharge(Single CAC)",
+      "chassis": "UE",
+      "display_path": "SAC > Single CAC > Side Discharge(Single CAC) > UE",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-29E72756B98F",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Unitary",
+      "chassis": "10RT",
+      "display_path": "SAC > Single CAC > Unitary > 10RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-1CA7E4623974",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Unitary",
+      "chassis": "12.5RT",
+      "display_path": "SAC > Single CAC > Unitary > 12.5RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-41730474476C",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Unitary",
+      "chassis": "7.5RT",
+      "display_path": "SAC > Single CAC > Unitary > 7.5RT",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    },
+    {
+      "taxonomy_id": "PTX-437A2A291FB4",
+      "division_code": "SAC",
+      "division": "SAC",
+      "product_lineup": "Single CAC",
+      "platform": "Wall Mounted(Single CAC)",
+      "chassis": "SV",
+      "display_path": "SAC > Single CAC > Wall Mounted(Single CAC) > SV",
+      "variants": [],
+      "aliases": [],
+      "active": true
+    }
+  ]
+}

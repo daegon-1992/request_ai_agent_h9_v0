@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "policy_source": "user_request_2026-07-31",
+  "maximum": { "model": "gpt-5.6-terra", "reasoning": "high" },
+  "profiles": {
+    "TERRA_HIGH": { "model": "gpt-5.6-terra", "reasoning": "high", "enabled": true },
+    "TERRA_MEDIUM": { "model": "gpt-5.6-terra", "reasoning": "medium", "enabled": true },
+    "TERRA_LOW": { "model": "gpt-5.6-terra", "reasoning": "low", "enabled": true },
+    "LUNA_HIGH": { "model": "gpt-5.6-luna", "reasoning": "high", "enabled": false },
+    "LUNA_MEDIUM": { "model": "gpt-5.6-luna", "reasoning": "medium", "enabled": false },
+    "LUNA_LOW": { "model": "gpt-5.6-luna", "reasoning": "low", "enabled": false }
+  },
+  "luna": {
+    "enabled": false,
+    "reason": "Codex CLI 0.146.0-alpha.3 exposes no non-billing model availability command; Luna is disabled until an explicit model invocation reports it as available."
+  },
+  "stage_profile_order": {
+    "survey": ["TERRA_LOW", "LUNA_MEDIUM", "LUNA_LOW"],
+    "implementation": ["TERRA_MEDIUM", "TERRA_LOW", "LUNA_MEDIUM", "LUNA_LOW"],
+    "safety": ["TERRA_HIGH", "TERRA_MEDIUM", "TERRA_LOW", "LUNA_HIGH", "LUNA_MEDIUM"],
+    "reviewer": ["TERRA_MEDIUM", "TERRA_LOW", "LUNA_MEDIUM"],
+    "safety_reviewer": ["TERRA_HIGH", "TERRA_MEDIUM", "TERRA_LOW", "LUNA_HIGH", "LUNA_MEDIUM"],
+    "planner": ["TERRA_LOW", "LUNA_MEDIUM", "LUNA_LOW"],
+    "final_reviewer": ["TERRA_HIGH", "TERRA_MEDIUM", "LUNA_HIGH"]
+  },
+  "stage_classes": {
+    "survey": ["001", "002", "003", "004"],
+    "implementation": ["011", "014", "015", "018", "022", "023", "025", "027", "028", "029"],
+    "safety": ["005", "006", "007", "008", "009", "010", "012", "013", "016", "017", "019", "020", "021", "024", "026", "030", "031", "032"]
+  }
+}

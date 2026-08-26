@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "H5 Orchestrator Stage Review Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "stage_id",
+    "decision",
+    "completion_status",
+    "safe_to_continue",
+    "roadmap_update_required",
+    "next_stage_id",
+    "blocking_reasons",
+    "required_repairs",
+    "evidence"
+  ],
+  "properties": {
+    "stage_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["continue", "repair", "blocked", "complete"]
+    },
+    "completion_status": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "conditional_complete",
+        "partial",
+        "blocked",
+        "unverified"
+      ]
+    },
+    "safe_to_continue": {
+      "type": "boolean"
+    },
+    "roadmap_update_required": {
+      "type": "boolean"
+    },
+    "next_stage_id": {
+      "type": ["string", "null"]
+    },
+    "blocking_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_repairs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "safe_to_continue": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "complete"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "next_stage_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

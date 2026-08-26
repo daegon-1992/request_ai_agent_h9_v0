@@ -1,0 +1,15 @@
+# Install once when pre-commit is available: python -m pre_commit install
+# If it cannot be installed, run: python tools/check_encoding.py --changed
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      - id: check-encoding
+        name: check UTF-8 encoding
+        entry: python tools/check_encoding.py --changed
+        language: system
+        pass_filenames: false

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "roadmap_version": "0.1",
+  "runner_status": "not_built",
+  "execution_authorized": false,
+  "current_stage_id": "001",
+  "current_stage_status": "planned",
+  "last_safe_checkpoint": null,
+  "worker_run_id": null,
+  "reviewer_run_id": null,
+  "next_prompt_path": null,
+  "consecutive_failures": 0,
+  "repair_count_for_current_stage": 0,
+  "blocking_reason": null,
+  "updated_at": null
+}

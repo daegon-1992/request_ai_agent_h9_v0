@@ -1,0 +1,11 @@
+# Python-generated caches and bytecode
+__pycache__/
+*.py[cod]
+
+# Test-run cache
+.pytest_cache/
+
+# Local orchestration runtime artifacts
+docs/orchestrator_handoff/runs/
+docs/orchestrator_handoff/automation/automation_runner.lock
+docs/orchestrator_handoff/automation/automation_state.json
