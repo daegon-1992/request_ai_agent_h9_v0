@@ -13,7 +13,8 @@ def test_t204_case_impact_hook_is_client_side_and_preserves_case_rows():
     assert "function resetCaseImpactBaseline()" in ui
     assert "data-case-impact-status" in ui
     assert "classifyCaseImpact(collectState());" in ui
-    assert "window.setTimeout(() => refreshPreview(), 650);" in ui
+    assert "previewRefreshTimer = window.setTimeout(() => {" in ui
+    assert "refreshPreview(scheduledRevision);" in ui
     assert "Case 행은 자동으로 변경하지 않았습니다." in ui
     assert "새 소스가 추가되었거나 비참조 소스가 변경되었습니다. Case 행을 검토해 주세요." not in ui
     assert "if (caseImpactSideState.status === CASE_REBUILD_REQUIRED)" in ui

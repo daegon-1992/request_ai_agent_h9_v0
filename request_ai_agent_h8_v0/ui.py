@@ -1469,6 +1469,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     const excludedConditionKeys = new Set(["material_type", "pressure", "vane_or_louver", "filter_state"]);
     let requestState = {};
     let previewStateRevision = 0;
+    let previewRefreshTimer = null;
     let schema = {};
     let recommendMode = false;
     let activeTopTab = "write";
@@ -2158,6 +2159,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         return;
       }
       const data = await postJson("/api/request-context/confirm", {state:collectContextConfirmState(context), request_context:context});
+      invalidatePendingPreviewRefresh();
       adoptStateFromResponse(data);
       syncEditorFromState();
       navigateScreen("SCREEN-02");
@@ -3210,16 +3212,27 @@ HTML_TEMPLATE = r"""<!doctype html>
       }
     }
 
+    function invalidatePendingPreviewRefresh(){
+      previewStateRevision += 1;
+      if (previewRefreshTimer !== null) {
+        window.clearTimeout(previewRefreshTimer);
+        previewRefreshTimer = null;
+      }
+    }
+
     function schedulePreviewRefresh(){
       renderScreenNavigation();
       orchestratorPanelState.dirty = true;
       classifyCaseImpact(collectState());
-      previewStateRevision += 1;
-      window.setTimeout(() => refreshPreview(), 650);
+      invalidatePendingPreviewRefresh();
+      const scheduledRevision = previewStateRevision;
+      previewRefreshTimer = window.setTimeout(() => {
+        previewRefreshTimer = null;
+        refreshPreview(scheduledRevision);
+      }, 650);
     }
 
-    async function refreshPreview(){
-      const requestedRevision = previewStateRevision;
+    async function refreshPreview(requestedRevision=previewStateRevision){
       const data = await postState("/api/preview");
       if (requestedRevision !== previewStateRevision) return false;
       const previousConditionIdentity = conditionCardIdentity();

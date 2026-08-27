@@ -99,13 +99,90 @@ def test_case_matrix_uses_live_values_after_any_condition_row_is_removed():
 
 
 def test_late_preview_response_cannot_restore_a_removed_condition_row():
-    schedule = HTML_TEMPLATE.split('function schedulePreviewRefresh()', 1)[1].split('const CASE_REVIEW_REQUIRED', 1)[0]
+    schedule = HTML_TEMPLATE.split('function invalidatePendingPreviewRefresh()', 1)[1].split('const CASE_REVIEW_REQUIRED', 1)[0]
 
-    assert schedule.index('previewStateRevision += 1;') < schedule.index('window.setTimeout(() => refreshPreview(), 650);')
-    assert 'const requestedRevision = previewStateRevision;' in schedule
+    assert schedule.index('previewStateRevision += 1;') < schedule.index('previewRefreshTimer = window.setTimeout(() => {')
+    assert 'window.clearTimeout(previewRefreshTimer);' in schedule
+    assert 'const scheduledRevision = previewStateRevision;' in schedule
+    assert 'refreshPreview(scheduledRevision);' in schedule
+    assert 'async function refreshPreview(requestedRevision=previewStateRevision)' in schedule
     assert schedule.index('if (requestedRevision !== previewStateRevision) return false;') < schedule.index('adoptStateFromResponse(data);')
     assert 'const previousConditionIdentity = conditionCardIdentity();' in schedule
     assert 'if (previousConditionIdentity !== conditionCardIdentity()) renderConditionFields();' in schedule
+
+
+def test_context_confirmation_invalidates_an_inflight_preview_before_adopting_locked_state():
+    confirm_start = HTML_TEMPLATE.index('async function confirmRequestContext()')
+    confirm_end = HTML_TEMPLATE.index('async function updateOperationMode', confirm_start)
+    confirm_function = HTML_TEMPLATE[confirm_start:confirm_end]
+    preview_start = HTML_TEMPLATE.index('function invalidatePendingPreviewRefresh()')
+    preview_end = HTML_TEMPLATE.index('const CASE_REVIEW_REQUIRED', preview_start)
+    preview_functions = HTML_TEMPLATE[preview_start:preview_end]
+    navigation_start = HTML_TEMPLATE.index('function navigateScreen(screenId, options={})')
+    navigation_end = HTML_TEMPLATE.index('function updateGate()', navigation_start)
+    navigation_function = HTML_TEMPLATE[navigation_start:navigation_end]
+
+    assert confirm_function.index('invalidatePendingPreviewRefresh();') < confirm_function.index('adoptStateFromResponse(data);')
+
+    script = '''
+(async () => {
+  let requestState = {request_context:{context_locked:false}};
+  let previewStateRevision = 0;
+  let previewRefreshTimer = null;
+  let prepAssistStarted = false;
+  let previewResolve;
+  let activeScreen = "SCREEN-02";
+  let activeTopTab = "write";
+  const confirmedContext = {
+    division:"H&A", product_lineup:"SAC", platform:"Applied",
+    taxonomy_id:"DOAS", analysis_type:"DB", context_locked:true
+  };
+  const window = {clearTimeout:() => {}, setTimeout:() => 1};
+  const syncQuickPrepSelectionsToDraft = () => confirmedContext;
+  const missingContextFields = () => [];
+  const collectContextConfirmState = () => requestState;
+  const postJson = async () => ({state:{request_context:confirmedContext}});
+  const postState = () => new Promise(resolve => { previewResolve = resolve; });
+  const adoptStateFromResponse = data => { requestState = data.state || requestState; };
+  const syncEditorFromState = () => {};
+  const pushMessage = () => {};
+  const renderRequestPrepCard = () => {};
+  const conditionCardIdentity = () => "";
+  const renderConditionFields = () => {};
+  const renderDerivedPanels = () => {};
+  const screenOrder = [
+    {id:"SCREEN-01", tab:"write", requiresContext:false},
+    {id:"SCREEN-02", tab:"write", requiresContext:true},
+    {id:"SCREEN-03", tab:"write", requiresContext:true}
+  ];
+  const isContextLocked = () => requestState.request_context.context_locked === true;
+  const firstIncompleteScreenBefore = () => null;
+  const missingRequiredControl = () => null;
+  const focusRequiredControl = () => { activeScreen = "SCREEN-01"; };
+  const renderScreenNavigation = () => {};
+  const focusScreenHeading = () => {};
+''' + preview_functions + navigation_function + confirm_function + '''
+  const pendingPreview = refreshPreview();
+  await Promise.resolve();
+  await confirmRequestContext();
+  previewResolve({state:{request_context:{context_locked:false}}});
+  const stalePreviewAccepted = await pendingPreview;
+  const screenThreeAccepted = navigateScreen("SCREEN-03", {bypassRequiredGate:true, focus:false});
+  process.stdout.write(JSON.stringify({
+    stalePreviewAccepted,
+    contextLocked:requestState.request_context.context_locked,
+    screenThreeAccepted,
+    activeScreen
+  }));
+})().catch(error => { console.error(error); process.exit(1); });
+'''
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=False)
+
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == (
+        '{"stalePreviewAccepted":false,"contextLocked":true,'
+        '"screenThreeAccepted":true,"activeScreen":"SCREEN-03"}'
+    )
 
 
 def test_new_condition_rows_use_opaque_ids_instead_of_reusing_the_row_count():
