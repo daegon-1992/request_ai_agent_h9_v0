@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `C46FE4126069A550E8B7D5699C4554B0DE11068BDCE87059A555556C552F6CCD`.
+- 기준 소스 SHA-256: `2377AF42C649735189214773CAB93BE5344AEA45863EE8B357D27250ECB518A3`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -314,7 +314,7 @@ Layout Variant는 Card Header/Body `16px` inset, label/header-to-control `6px`, 
 
 | 범위 | 일치 항목 | 불일치 / migration 대상 | 허용 Layout Variant |
 |---|---|---|---|
-| SCREEN-01 | `24px` heading, `16px` card title, white/radius `10px` card, `46px` control, label-control `6px` | Restore Action 폭 `36px` | 분류 Grid 비율, Summary layout |
+| SCREEN-01 | `24px` heading, `16px` card title, white/radius `10px` card, `46px` control, label-control `6px`; 공용 Restore primitive `42×46px` (현재 화면에는 직접 입력 복귀 동작 없음) | 없음 | 분류 Grid 비율, Summary layout |
 | SCREEN-02 | Canonical heading/description/card/field/control/composite/action | 없음 | 4-column/2-column form 구성 |
 | SCREEN-03 | heading/description, card chrome, title, Column Header–control `6px`, `46px` control, read-only height, `34px` row action, 표준 Error Surface와 진행 차단 gate | 없음 | 제품 column 비율과 `9px` Data Grid gap |
 | SCREEN-04 | heading/description, `16px` Card Header/Body inset, title typography, label-control `6px`, `46px` control, composite `42px` track, `42×46px` Restore Action, `34px` row action, Fan Detail Local Action/Sub-surface | 없음 | identity/Fan/HEX column 비율, Fan Count 전체 폭 `90px`, Fan Detail 2열→1열 반응형 Grid, `8~12px` Grid gap |

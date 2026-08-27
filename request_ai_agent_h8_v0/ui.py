@@ -275,8 +275,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .prep-quick-groups select{min-height:46px;padding:10px 12px;font-size:14px;border-color:var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
     .workspace-shell .prep-quick-groups select:hover:not(:disabled){border-color:#BFC1C3}
     .workspace-shell .prep-quick-groups select:disabled{background:var(--disabled-bg);color:var(--disabled-text)}
-    .prep-custom-control{display:grid;grid-template-columns:minmax(0,1fr) 36px;gap:6px;align-items:center}
-    .prep-custom-control button{width:36px;min-width:36px;height:36px;padding:0;font-size:18px;line-height:1}
+    .prep-custom-control{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:6px;align-items:center}
+    .prep-custom-control button{width:42px;min-width:42px;height:46px;min-height:46px;padding:0;font-size:18px;line-height:1}
     .prep-summary{
       min-height:240px;
       border:1px solid #DCDDDE;

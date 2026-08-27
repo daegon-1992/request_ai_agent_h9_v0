@@ -95,11 +95,11 @@ def test_request_content_combobox_density_is_scoped_to_screen_two():
 
 def test_request_content_custom_dropdown_restore_button_matches_input_density():
     assert (
-        '.prep-custom-control{display:grid;grid-template-columns:minmax(0,1fr) 36px;'
+        '.prep-custom-control{display:grid;grid-template-columns:minmax(0,1fr) 42px;'
         'gap:6px;align-items:center}'
     ) in HTML_TEMPLATE
     assert (
-        '.prep-custom-control button{width:36px;min-width:36px;height:36px;'
+        '.prep-custom-control button{width:42px;min-width:42px;height:46px;min-height:46px;'
         'padding:0;font-size:18px;line-height:1}'
     ) in HTML_TEMPLATE
     assert (
@@ -110,6 +110,14 @@ def test_request_content_custom_dropdown_restore_button_matches_input_density():
         '.workspace-shell .request-content-screen .dropdown-custom-control > button{'
         'width:42px;min-width:42px;height:46px;min-height:46px}'
     ) in HTML_TEMPLATE
+
+
+def test_screen_one_fixed_taxonomy_selects_do_not_render_a_restore_action():
+    screen_start = HTML_TEMPLATE.index('class="screen-group" data-screen="SCREEN-01"')
+    screen_end = HTML_TEMPLATE.index('data-screen="SCREEN-02"', screen_start)
+    screen = HTML_TEMPLATE[screen_start:screen_end]
+
+    assert 'data-dropdown-restore-path' not in screen
 
 
 def test_screen_three_uses_canonical_typography_and_navigation_density():
