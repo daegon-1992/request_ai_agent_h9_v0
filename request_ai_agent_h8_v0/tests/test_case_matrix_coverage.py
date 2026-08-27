@@ -144,28 +144,80 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     confirmation = HTML_TEMPLATE[confirm_start:confirm_end]
 
     assert case_common < case_table < duplicate_warning < case_status
-    case_review_css = HTML_TEMPLATE.split(".case-review-message{", 1)[1].split("}", 1)[0]
+    feedback_scope = (
+        '.workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],'
+        '.workspace-form[data-screen="SCREEN-06"]) '
+    )
+    case_review_css = HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message{{", 1)[1].split("}", 1)[0]
+    assert "gap:12px" in case_review_css
+    assert "padding:16px" in case_review_css
+    assert "border-radius:10px" in case_review_css
+    assert "box-shadow:none" in case_review_css
     assert "min-height" not in case_review_css
     assert '.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE
     assert preview < preview_warning < word_button
-    assert 'border-left:3px solid #C62828' in HTML_TEMPLATE
-    assert 'background:#FFF2F1' in HTML_TEMPLATE
-    assert 'border-left:3px solid #C77800' in HTML_TEMPLATE
-    assert 'border:1px solid #E4D3AD' in HTML_TEMPLATE
-    assert 'background:#FFF9ED' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message.error{{border:1px solid #E8B4B0;background:#FFF2F1}}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message.warning{{border:1px solid #E4D3AD;background:#FFF9ED}}' in HTML_TEMPLATE
+    assert '.case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}' in HTML_TEMPLATE
+    assert '.case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}' in HTML_TEMPLATE
+    assert "border-left:3px" not in HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message.error{{", 1)[1].split("}", 1)[0]
+    assert "border-left:3px" not in HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message.warning{{", 1)[1].split("}", 1)[0]
+    assert f'{feedback_scope}.coverage-warning-icon{{display:inline-grid;flex:0 0 20px;width:20px;height:20px;' in HTML_TEMPLATE
+    assert f'{feedback_scope}.coverage-warning-title{{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.coverage-warning-copy{{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}}' in HTML_TEMPLATE
     assert '<strong class="coverage-warning-title">오류 · Case 구성을 확인해 주세요.</strong>' in HTML_TEMPLATE
     assert '<strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong>' in HTML_TEMPLATE
     assert '<circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path>' in HTML_TEMPLATE
     assert '<span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">' in HTML_TEMPLATE
     assert 'data-action="review-case-coverage"' in HTML_TEMPLATE
     assert 'navigateScreen("SCREEN-05")' in HTML_TEMPLATE
-    assert "blocking" not in confirmation
-    assert "focusCaseValidationIssue" not in confirmation
+    assert "const blockingIssues = caseConfigurationIssues();" in confirmation
+    assert "if (blockingIssues.length)" in confirmation
+    assert "focusCaseValidationIssue(blockingIssues[0]);" in confirmation
     assert 'navigateScreen("SCREEN-06")' in confirmation
     assert "coverage" not in confirmation
     assert "wordButton.disabled = wordExportInProgress || firstIncompleteIndex >= 0 || caseMatrixExportBlocked" in HTML_TEMPLATE
     assert "const caseMatrixExportBlocked = caseMatrixBlocksWordExport();" in HTML_TEMPLATE
     assert 'screen.id !== "SCREEN-06"' in HTML_TEMPLATE
+
+
+def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts():
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] .screen-heading{'
+        'margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;'
+        'letter-spacing:-.02em;color:var(--ink)}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case{'
+        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;'
+        'border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '> .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '> .section-body{padding:16px;border-top:0}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '> .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '> .section-head > .case-section-actions button{height:auto;min-height:36px;'
+        'padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] '
+        '> .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
+        '.matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}'
+    ) in HTML_TEMPLATE
 
 
 def test_case_error_warning_groups_missing_fields_uses_visible_labels_and_clears_when_resolved():
@@ -292,7 +344,7 @@ process.stdout.write(JSON.stringify({{duplicate, coverage, missing, selectionMis
     }
 
 
-def test_case_next_allows_missing_duplicate_and_coverage_review():
+def test_case_next_blocks_configuration_errors_but_allows_coverage_warning_review():
     start = HTML_TEMPLATE.index("async function confirmCaseConfiguration()")
     end = HTML_TEMPLATE.index("function renderDerivedPanels()", start)
     confirmation = HTML_TEMPLATE[start:end]
@@ -305,9 +357,12 @@ def test_case_next_allows_missing_duplicate_and_coverage_review():
   const contextText = value => String(value ?? "").trim();
   let requestState = {{review:{{validator:{{blocking:[]}}}}}};
   let nextScreen = "";
+  let focusedIssues = 0;
   const refreshPreview = async () => true;
   const renderCasePreview = () => {{}};
   const resetCaseImpactBaseline = () => {{}};
+  const caseConfigurationIssues = () => requestState.review.validator.blocking;
+  const focusCaseValidationIssue = () => {{ focusedIssues += 1; }};
   const navigateScreen = screen => {{ nextScreen = screen; }};
   {confirmation}
   requestState.review.validator.blocking = [{{section:"case_matrix", code:"case_matrix.duplicate", case_no:2, duplicate_of_case_no:1}}];
@@ -316,7 +371,11 @@ def test_case_next_allows_missing_duplicate_and_coverage_review():
   nextScreen = "";
   requestState.review.validator.blocking = [{{section:"case_matrix", code:"case_matrix.geometry_missing"}}];
   await confirmCaseConfiguration();
-  process.stdout.write(JSON.stringify({{duplicateScreen, missingScreen:nextScreen}}));
+  const missingScreen = nextScreen;
+  nextScreen = "";
+  requestState.review.validator = {{blocking:[], coverage:{{complete:false}}}};
+  await confirmCaseConfiguration();
+  process.stdout.write(JSON.stringify({{duplicateScreen, missingScreen, warningScreen:nextScreen, focusedIssues}}));
 }})().catch(error => {{ console.error(error); process.exit(1); }});
 """
     result = subprocess.run(
@@ -325,8 +384,10 @@ def test_case_next_allows_missing_duplicate_and_coverage_review():
 
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == {
-        "duplicateScreen": "SCREEN-06",
-        "missingScreen": "SCREEN-06",
+        "duplicateScreen": "",
+        "missingScreen": "",
+        "warningScreen": "SCREEN-06",
+        "focusedIssues": 2,
     }
 
 

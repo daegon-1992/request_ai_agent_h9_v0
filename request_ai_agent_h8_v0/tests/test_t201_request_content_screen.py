@@ -162,12 +162,7 @@ def test_screen_four_uses_canonical_typography_and_navigation_density():
         '> .screen-action-bar button.primary{font-size:15px;font-weight:600}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .screen-group:is([data-screen="SCREEN-04"],[data-screen="SCREEN-05"]) '
-        '> .screen-action-bar button{min-height:34px}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen .screen-heading,\n'
-        '    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{'
+        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{'
         'margin-bottom:8px;padding:3px 0;font-size:21px}'
     ) in HTML_TEMPLATE
 

@@ -203,6 +203,16 @@ process.stdout.write(JSON.stringify({{duplicateHtml, resolvedHtml:target.innerHT
     assert rendered["resolvedHtml"] == ""
 
 
+def test_screen_three_duplicate_error_uses_shared_feedback_surface_and_blocks_forward_gate():
+    feedback_scope = (
+        '.workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],'
+        '.workspace-form[data-screen="SCREEN-06"]) '
+    )
+    assert f'{feedback_scope}.case-review-message.error{{border:1px solid #E8B4B0;background:#FFF2F1}}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE
+    assert 'if (screenId === "SCREEN-03" && geometryDrawingDuplicateIssues().length) return $("geometryDrawingDuplicateWarning");' in HTML_TEMPLATE
+
+
 def test_geometry_is_not_an_accordion_and_drawing_changes_refresh_preview():
     assert 'class="screen-group geometry-screen" data-screen="SCREEN-03"' in HTML_TEMPLATE
     assert '<div class="section-head" data-toggle-section="section-geometry">' not in HTML_TEMPLATE

@@ -523,20 +523,20 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-source-details{color:var(--muted);overflow-wrap:anywhere}
     .geometry-drawing-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
     .case-review-message{display:grid;gap:7px;position:relative;margin-top:10px;padding:8px 10px;border-radius:8px;color:#242424;font-size:12px;line-height:1.4}
-    .case-review-message.error{border:1px solid #E8B4B0;border-left:3px solid #C62828;background:#FFF2F1}
-    .case-review-message.warning{border:1px solid #E4D3AD;border-left:3px solid #C77800;background:#FFF9ED}
+    .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
+    .case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}
     .coverage-warning-head{display:flex;align-items:center;gap:6px}
     .coverage-warning-icon{display:inline-grid;flex:0 0 16px;width:16px;height:16px;place-items:center;color:#C77800;font-size:14px;line-height:1}
     .case-review-message.error .coverage-warning-icon{color:#C62828}
     .coverage-warning-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
-    .coverage-warning-title{color:#242424;font-size:13px;font-weight:600!important}
-    .coverage-warning-copy{margin:0!important;color:#333333!important;font-size:12px}
+    .coverage-warning-title{color:#242424;font-size:13px;font-weight:600}
+    .coverage-warning-copy{margin:0;color:#333333;font-size:12px}
     .coverage-unused-list{display:grid;gap:3px}
     .coverage-unused-row{display:grid;grid-template-columns:minmax(72px,120px) minmax(0,1fr);gap:10px;color:#242424;font-size:12px}
     .coverage-unused-label{font-weight:600}
     .coverage-unused-options{color:#333333}
     .case-action-notice{display:grid;gap:3px;margin-top:8px;padding:8px 10px;border:1px solid #c9d7e8;border-left:3px solid #4f6f94;border-radius:8px;background:#f4f8fc;color:#242424;font-size:12px;line-height:1.4}
-    #previewCoverageWarning button{justify-self:start;min-height:28px;padding:3px 8px}
+    #previewCoverageWarning button{justify-self:start;min-height:36px;padding:7px 11px;border-radius:8px}
     .case-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
     table{width:100%;border-collapse:collapse;min-width:540px;font-size:12px}
     .combination-summary{display:flex;gap:7px;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--soft);font-size:12px}
@@ -768,7 +768,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-group:is([data-screen="SCREEN-03"],[data-screen="SCREEN-04"],[data-screen="SCREEN-05"]) > .screen-action-bar{margin-top:20px;padding:6px 0;border-top:0}
     .workspace-shell .geometry-screen > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
     .workspace-shell .geometry-screen > .screen-action-bar button.primary{font-size:15px;font-weight:600}
-    .workspace-shell .screen-group:is([data-screen="SCREEN-04"],[data-screen="SCREEN-05"]) > .screen-action-bar button{min-height:34px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] > .screen-action-bar button.primary{font-size:15px;font-weight:600}
     .workspace-shell .screen-map{gap:0}
@@ -787,10 +786,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-heading-code{display:none}
     .workspace-shell .screen-description{margin:0 0 7px;color:var(--request-workspace-muted);font-size:13px;line-height:1.35}
     .workspace-shell .geometry-screen .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .stage-static-screen .screen-heading,
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:21px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .stage-static-screen .section-head h3,
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-accent);font-size:15px;font-weight:600}
     .workspace-shell .geometry-screen .chev,
     .workspace-shell .stage-static-screen .chev,
@@ -822,15 +819,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .geometry-screen > #section-geometry > .section-body{padding:16px;border-top:0}
     .workspace-shell .geometry-screen > #section-geometry > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
     /* Field-group headings use the requester-info type scale and the condition-card emphasis. */
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .section > .section-head,
     .workspace-shell .condition-group-head{background:var(--soft)}
     .workspace-shell .condition-group-head{min-height:36px;padding:6px 11px}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head{min-height:36px;padding:6px 11px}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .section > .section-head h3,
     .workspace-shell .condition-group-head h3{font-family:var(--request-workspace-font);font-size:15px;font-weight:600;color:var(--request-workspace-accent)}
     .workspace-shell .condition-group-head-actions button{min-height:24px;height:24px;padding:2px 7px}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head > .case-section-actions{display:flex;align-items:center;margin-left:auto}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head > .case-section-actions button{min-height:24px;height:24px;padding:2px 7px}
     .workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{min-height:46px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background-color:var(--paper);color:var(--ink)}
     .workspace-shell .request-content-screen .undecided-combobox{height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
@@ -864,6 +856,27 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .fan-input-set{padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
     .workspace-shell .condition-input-screen .fan-input-order{width:24px;height:24px;align-self:center;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:#55585B;font-size:11px;font-weight:500;line-height:1.2}
     .workspace-shell .condition-input-screen .condition-row-actions{min-height:46px;align-items:center}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-body{padding:16px;border-top:0}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head > .case-section-actions button{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button.primary{font-size:15px;font-weight:600}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message:empty{display:none}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-head{display:flex;align-items:flex-start;gap:12px}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon{display:inline-grid;flex:0 0 20px;width:20px;height:20px;place-items:center;color:#C77800;font-size:18px;line-height:1}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error .coverage-warning-icon{color:#C62828}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-title{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-copy{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
     .workspace-shell .request-content-screen textarea{min-height:70px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .layout{grid-template-areas:"workspace-bar workspace-bar" "workspace-content agent";grid-template-rows:auto minmax(0,1fr)}
     .workspace-shell{display:contents}
@@ -2393,12 +2406,22 @@ HTML_TEMPLATE = r"""<!doctype html>
       return document.querySelector(`[data-card-id="${CSS.escape(cardId)}"][data-fan-index="${CSS.escape(fanIndex)}"][data-card-field="${CSS.escape(fieldKey)}"]`);
     }
 
+    function blockingScreenError(screenId){
+      if (screenId === "SCREEN-03" && geometryDrawingDuplicateIssues().length) return $("geometryDrawingDuplicateWarning");
+      if (screenId === "SCREEN-05" && caseConfigurationIssues().length) return $("caseDuplicateWarning");
+      return null;
+    }
+
     function focusRequiredControl(screen, control){
       activeScreen = screen.id;
       activeTopTab = screen.tab;
       renderScreenNavigation();
-      setScreenNavigationStatus(`${userScreenName(screen.id)}의 필수 입력을 완료한 뒤 다음 단계로 이동할 수 있습니다.`);
+      const isError = control?.matches?.(".case-review-message.error");
+      setScreenNavigationStatus(isError
+        ? `${userScreenName(screen.id)}의 오류를 수정한 뒤 다음 단계로 이동할 수 있습니다.`
+        : `${userScreenName(screen.id)}의 필수 입력을 완료한 뒤 다음 단계로 이동할 수 있습니다.`);
       const target = screen.id === "SCREEN-04" ? revealMissingFanControl(control) || $(screen.headingId) : control || $(screen.headingId);
+      if (isError && target && !target.hasAttribute("tabindex")) target.tabIndex = -1;
       target?.scrollIntoView({behavior:"smooth", block:"center"});
       target?.focus?.({preventScroll:true});
       if (target?.validity && !target.validity.valid) target.reportValidity?.();
@@ -2409,7 +2432,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (targetIndex < 1) return null;
       for (let index = 0; index < targetIndex; index += 1) {
         const screen = screenOrder[index];
-        const control = missingRequiredControl(screen.id);
+        const control = missingRequiredControl(screen.id) || blockingScreenError(screen.id);
         if (control) return {screen, control};
       }
       return null;
@@ -3551,6 +3574,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         await refreshPreview();
         resetCaseImpactBaseline();
         renderCasePreview();
+        const blockingIssues = caseConfigurationIssues();
+        if (blockingIssues.length) {
+          focusCaseValidationIssue(blockingIssues[0]);
+          return;
+        }
         navigateScreen("SCREEN-06");
       } finally {
         if (action) action.disabled = false;

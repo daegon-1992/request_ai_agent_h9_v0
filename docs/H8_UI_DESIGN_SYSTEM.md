@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `AAE8EB2F1057C105D47C149B88EEC509564D4BFA4B5FC796A47443455F79C268`.
+- 기준 소스 SHA-256: `8179566CDA10F27684E4CA00B21829696C422BF86F6E858CC5DE98799E8CC72E`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -238,7 +238,7 @@ Chip은 inline-flex, 최소 높이 `22px`, padding `2px 7px`, radius `8px`, `11p
 
 ### Feedback Surface
 
-일반 guidance는 Guidance / Info Surface를 사용한다. 검증 Error/Warning은 radius `8px`, padding `8px 10px`, `12px/1.4`를 공통으로 사용하고 왼쪽 `3px` semantic border로 상태를 구분한다. Error는 `#C62828`, Warning은 `#C77800` 계열을 사용한다. 동일 상태가 screen마다 chip, gray card, colored band 등 다른 도형으로 나타나지 않게 한다.
+일반 guidance는 Guidance / Info Surface를 사용한다. 검증 Error/Warning은 안내 surface와 같은 padding `16px`, gap `12px`, radius `10px`, shadow 없음 규격을 사용하되 상태별로 box 전체의 border와 background를 구분한다. Error는 border `#E8B4B0`, background `#FFF2F1`, icon `#C62828`을 사용하고 Warning은 border `#E4D3AD`, background `#FFF9ED`, icon `#C77800`을 사용한다. 제목은 `15px/600/1.55`, 본문은 `13px/400/1.55`, 상태 icon block은 `20px`이며 기존 업무 의미의 icon geometry를 유지한다. 빈 feedback container는 `display:none`으로 공간을 차지하지 않는다. 동일 상태가 screen마다 chip, gray card, colored band 등 다른 도형으로 나타나지 않게 한다. Error는 다음 단계 진행을 차단하고 해당 입력 또는 오류 surface로 focus를 이동하며, Warning은 검토를 허용한다.
 
 ### Table / Matrix / Read-only Data
 
@@ -316,12 +316,12 @@ Layout Variant는 Card Header/Body `16px` inset, label/header-to-control `6px`, 
 |---|---|---|---|
 | SCREEN-01 | `24px` heading, `16px` card title, white/radius `10px` card, `46px` control, label-control `6px` | Restore Action 폭 `36px` | 분류 Grid 비율, Summary layout |
 | SCREEN-02 | Canonical heading/description/card/field/control/composite/action | 없음 | 4-column/2-column form 구성 |
-| SCREEN-03 | heading/description, card chrome, title, `46px` control, read-only height, `34px` row action | Column Header와 첫 input row 간격 `4px` → 표준 `6px` 필요 | 제품 column 비율과 `9px` Data Grid gap |
+| SCREEN-03 | heading/description, card chrome, title, `46px` control, read-only height, `34px` row action, 표준 Error Surface와 진행 차단 gate | Column Header와 첫 input row 간격 `4px` → 표준 `6px` 필요 | 제품 column 비율과 `9px` Data Grid gap |
 | SCREEN-04 | heading/description, `16px` Card Header/Body inset, title typography, label-control `6px`, `46px` control, composite `42px` track, `42×46px` Restore Action, `34px` row action, Fan Detail Local Action/Sub-surface | 없음 | identity/Fan/HEX column 비율, Fan Count 전체 폭 `90px`, Fan Detail 2열→1열 반응형 Grid, `8~12px` Grid gap |
-| SCREEN-05 | neutral foundation, radius `10px` section shell | heading `21px` → `24px`; gray Header band/divider 계열; Header padding `6px 11px`; title `15px` accent; section shadow; `Case 추가` 높이 `24px` → Local Action `36px`; Navigation Action `34px` → `44px`; table header typography | Case Matrix 열 수, sticky header, matrix overflow |
-| SCREEN-06 | neutral foundation, preview inner surface | heading `21px` → `24px`; legacy section header padding/divider/title와 title icon; section shadow; Word Primary Action `36px` → `44px`; 일반 table header typography | Preview/Word 정보 구조와 review Grid |
+| SCREEN-05 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow, `36px` Case Local Action, `44px` Navigation Action, Matrix Header `13px/500/1.45`, 상태색 box의 표준 Error/Warning Surface, 오류 진행 차단 gate | 없음 | Case Matrix 열 수, sticky header, cell padding, matrix overflow |
+| SCREEN-06 | neutral foundation, preview inner surface, SCREEN-03/05와 공용인 상태색 Error/Warning Surface | heading `21px` → `24px`; legacy section header padding/divider/title와 title icon; section shadow; Word Primary Action `36px` → `44px`; 일반 table header typography | Preview/Word 정보 구조와 review Grid |
 | Global Shell / Agent | Foundation, Shell surface, navigation, resizer, Agent message/input 규격 | Workspace card 표준을 Shell card에 역적용하지 않음 | desktop/overlay, Workspace-Agent 비율 |
-| Modal / Feedback | semantic Error/Warning 구조, overlay와 dialog 구조 | Modal radius `8px` → surface 표준 `10px`; 같은 상태의 icon/glyph 혼용 여부를 migration 시 통일 | message 길이와 action 수 |
+| Modal / Feedback | SCREEN-03/05/06 Error/Warning 상태색 surface, `20px` icon, 빈 container 비표시 | Modal radius `8px` → surface 표준 `10px`; 다른 화면의 같은 상태는 해당 화면 migration 시 공용 규격 연결 | message 길이와 action 수 |
 
 이 Audit에서 확인된 차이는 문서에 의해 허용된 별도 디자인 언어가 아니다. 기능/Grid를 보존하는 화면별 migration task에서 Component Identity만 SCREEN-02 표준으로 정합화한다.
 

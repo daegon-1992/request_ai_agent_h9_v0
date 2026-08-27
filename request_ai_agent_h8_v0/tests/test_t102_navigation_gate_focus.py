@@ -50,10 +50,15 @@ def test_screen_six_remains_clickable_even_when_earlier_required_inputs_are_inco
 
 def test_navigation_required_gate_lists_each_screen_and_focuses_first_missing_control():
     assert 'function missingRequiredControl(screenId)' in HTML_TEMPLATE
+    assert 'function blockingScreenError(screenId)' in HTML_TEMPLATE
     assert 'function firstIncompleteScreenBefore(targetScreen)' in HTML_TEMPLATE
     for screen_id in ("SCREEN-01", "SCREEN-02", "SCREEN-03", "SCREEN-04", "SCREEN-05"):
         assert f'screenId === "{screen_id}"' in HTML_TEMPLATE
     assert 'target?.focus?.({preventScroll:true});' in HTML_TEMPLATE
+    assert 'missingRequiredControl(screen.id) || blockingScreenError(screen.id)' in HTML_TEMPLATE
+    assert 'screenId === "SCREEN-03" && geometryDrawingDuplicateIssues().length' in HTML_TEMPLATE
+    assert 'screenId === "SCREEN-05" && caseConfigurationIssues().length' in HTML_TEMPLATE
+    assert '의 오류를 수정한 뒤 다음 단계로 이동할 수 있습니다.' in HTML_TEMPLATE
 
 
 def test_screen_navigation_marks_current_screen_and_supports_keyboard_activation():

@@ -40,6 +40,8 @@ def test_case_configuration_confirmation_revalidates_before_entering_preview():
     assert 'function confirmCaseConfiguration()' in ui
     assert 'await refreshPreview();' in ui
     assert 'resetCaseImpactBaseline();' in ui
+    assert 'const blockingIssues = caseConfigurationIssues();' in ui
+    assert 'focusCaseValidationIssue(blockingIssues[0]);' in ui
     assert 'navigateScreen("SCREEN-06");' in ui
     assert 'function caseConfigurationMessageHtml(issues, state=requestState, includeReviewAction=false)' in ui
     assert '오류 · Case 구성을 확인해 주세요.' in ui
