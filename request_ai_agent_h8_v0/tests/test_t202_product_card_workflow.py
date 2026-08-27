@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from hashlib import sha256
 import json
+from pathlib import Path
 import subprocess
 
 from request_ai_agent_h8_v0.geometry_engine import generate_geometry_axis
@@ -113,11 +115,24 @@ def test_target_product_box_grows_with_the_shared_row_gap():
         '.workspace-shell .geometry-screen > #section-geometry > .section-head h3{'
         'font-size:16px;font-weight:600;color:var(--ink)}'
     ) in HTML_TEMPLATE
-    assert '.product-table{display:flex;flex-direction:column;gap:4px}' in HTML_TEMPLATE
+    assert '.product-table{display:flex;flex-direction:column;gap:6px}' in HTML_TEMPLATE
     assert '.product-table-row{display:grid;' in HTML_TEMPLATE
     assert 'grid-template-columns:92px minmax(156px,1.15fr) minmax(300px,2.3fr) 34px' in HTML_TEMPLATE
     assert 'grid-template-columns:92px minmax(126px,1fr) minmax(220px,1.8fr) 34px' in HTML_TEMPLATE
     assert 'product-comparison-card' not in HTML_TEMPLATE
+
+
+def test_screen_three_column_headers_and_shared_modal_use_canonical_surface_spacing():
+    assert '.product-table{display:flex;flex-direction:column;gap:6px}' in HTML_TEMPLATE
+    assert 'width:min(420px,100%);border:1px solid var(--line);border-radius:10px;' in HTML_TEMPLATE
+
+
+def test_design_system_audit_tracks_current_ui_source_hash():
+    package_root = Path(__file__).resolve().parents[1]
+    ui_digest = sha256((package_root / "ui.py").read_bytes()).hexdigest().upper()
+    design_system = (package_root.parent / "docs" / "H8_UI_DESIGN_SYSTEM.md").read_text(encoding="utf-8")
+
+    assert f"기준 소스 SHA-256: `{ui_digest}`." in design_system
 
 
 def test_product_field_names_and_values_use_screen_three_style_levels():

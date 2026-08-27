@@ -423,7 +423,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .product-card + .product-card{margin-top:8px}
     .product-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
     .product-card-head h4{margin:0;color:var(--ink);font-size:13px;font-weight:600}
-    .product-table{display:flex;flex-direction:column;gap:4px}
+    .product-table{display:flex;flex-direction:column;gap:6px}
     .product-table-row{display:grid;grid-template-columns:92px minmax(156px,1.15fr) minmax(300px,2.3fr) 34px;gap:9px;align-items:end}
     .product-table-head{align-items:center}
     .product-table-head .product-action-heading{width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
@@ -638,7 +638,7 @@ HTML_TEMPLATE = r"""<!doctype html>
        background:rgba(0,0,0,.28);z-index:20;padding:20px;
     }
     .submit-dialog{
-       width:min(420px,100%);border:1px solid var(--line);border-radius:8px;
+       width:min(420px,100%);border:1px solid var(--line);border-radius:10px;
        background:var(--paper);box-shadow:var(--shadow);
       padding:22px;text-align:center;
     }
