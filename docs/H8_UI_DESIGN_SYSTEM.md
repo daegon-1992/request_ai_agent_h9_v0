@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `B04FB6F1E998391055B1EDA246FC88CCEEC9474048B15B59177C984769777420`.
+- 기준 소스 SHA-256: `AAE8EB2F1057C105D47C149B88EEC509564D4BFA4B5FC796A47443455F79C268`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -201,6 +201,12 @@ padding-left `24px`, `15px/600`, `--ink`이며 긴 값은 `overflow-wrap:anywher
 
 하나의 bordered control 안에 input과 selector/toggle이 결합되는 형태는 SCREEN-02 combobox를 기준으로 한다. outer height `46px`, inner height `44px`, right interaction track `42px`이며 outer focus ring 하나만 표시하고 내부 input/toggle의 중복 focus ring은 제거한다. Input 옆에 별도로 붙는 Restore Utility Button도 SCREEN-02 기준 `42px × 46px`를 사용한다. 좁은 Grid라는 이유로 같은 Restore 역할을 `32px` 또는 `36px`로 축소하지 않는다.
 
+### Detail Disclosure Action / Sub-surface — SCREEN-04 Fan Detail
+
+반복 입력의 상세 영역을 여닫는 action은 Default Local Action 계열을 사용한다. 최소 높이 `36px`, padding `0 11px`, radius `8px`, paper surface, `--line-strong` border, `14px/500`이며 text 오른쪽에는 `16px` stroke chevron을 배치한다. `aria-expanded="true"`일 때 neutral `#F7F7F7` surface와 chevron `180deg` 회전으로 펼침 상태를 전달하고 별도의 강한 accent color는 만들지 않는다.
+
+상세 영역은 상위 Standard Group Card 안의 중첩 data surface로 취급한다. padding `16px`, `--line-strong` border, radius `10px`, `#F7F7F7`, shadow 없음이며 title은 `15px/600/1.55`를 사용한다. 반복되는 Fan 입력 묶음은 paper surface, `--line` border, radius `8px`, padding `12px`를 사용하고 label-control `6px` 및 `46px` control 계약을 유지한다. 두 개의 Fan 묶음을 나란히 배치하는 Grid는 허용 Layout Variant이며 `760px` 이하에서는 1열로 전환한다.
+
 ### Dropdown / Combobox Menu
 
 Composite control의 menu는 control 바로 아래 `4px`에 배치하고 좌우 폭을 outer control에 맞춘다. paper surface, `1px --line` border, shadow 없음이다. Option은 최소 높이 `30px`, padding `5px 8px`이며 hover, keyboard focus, active state는 동일한 `--brand` surface와 white text를 사용한다. native Select와 custom menu가 같은 화면에서 서로 다른 active color를 만들지 않는다.
@@ -311,7 +317,7 @@ Layout Variant는 Card Header/Body `16px` inset, label/header-to-control `6px`, 
 | SCREEN-01 | `24px` heading, `16px` card title, white/radius `10px` card, `46px` control, label-control `6px` | Restore Action 폭 `36px` | 분류 Grid 비율, Summary layout |
 | SCREEN-02 | Canonical heading/description/card/field/control/composite/action | 없음 | 4-column/2-column form 구성 |
 | SCREEN-03 | heading/description, card chrome, title, `46px` control, read-only height, `34px` row action | Column Header와 첫 input row 간격 `4px` → 표준 `6px` 필요 | 제품 column 비율과 `9px` Data Grid gap |
-| SCREEN-04 | heading/description, title typography, `46px` control, composite `42px` track, `34px` row action | Card Header/Body inset `10px` → `16px`; Fan 내부 label gap `4px` → `6px`; Restore 폭 `32px`/일부 compact 폭 → `42px` | identity/Fan/HEX column 비율과 `8~10px` Grid gap |
+| SCREEN-04 | heading/description, `16px` Card Header/Body inset, title typography, label-control `6px`, `46px` control, composite `42px` track, `42×46px` Restore Action, `34px` row action, Fan Detail Local Action/Sub-surface | 없음 | identity/Fan/HEX column 비율, Fan Count 전체 폭 `90px`, Fan Detail 2열→1열 반응형 Grid, `8~12px` Grid gap |
 | SCREEN-05 | neutral foundation, radius `10px` section shell | heading `21px` → `24px`; gray Header band/divider 계열; Header padding `6px 11px`; title `15px` accent; section shadow; `Case 추가` 높이 `24px` → Local Action `36px`; Navigation Action `34px` → `44px`; table header typography | Case Matrix 열 수, sticky header, matrix overflow |
 | SCREEN-06 | neutral foundation, preview inner surface | heading `21px` → `24px`; legacy section header padding/divider/title와 title icon; section shadow; Word Primary Action `36px` → `44px`; 일반 table header typography | Preview/Word 정보 구조와 review Grid |
 | Global Shell / Agent | Foundation, Shell surface, navigation, resizer, Agent message/input 규격 | Workspace card 표준을 Shell card에 역적용하지 않음 | desktop/overlay, Workspace-Agent 비율 |

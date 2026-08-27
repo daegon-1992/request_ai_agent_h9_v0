@@ -472,7 +472,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .condition-card-type-space_environment,.condition-card-type-supply_air{overflow:visible}
     .condition-card-type-space_environment:focus-within,.condition-card-type-supply_air:focus-within{position:relative;z-index:45}
     .condition-card-type-space_environment .condition-group-head,.condition-card-type-supply_air .condition-group-head{border-radius:7px 7px 0 0}
-    .condition-card-rows{display:grid;gap:8px;padding:var(--request-workspace-card-content-padding,10px)}
+    .condition-card-rows{display:grid;gap:8px;padding:16px}
     .condition-card-row{display:grid;grid-template-columns:repeat(var(--field-count),minmax(0,1fr)) max-content;gap:9px;align-items:end}
     .condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(5,minmax(0,1fr)) max-content;gap:9px}
     .condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:nowrap}
@@ -484,17 +484,15 @@ HTML_TEMPLATE = r"""<!doctype html>
     .fan-rpm-editor.single{grid-template-columns:minmax(100px,140px)}
     .fan-rpm-editor.mode-pending{grid-template-columns:minmax(150px,190px)}
     .fan-detail-toggle{white-space:nowrap}
-    .fan-detail{grid-column:1/-1;grid-row:2;border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:10px;margin-top:2px}
+    .fan-detail{grid-column:1/-1;grid-row:2}
     .fan-detail[hidden]{display:none}
-    .fan-detail-title{margin:0 0 8px;font-size:13px;color:var(--ink)}
-    .fan-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px}
-    .fan-input-set{display:grid;grid-template-columns:30px minmax(100px,1fr) minmax(90px,120px);gap:8px;align-items:end}
-    .fan-input-order{align-self:center;text-align:center;color:var(--muted);font-size:12px}
-    .fan-input-column{display:flex;flex-direction:column;gap:4px;min-width:0}
-    .fan-input-column>span{font-size:13px;color:var(--ink)}
+    .fan-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .fan-input-set{display:grid;grid-template-columns:30px minmax(100px,1fr) minmax(90px,120px);gap:10px;align-items:end}
+    .fan-input-column{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .fan-input-column>span{font-size:13px;font-weight:500;line-height:1.45;color:var(--ink)}
     .fan-input-column input{width:100%}
-    .fan-count-custom-control{grid-template-columns:minmax(0,1fr) 32px;gap:4px;width:90px}
-    .fan-count-custom-control button{width:32px;min-width:32px}
+    .fan-count-custom-control{grid-template-columns:minmax(0,1fr) 42px;gap:4px;width:90px}
+    .fan-count-custom-control button{width:42px;min-width:42px}
     .fan-count-custom-control input{min-width:0}
     .condition-card-row input,.condition-card-row select{width:100%}
     .condition-row-actions{display:flex;gap:4px;align-items:center}
@@ -809,7 +807,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-group{border-color:var(--request-workspace-border);background:var(--request-workspace-surface);box-shadow:none}
     .workspace-shell .condition-group-head{border-bottom-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .condition-input-screen .condition-group{border-radius:10px}
-    .workspace-shell .condition-input-screen .condition-group-head{min-height:0;padding:10px 10px 0;border-bottom:0;background:transparent}
+    .workspace-shell .condition-input-screen .condition-group-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
     .workspace-shell .condition-input-screen .condition-group-head h3{font-size:16px;font-weight:600;color:var(--ink)}
     .workspace-shell .condition-input-screen :is(.condition-card-type-space_environment,.condition-card-type-supply_air) .condition-group-head{border-radius:9px 9px 0 0}
     .workspace-shell .case-toolbar{border-color:var(--request-workspace-border);background:var(--soft)}
@@ -853,8 +851,18 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .condition-temperature-combobox input:focus-visible,
     .workspace-shell .condition-input-screen .condition-temperature-combobox .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}
     .workspace-shell .condition-input-screen .condition-temperature-combobox .undecided-combobox-toggle{width:42px;height:44px;min-height:44px;border:0;border-radius:0 7px 7px 0;background:transparent}
-    .workspace-shell .condition-input-screen .heat-exchanger-custom-control > button{height:46px;min-height:46px}
-    .workspace-shell .condition-input-screen .fan-count-custom-control > button{height:46px;min-height:46px}
+    .workspace-shell .condition-input-screen .heat-exchanger-custom-control{grid-template-columns:minmax(0,1fr) 42px}
+    .workspace-shell .condition-input-screen :is(.heat-exchanger-custom-control,.fan-count-custom-control) > button{width:42px;min-width:42px;height:46px;min-height:46px}
+    .workspace-shell .condition-input-screen .fan-count-custom-control input{padding-inline:6px}
+    .workspace-shell .condition-input-screen .fan-detail-toggle{min-height:36px;justify-self:start;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink);font-size:14px;font-weight:500;line-height:1.2}
+    .workspace-shell .condition-input-screen .fan-detail-toggle:hover{border-color:#BFC1C3;background:var(--soft)}
+    .workspace-shell .condition-input-screen .fan-detail-toggle[aria-expanded="true"]{border-color:#BFC1C3;background:#F7F7F7}
+    .workspace-shell .condition-input-screen .fan-detail-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2;transition:transform .16s ease}
+    .workspace-shell .condition-input-screen .fan-detail-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+    .workspace-shell .condition-input-screen .fan-detail{margin-top:6px;padding:16px;border:1px solid var(--line-strong);border-radius:10px;background:#F7F7F7;box-shadow:none}
+    .workspace-shell .condition-input-screen .fan-detail-title{margin:0 0 12px;padding:0;border:0;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+    .workspace-shell .condition-input-screen .fan-input-set{padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+    .workspace-shell .condition-input-screen .fan-input-order{width:24px;height:24px;align-self:center;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:#55585B;font-size:11px;font-weight:500;line-height:1.2}
     .workspace-shell .condition-input-screen .condition-row-actions{min-height:46px;align-items:center}
     .workspace-shell .request-content-screen textarea{min-height:70px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .layout{grid-template-areas:"workspace-bar workspace-bar" "workspace-content agent";grid-template-rows:auto minmax(0,1fr)}
@@ -2933,7 +2941,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           const fan = asObj(rawFan);
           return `<div class="fan-input-set" data-fan-set="${fanIndex + 1}"><span class="fan-input-order" aria-hidden="true">${fanIndex + 1}</span><label class="fan-input-column"><span>${esc(fieldLabels.fan_location)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_location" value="${esc(fan.location)}" placeholder="예 : 상/중/하" aria-label="${esc(fieldLabels.fan_location)} ${fanIndex + 1}" /></label><label class="fan-input-column"><span>${esc(fieldLabels.fan_rpm)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_rpm" value="${esc(asObj(fan.values).fan_rpm)}" aria-label="${esc(fieldLabels.fan_rpm)} ${fanIndex + 1}" /></label></div>`;
         }).join("");
-        return `<span class="fan-rpm-editor">${modeSelect}<button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-expanded="${String(expanded)}">팬별 설정 ${expanded ? "▲" : "▼"}</button></span><div class="fan-detail" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
+        return `<span class="fan-rpm-editor">${modeSelect}<button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button></span><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
       };
       const rowHtml = (card, isFirst, rowIndex) => {
         const row = asObj(card), cardId = contextText(row.id), type = contextText(row.type), fields = asObj(row.fields);

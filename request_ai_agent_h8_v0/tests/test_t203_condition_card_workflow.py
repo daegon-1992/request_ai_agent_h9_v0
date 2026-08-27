@@ -144,7 +144,7 @@ def test_condition_boxes_use_screen_four_h8_control_density():
     assert '.workspace-shell .condition-input-screen .condition-group{border-radius:10px}' in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-group-head{min-height:0;'
-        'padding:10px 10px 0;border-bottom:0;background:transparent}'
+        'padding:16px 16px 0;border-bottom:0;background:transparent}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-group-head h3{'
@@ -180,21 +180,52 @@ def test_condition_boxes_use_screen_four_h8_control_density():
         'margin:-10px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .heat-exchanger-custom-control '
-        '> button{height:46px;min-height:46px}'
+        '.workspace-shell .condition-input-screen .heat-exchanger-custom-control{'
+        'grid-template-columns:minmax(0,1fr) 42px}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .fan-count-custom-control '
-        '> button{height:46px;min-height:46px}'
+        '.workspace-shell .condition-input-screen '
+        ':is(.heat-exchanger-custom-control,.fan-count-custom-control) > button{'
+        'width:42px;min-width:42px;height:46px;min-height:46px}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .fan-count-custom-control input{padding-inline:6px}'
     ) in HTML_TEMPLATE
     assert '.condition-row-action{width:34px;min-width:34px;height:34px;' in HTML_TEMPLATE
 
 
 def test_all_condition_boxes_use_the_shared_content_spacing():
-    assert '.condition-card-rows{display:grid;gap:8px;padding:var(--request-workspace-card-content-padding,10px)}' in HTML_TEMPLATE
+    assert '.condition-card-rows{display:grid;gap:8px;padding:16px}' in HTML_TEMPLATE
+    assert '.fan-input-column{display:flex;flex-direction:column;gap:6px;min-width:0}' in HTML_TEMPLATE
     assert 'const primary = types.filter(type => type !== "supply_air" && type !== "space_environment").map(groupHtml).join("");' in HTML_TEMPLATE
     assert '${primary ? `<div class="condition-primary-grid">${primary}</div>` : ""}' in HTML_TEMPLATE
     assert 'const environment = ["space_environment", "supply_air"]' in HTML_TEMPLATE
+
+
+def test_fan_detail_uses_the_screen_four_local_action_and_subsurface_standard():
+    assert (
+        '.workspace-shell .condition-input-screen .fan-detail-toggle{min-height:36px;'
+        'justify-self:start;padding:0 11px;display:inline-flex;align-items:center;'
+        'justify-content:center;gap:6px;border:1px solid var(--line-strong);border-radius:8px;'
+        'background:var(--paper);color:var(--ink);font-size:14px;font-weight:500;line-height:1.2}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .fan-detail-toggle svg{width:16px;height:16px;'
+        'fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2;'
+        'transition:transform .16s ease}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .fan-detail{margin-top:6px;padding:16px;'
+        'border:1px solid var(--line-strong);border-radius:10px;background:#F7F7F7;box-shadow:none}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .fan-detail-title{margin:0 0 12px;'
+        'padding:0;border:0;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .fan-input-set{padding:12px;'
+        'border:1px solid var(--line);border-radius:8px;background:var(--paper)}'
+    ) in HTML_TEMPLATE
 
 
 def test_heat_exchanger_spec_is_narrow_and_remaining_columns_share_equal_widths():
@@ -243,7 +274,7 @@ def test_operating_rows_use_fan_names_and_heat_exchanger_numeric_inputs_share_wi
     assert '.condition-card-type-operating .condition-card-row{grid-template-columns:64px 100px minmax(260px,1fr) max-content;align-items:end}' in HTML_TEMPLATE
     assert '.condition-card-type-operating .condition-row-actions{grid-column:4;grid-row:1}' in HTML_TEMPLATE
     assert '.condition-card-type-operating .condition-spec-name{padding-inline:3px;white-space:nowrap}' in HTML_TEMPLATE
-    assert '.fan-count-custom-control{grid-template-columns:minmax(0,1fr) 32px;gap:4px;width:90px}' in HTML_TEMPLATE
+    assert '.fan-count-custom-control{grid-template-columns:minmax(0,1fr) 42px;gap:4px;width:90px}' in HTML_TEMPLATE
     assert 'repeat(5,minmax(0,1fr))' in HTML_TEMPLATE
     assert '.fan-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))' in HTML_TEMPLATE
     assert '.fan-input-set{display:grid;grid-template-columns:30px minmax(100px,1fr) minmax(90px,120px)' in HTML_TEMPLATE

@@ -131,6 +131,10 @@ def test_screen04_renders_the_three_fan_input_structures_and_one_inline_detail()
     assert 'fan-summary' not in renderer
     assert 'fanCompactText' not in renderer
     assert '${modeSelect}<button class="ghost fan-detail-toggle"' in renderer
+    assert 'aria-controls="fan-detail-${esc(cardId)}"' in renderer
+    assert '<span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true">' in renderer
+    assert 'id="fan-detail-${esc(cardId)}"' in renderer
+    assert '팬별 설정 ${expanded ? "▲" : "▼"}' not in renderer
     assert renderer.count('class="condition-card-row"') == 1
     assert 'operatingExtraWidth' not in renderer
 
