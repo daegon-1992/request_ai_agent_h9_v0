@@ -786,7 +786,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-heading-code{display:none}
     .workspace-shell .screen-description{margin:0 0 7px;color:var(--request-workspace-muted);font-size:13px;line-height:1.35}
     .workspace-shell .geometry-screen .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:21px}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-accent);font-size:15px;font-weight:600}
     .workspace-shell .geometry-screen .chev,
@@ -865,6 +865,21 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button.primary{font-size:15px;font-weight:600}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-body{padding:16px;border-top:0}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-doc{gap:12px}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section{padding:16px;border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section h4{margin:0 0 8px;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv{font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv > span:first-child{color:#45484B;font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv > span:last-child{color:var(--ink);font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table th{font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table td{font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] :is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:#C62828}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message:empty{display:none}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
@@ -1328,7 +1343,7 @@ HTML_TEMPLATE = r"""<!doctype html>
             <p class="screen-description">입력한 의뢰 내용을 확인한 뒤 Word 의뢰서를 생성합니다.</p>
             <section class="section open" id="section-preview" data-section="preview">
               <div class="section-head">
-                <div class="section-title"><span class="section-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"></path><path d="M15 4v4h4M9 12h6M9 16h6"></path></svg></span><h3>의뢰서 미리보기</h3></div>
+                <div class="section-title"><h3>의뢰서 미리보기</h3></div>
                 <div class="section-meta" id="meta-preview"></div>
               </div>
               <div class="section-body">

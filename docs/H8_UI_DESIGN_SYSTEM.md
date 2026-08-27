@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `8179566CDA10F27684E4CA00B21829696C422BF86F6E858CC5DE98799E8CC72E`.
+- 기준 소스 SHA-256: `D916CE4DE20A0FAB81848AD69FD4309B1478B2AD41FEFFB09C5FF46548809AF8`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -113,7 +113,7 @@ Root spacing scale은 다음과 같다.
 | Agent Heading | `.stage-assist-title` | `18px` | `600` | `1.6` 상속 | `#151617` |
 | Agent Message | `.msg` | `14px` | `400` | `1.65` | `--ink` 상속 |
 
-SCREEN-02의 heading은 `24px/600/1.3`, `margin-bottom:8px`, `padding:3px 0`, letter-spacing `-0.02em`이다. 현재 SCREEN-05/06의 `21px` heading은 canonical variant가 아니라 migration 대상이다.
+SCREEN-02의 heading은 `24px/600/1.3`, `margin-bottom:8px`, `padding:3px 0`, letter-spacing `-0.02em`이다. SCREEN-03~06도 같은 canonical heading 계약을 사용한다.
 
 ## 4. Global Shell Components
 
@@ -319,7 +319,7 @@ Layout Variant는 Card Header/Body `16px` inset, label/header-to-control `6px`, 
 | SCREEN-03 | heading/description, card chrome, title, `46px` control, read-only height, `34px` row action, 표준 Error Surface와 진행 차단 gate | Column Header와 첫 input row 간격 `4px` → 표준 `6px` 필요 | 제품 column 비율과 `9px` Data Grid gap |
 | SCREEN-04 | heading/description, `16px` Card Header/Body inset, title typography, label-control `6px`, `46px` control, composite `42px` track, `42×46px` Restore Action, `34px` row action, Fan Detail Local Action/Sub-surface | 없음 | identity/Fan/HEX column 비율, Fan Count 전체 폭 `90px`, Fan Detail 2열→1열 반응형 Grid, `8~12px` Grid gap |
 | SCREEN-05 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow, `36px` Case Local Action, `44px` Navigation Action, Matrix Header `13px/500/1.45`, 상태색 box의 표준 Error/Warning Surface, 오류 진행 차단 gate | 없음 | Case Matrix 열 수, sticky header, cell padding, matrix overflow |
-| SCREEN-06 | neutral foundation, preview inner surface, SCREEN-03/05와 공용인 상태색 Error/Warning Surface | heading `21px` → `24px`; legacy section header padding/divider/title와 title icon; section shadow; Word Primary Action `36px` → `44px`; 일반 table header typography | Preview/Word 정보 구조와 review Grid |
+| SCREEN-06 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow/title icon, `44px` Word Primary Action, Preview Header `13px/500/1.45`, read-only value `14px/400/1.45`, `14px` inline 누락 icon, SCREEN-03/05와 공용인 상태색 Error/Warning Surface | 없음 | Preview/Word 정보 구조와 review Grid |
 | Global Shell / Agent | Foundation, Shell surface, navigation, resizer, Agent message/input 규격 | Workspace card 표준을 Shell card에 역적용하지 않음 | desktop/overlay, Workspace-Agent 비율 |
 | Modal / Feedback | SCREEN-03/05/06 Error/Warning 상태색 surface, `20px` icon, 빈 container 비표시 | Modal radius `8px` → surface 표준 `10px`; 다른 화면의 같은 상태는 해당 화면 migration 시 공용 규격 연결 | message 길이와 action 수 |
 

@@ -163,7 +163,8 @@ def test_screen_four_uses_canonical_typography_and_navigation_density():
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{'
-        'margin-bottom:8px;padding:3px 0;font-size:21px}'
+        'margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;'
+        'letter-spacing:-.02em;color:var(--ink)}'
     ) in HTML_TEMPLATE
 
 
