@@ -515,12 +515,37 @@ HTML_TEMPLATE = r"""<!doctype html>
     .chip.candidate{border-color:#c6c6c6;background:#f7f7f7;color:var(--warning)}
     .field-status-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:500}
     .matrix-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
-    .case-source-reference{display:grid;gap:6px;margin-bottom:10px}
-    .case-source-guidance{margin:0;color:var(--ink);font-size:12px;font-weight:500;line-height:1.45}
+    .case-source-reference{display:grid;margin-bottom:16px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden}
+    .case-source-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:#F7F7F7}
+    .case-source-head>div{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:wrap}
+    .case-source-head h4{margin:0;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+    .case-source-count{color:#55585B;font-size:13px;font-weight:500;line-height:1.55}
+    .case-source-toggle{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
+    .case-source-content{padding:0 14px 12px}
+    .case-source-content[hidden]{display:none}
+    .case-source-guidance{margin:10px 0 4px;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
     .case-source-list{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
-    .case-source-list li{display:grid;grid-template-columns:minmax(84px,140px) minmax(0,1fr);gap:10px;align-items:baseline;min-width:0;padding:6px 0;border-bottom:1px solid var(--line);font-size:11px;line-height:1.4}
+    .case-source-list li{display:grid;grid-template-columns:minmax(110px,125px) minmax(0,1fr);gap:12px;align-items:start;min-width:0;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.55}
     .case-source-name{color:#242424;font-weight:600;overflow-wrap:anywhere}
-    .case-source-details{color:var(--muted);overflow-wrap:anywhere}
+    .case-source-details{min-width:0;color:#45484B;font-weight:400;overflow-wrap:anywhere;white-space:normal}
+    .case-matrix-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}
+    .case-matrix-title{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+    .case-matrix-title h4{margin:0;color:var(--ink);font-size:16px;font-weight:600;line-height:1.55}
+    .case-count{color:#55585B;font-size:13px;font-weight:500;line-height:1.45}
+    .case-validation-status{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border:1px solid var(--line);border-radius:8px;background:#F7F7F7;color:#55585B;font-size:12px;font-weight:500;line-height:1.3}
+    .case-validation-status.error{border-color:#E8B4B0;background:#FFF2F1;color:#C62828}
+    .case-validation-status.warning{border-color:#E4D3AD;background:#FFF9ED;color:#A76200}
+    .case-validation-status.ok{color:#3E6B48}
+    .case-matrix-toolbar>[data-action="add-case"]{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap}
+    .case-select-field{width:100%;min-width:0;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);overflow:hidden}
+    .case-select-field:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    .case-select-field select{display:block;width:100%;min-width:0;min-height:38px;padding:8px 11px 5px;border:0;border-radius:7px 7px 0 0;background-color:var(--paper);color:var(--ink);font-size:14px;font-weight:600;line-height:1.35;box-shadow:none}
+    .case-select-field select:focus-visible{border:0;outline:0;outline-offset:0;box-shadow:none}
+    .case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;font-weight:400;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
+    .case-select-summary[hidden]{display:none}
+    .case-number{width:54px;color:#45484B;font-size:14px;font-weight:600;text-align:center}
+    .case-remove-cell{width:64px;text-align:center}
+    .case-remove-action{min-height:36px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap}
     .geometry-drawing-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
     .case-review-message{display:grid;gap:7px;position:relative;margin-top:10px;padding:8px 10px;border-radius:8px;color:#242424;font-size:12px;line-height:1.4}
     .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
@@ -672,7 +697,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       .layout.agent-hidden .agent-dock{display:grid;opacity:0;pointer-events:none;transform:translateX(calc(100% + 24px));visibility:hidden}
     }
     @media (max-width:720px){
-      .case-source-list li{grid-template-columns:minmax(76px,110px) minmax(0,1fr);gap:7px}
+      .case-source-list li{grid-template-columns:110px minmax(0,1fr);gap:10px}
       .screen-map{grid-template-columns:repeat(3,minmax(0,1fr));min-height:0}
       .screen-map-item{min-height:82px}
       .screen-map-item:nth-child(4){padding-left:18px;border-radius:12px 0 0 12px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%)}
@@ -861,10 +886,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-body{padding:16px;border-top:0}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head > .case-section-actions button{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case .case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-action-bar button.primary{font-size:15px;font-weight:600}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td{height:80px;padding:8px;vertical-align:middle}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-body{padding:16px;border-top:0}
@@ -1320,7 +1347,6 @@ HTML_TEMPLATE = r"""<!doctype html>
           <section class="section open" id="section-case" data-section="case_matrix">
             <div class="section-head">
               <div class="section-title"><h3>Case 구성</h3></div>
-              <div class="case-section-actions"><button class="primary" type="button" data-action="add-case">Case 추가</button></div>
             </div>
             <div class="section-body">
               <div id="caseCommon"></div>
@@ -3117,9 +3143,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       });
     }
 
-    function preserveCaseSelections(){
+    function preserveCaseSelections(changedSelect=null){
       const matrix = asObj(requestState.case_matrix);
       requestState = {...requestState, case_matrix:{...matrix, rows:collectCaseRows()}};
+      if (changedSelect) updateCaseSelectSummary(changedSelect);
       lastCaseDeleteNoticeVisible = false;
       document.querySelector("[data-last-case-delete-notice]")?.remove();
       schedulePreviewRefresh();
@@ -3199,6 +3226,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       recommendMode = false;
       lastPlannerActiveFieldId = "";
       lastCaseDeleteNoticeVisible = false;
+      caseSourceSummaryExpanded = true;
       adoptStateFromResponse(data);
       resetCaseImpactBaseline();
       restoreChatHistoryFromState();
@@ -3248,6 +3276,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     let caseImpactSideState = {status:"", reasons:[]};
     let caseConfigurationWarning = "";
     let lastCaseDeleteNoticeVisible = false;
+    let caseSourceSummaryExpanded = true;
 
     function sourceFieldValue(value){
       return contextText(asObj(value).value ?? value);
@@ -3368,19 +3397,101 @@ HTML_TEMPLATE = r"""<!doctype html>
       return {count, text:values.join(" / ") || "-", missing:mode !== "individual" || fans.some((fan, index) => !contextText(asObj(fan).location) || !rpms[index])};
     }
 
-    function caseSourceReferenceHtml(){
-      const matrix = asObj(requestState.case_matrix);
-      const options = liveCaseDropdownOptions();
+    function caseSelectionSources(){
       const geometry = asObj(requestState.geometry);
       const products = [asObj(geometry.base_product), ...asArray(geometry.comparison_products)];
-      const productsById = new Map(products.map(product => [contextText(product.geometry_id), product]));
-      const conditionSets = asArray(asObj(requestState.conditions).condition_sets);
-      const operatingById = new Map(conditionSets
-        .filter(card => contextText(asObj(card).type) === "operating")
-        .map(card => [contextText(asObj(card).id), asObj(card)]));
-      const specificationById = new Map(conditionSets
-        .filter(card => contextText(asObj(card).type) === "heat_exchanger")
-        .map(card => [contextText(asObj(card).id), asObj(card)]));
+      const conditionSets = asArray(asObj(requestState.conditions).condition_sets).map(asObj);
+      return {
+        products,
+        productsById:new Map(products.map((product, index) => [contextText(product.geometry_id), {product, index}])),
+        operatingById:new Map(conditionSets
+          .filter(card => contextText(card.type) === "operating")
+          .map(card => [contextText(card.id), card])),
+        specificationById:new Map(conditionSets
+          .filter(card => contextText(card.type) === "heat_exchanger")
+          .map(card => [contextText(card.id), card])),
+      };
+    }
+
+    function caseOperatingSelectionPresentation(rawCard, rawLabel){
+      const card = asObj(rawCard), fans = asArray(card.fans).map(asObj);
+      const display = operatingFanDisplay(card), count = display.count;
+      const label = `${contextText(rawLabel)} · 팬 ${count}개`;
+      const rpms = fans.map(fan => contextText(asObj(fan.values).fan_rpm));
+      if (count === 1) return {label, summary:rpms[0] ? `${rpms[0]} RPM` : ""};
+      const allSame = rpms.length === count && rpms.every(value => value && value === rpms[0]);
+      if (allSame) return {label, summary:`모든 팬 ${rpms[0]} RPM`};
+      const entries = fans.map((fan, index) => {
+        const rpm = rpms[index];
+        if (!rpm) return "";
+        const identity = contextText(fan.location) || contextText(fan.name) || `팬 ${index + 1}`;
+        return `${identity} ${rpm}`;
+      }).filter(Boolean);
+      const groups = [];
+      for (let index = 0; index < entries.length; index += 2) groups.push(entries.slice(index, index + 2).join(" · "));
+      return {label, summary:groups.length ? `${groups.join(" / ")} RPM` : ""};
+    }
+
+    function caseSpecificationSelectionPresentation(rawCard, rawLabel){
+      const card = asObj(rawCard), fields = asObj(card.fields), type = heatExchangerType([card]);
+      const tubeDiameter = fieldDisplayValue(fields.tube_diameter);
+      const finType = fieldDisplayValue(fields.fin_type);
+      const rowCount = fieldDisplayValue(fields.row_count);
+      const fpi = fieldDisplayValue(fields.fpi);
+      const suffix = (value, unit) => value && value.toLowerCase().endsWith(unit.toLowerCase()) ? value : (value ? `${value}${unit}` : "");
+      const fpiLabel = contextText(heatExchangerFieldLabels(type).fpi) || "FPI";
+      const details = [
+        type === "Fin&Tube" ? suffix(tubeDiameter, "Pi") : tubeDiameter,
+        finType,
+        suffix(rowCount, "열"),
+        fpi ? `${fpiLabel} ${fpi}` : "",
+      ].filter(Boolean);
+      return {label:[contextText(rawLabel), type].filter(Boolean).join(" · "), summary:details.join(" · ")};
+    }
+
+    function caseSelectionPresentation(key, rawValue, rawLabel="", sources=caseSelectionSources()){
+      const value = contextText(rawValue), fallbackLabel = contextText(rawLabel) || value;
+      if (!value) return {label:fallbackLabel, summary:""};
+      const productSource = asObj(sources.productsById.get(value));
+      if (productSource.product) {
+        const product = asObj(productSource.product);
+        const base = contextText(product.role) === "base";
+        const label = `${fallbackLabel}${base ? " · Base" : ""}`;
+        const drawingNo = productText(product, "drawing_no");
+        return {label, summary:drawingNo ? `도면번호 ${drawingNo}` : ""};
+      }
+      if (sources.operatingById.has(value)) return caseOperatingSelectionPresentation(sources.operatingById.get(value), fallbackLabel);
+      if (sources.specificationById.has(value)) return caseSpecificationSelectionPresentation(sources.specificationById.get(value), fallbackLabel);
+      return {label:fallbackLabel, summary:""};
+    }
+
+    function caseSelectFieldHtml(rowId, key, selected, options, sources){
+      const selectedValue = contextText(selected);
+      let selectedPresentation = {label:"선택", summary:""};
+      const optionHtml = asArray(options).map(option => {
+        const item = asObj(option), value = contextText(item.value);
+        const presentation = caseSelectionPresentation(key, value, item.label || value, sources);
+        if (value === selectedValue) selectedPresentation = presentation;
+        return `<option value="${esc(value)}" ${value === selectedValue ? "selected" : ""}>${esc(presentation.label)}</option>`;
+      }).join("");
+      return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${optionHtml}</select><div class="case-select-summary" ${selectedPresentation.summary ? "" : "hidden"}>${esc(selectedPresentation.summary)}</div></div>`;
+    }
+
+    function updateCaseSelectSummary(select){
+      const field = select?.closest?.(".case-select-field"), summary = field?.querySelector?.(".case-select-summary");
+      if (!field || !summary) return;
+      const selectedOption = select.selectedOptions?.[0];
+      const presentation = caseSelectionPresentation(select.dataset.caseField, select.value, selectedOption?.textContent || "");
+      summary.textContent = presentation.summary;
+      summary.hidden = !presentation.summary;
+    }
+
+    function caseSourceReferenceHtml(){
+      const options = liveCaseDropdownOptions();
+      const sources = caseSelectionSources();
+      const productsById = new Map(sources.products.map(product => [contextText(product.geometry_id), product]));
+      const operatingById = sources.operatingById;
+      const specificationById = sources.specificationById;
       const listHtml = (items, detailsFor) => {
         const rows = asArray(items).map(raw => {
           const item = asObj(raw), value = contextText(item.value), label = contextText(item.label) || value;
@@ -3404,7 +3515,18 @@ HTML_TEMPLATE = r"""<!doctype html>
         const detail = key => fieldDisplayValue(fields[key]) || "-";
         return `HEX type: ${type} · ${labels.tube_diameter}: ${detail("tube_diameter")} · ${labels.fin_type}: ${detail("fin_type")} · ${labels.row_count}: ${detail("row_count")} · ${labels.fpi}: ${detail("fpi")}`;
       });
-      return `<div class="case-source-reference" aria-label="Case 선택 기준 입력값"><p class="case-source-guidance">아래 입력값을 확인하고 Case별 형상·운전·사양을 선택해 주세요.</p><ul class="case-source-list">${geometryList}${operatingList}${specificationList}</ul></div>`;
+      const countText = `형상 ${asArray(options.geometry_id).length} · 운전 ${asArray(options.fan).length} · 사양 ${asArray(options.heat_exchanger).length}`;
+      return `<section class="case-source-reference" aria-labelledby="caseSourceTitle"><div class="case-source-head"><div><h4 id="caseSourceTitle">입력값 요약</h4><span class="case-source-count">${esc(countText)}</span></div><button class="ghost case-source-toggle" type="button" data-action="toggle-case-source" aria-controls="caseSourceDetails" aria-expanded="${String(caseSourceSummaryExpanded)}">${caseSourceSummaryExpanded ? "접기" : "펼치기"}</button></div><div class="case-source-content" id="caseSourceDetails" ${caseSourceSummaryExpanded ? "" : "hidden"}><p class="case-source-guidance">아래 입력값을 확인하고 Case별 형상·운전·사양을 선택해 주세요.</p><ul class="case-source-list">${geometryList}${operatingList}${specificationList}</ul></div></section>`;
+    }
+
+    function caseTableValidationPresentation(){
+      const issueCount = caseConfigurationIssues().length;
+      const coverage = caseCoverageState();
+      const parts = [];
+      if (issueCount) parts.push(`오류 ${issueCount}건`);
+      if (coverage.complete === false) parts.push("미사용 입력값 확인 필요");
+      else if (!issueCount && coverage.complete === true) parts.push("검증 완료");
+      return {text:parts.join(" · "), tone:issueCount ? "error" : coverage.complete === false ? "warning" : coverage.complete === true ? "ok" : ""};
     }
 
     function caseTableHtml(){
@@ -3412,23 +3534,25 @@ HTML_TEMPLATE = r"""<!doctype html>
       const columns = asArray(matrix.visible_columns);
       const rows = asArray(matrix.rows);
       const optionMap = liveCaseDropdownOptions();
-      if (!columns.length || !rows.length) return `<div class="empty">형상 또는 Case 추가 후 직접 매핑해 주세요.</div>`;
-      const select = (rowId, key, selected, options) => `<select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${asArray(options).map(option => { const item = asObj(option); const value = contextText(item.value); return `<option value="${esc(value)}" ${value === contextText(selected) ? "selected" : ""}>${esc(item.label || value)}</option>`; }).join("")}</select>`;
+      const sources = caseSelectionSources();
+      const validation = caseTableValidationPresentation();
+      const toolbar = `<div class="case-matrix-toolbar"><div class="case-matrix-title"><h4>Case 조합표</h4><span class="case-count">Case ${rows.length}개</span>${validation.text ? `<span class="case-validation-status ${esc(validation.tone)}">${esc(validation.text)}</span>` : ""}</div><button class="primary" type="button" data-action="add-case">Case 추가</button></div>`;
+      if (!columns.length || !rows.length) return `${toolbar}<div class="empty">형상 또는 Case 추가 후 직접 매핑해 주세요.</div>`;
       const head = columns.map(column => `<th>${esc(asObj(column).label || asObj(column).key)}</th>`).join("");
       const body = rows.map((raw, index) => {
         const row = asObj(raw), id = contextText(row.case_id), values = asObj(row.condition_values);
         return `<tr data-case-row="${esc(id)}">${columns.map(column => {
           const item = asObj(column), key = contextText(item.key);
-          if (key === "case_no") return `<td>${index + 1}</td>`;
-          if (key === "remove") return `<td><button class="icon" data-action="remove-case" data-case-id="${esc(id)}" title="Case 제거" aria-label="Case 제거">-</button></td>`;
+          if (key === "case_no") return `<td class="case-number">${index + 1}</td>`;
+          if (key === "remove") return `<td class="case-remove-cell"><button class="ghost case-remove-action" type="button" data-action="remove-case" data-case-id="${esc(id)}" title="Case ${index + 1} 삭제" aria-label="Case ${index + 1} 삭제">삭제</button></td>`;
           const selected = key === "geometry_id" ? row.geometry_id : values[key];
-          return `<td>${select(id, key, selected, optionMap[key])}</td>`;
+          return `<td>${caseSelectFieldHtml(id, key, selected, optionMap[key], sources)}</td>`;
         }).join("")}</tr>`;
       }).join("");
       const deleteNotice = lastCaseDeleteNoticeVisible
         ? `<div class="case-action-notice" data-last-case-delete-notice role="status"><strong>마지막 Case는 삭제할 수 없습니다.</strong><span>해석을 위해 최소 1개의 Case가 필요합니다.</span></div>`
         : "";
-      return `<div class="matrix-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${deleteNotice}`;
+      return `${toolbar}<div class="matrix-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${deleteNotice}`;
     }
 
     function caseValidatorState(state=requestState){
@@ -3553,6 +3677,12 @@ HTML_TEMPLATE = r"""<!doctype html>
       target.innerHTML = incomplete
         ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 Case에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p>`
         : "";
+    }
+
+    function toggleCaseSourceSummary(){
+      caseSourceSummaryExpanded = !caseSourceSummaryExpanded;
+      renderCasePreview();
+      window.requestAnimationFrame(() => document.querySelector('[data-action="toggle-case-source"]')?.focus());
     }
 
     function renderPreviewCaseMatrixStatus(state=requestState, options={}){
@@ -4920,6 +5050,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         if (!button) return;
         const action = button.dataset.action;
         if (action === "confirm-case-configuration") { confirmCaseConfiguration().catch(err => console.error(err)); return; }
+        if (action === "toggle-case-source") { toggleCaseSourceSummary(); return; }
         if (action === "review-case-coverage") { navigateScreen("SCREEN-05"); return; }
         if (action === "add-case") { mutateCaseRows("add"); return; }
         if (action === "remove-case") { mutateCaseRows("remove", button.dataset.caseId || ""); return; }
@@ -4992,7 +5123,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       });
       $("formView").addEventListener("change", event => {
         if (event.target.matches("input, textarea, select")) renderScreenNavigation();
-        if (event.target.matches("select[data-case-field]")) preserveCaseSelections();
+        if (event.target.matches("select[data-case-field]")) preserveCaseSelections(event.target);
         else if (event.target.matches('[data-product-field="drawing_no"]')) schedulePreviewRefresh();
         else if (event.target.matches("select[data-heat-exchanger-type]")) handleHeatExchangerTypeChange(event.target);
         else if (event.target.matches("select[data-heat-exchanger-field]")) handleHeatExchangerCascadeChange(event.target);

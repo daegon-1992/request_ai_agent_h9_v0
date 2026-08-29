@@ -94,7 +94,9 @@ def test_case_matrix_uses_live_values_after_any_condition_row_is_removed():
     assert 'add("heat_exchanger", card.id, `사양 ${++heatExchangerIndex}`);' in helper
     assert 'Object.prototype.hasOwnProperty.call(fields, key)' in helper
     assert 'const options = liveCaseDropdownOptions();' in source_reference
-    assert '.map(card => [contextText(asObj(card).id), asObj(card)]));' in source_reference
+    assert 'const sources = caseSelectionSources();' in source_reference
+    assert 'const operatingById = sources.operatingById;' in source_reference
+    assert 'const specificationById = sources.specificationById;' in source_reference
     assert 'const optionMap = liveCaseDropdownOptions();' in case_table
 
 

@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `2377AF42C649735189214773CAB93BE5344AEA45863EE8B357D27250ECB518A3`.
+- 기준 소스 SHA-256: `E668BE13BB3BB5AB079471D6970ED4AE70D65F845C34117099CB61578A8A7FBC`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -318,7 +318,7 @@ Layout Variant는 Card Header/Body `16px` inset, label/header-to-control `6px`, 
 | SCREEN-02 | Canonical heading/description/card/field/control/composite/action | 없음 | 4-column/2-column form 구성 |
 | SCREEN-03 | heading/description, card chrome, title, Column Header–control `6px`, `46px` control, read-only height, `34px` row action, 표준 Error Surface와 진행 차단 gate | 없음 | 제품 column 비율과 `9px` Data Grid gap |
 | SCREEN-04 | heading/description, `16px` Card Header/Body inset, title typography, label-control `6px`, `46px` control, composite `42px` track, `42×46px` Restore Action, `34px` row action, Fan Detail Local Action/Sub-surface | 없음 | identity/Fan/HEX column 비율, Fan Count 전체 폭 `90px`, Fan Detail 2열→1열 반응형 Grid, `8~12px` Grid gap |
-| SCREEN-05 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow, `36px` Case Local Action, `44px` Navigation Action, Matrix Header `13px/500/1.45`, 상태색 box의 표준 Error/Warning Surface, 오류 진행 차단 gate | 없음 | Case Matrix 열 수, sticky header, cell padding, matrix overflow |
+| SCREEN-05 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow, 세로형 입력값 요약 disclosure, `36px` Case Local Action, `44px` Navigation Action, Matrix Header `13px/500/1.45`, `64px` Case Select Field와 원본 데이터 기반 핵심 스펙, 상태색 box의 표준 Error/Warning Surface, 오류 진행 차단 gate | 없음 | Case Matrix 열 수, sticky header, 자동 확장 행과 matrix overflow |
 | SCREEN-06 | `24px` heading, `16px` Card Header/Body inset, transparent Header, `16px` title, no section shadow/title icon, `44px` Word Primary Action, Preview Header `13px/500/1.45`, read-only value `14px/400/1.45`, `14px` inline 누락 icon, SCREEN-03/05와 공용인 상태색 Error/Warning Surface | 없음 | Preview/Word 정보 구조와 review Grid |
 | Global Shell / Agent | Foundation, Shell surface, navigation, resizer, Agent message/input 규격 | Workspace card 표준을 Shell card에 역적용하지 않음 | desktop/overlay, Workspace-Agent 비율 |
 | Modal / Feedback | Modal radius `10px`, SCREEN-03/05/06 Error/Warning 상태색 surface, `20px` icon, 빈 container 비표시 | 없음 | message 길이와 action 수 |

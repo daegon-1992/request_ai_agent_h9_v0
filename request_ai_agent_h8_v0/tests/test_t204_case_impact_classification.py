@@ -51,12 +51,12 @@ def test_case_configuration_confirmation_revalidates_before_entering_preview():
 
 def test_case_matrix_dropdown_changes_refresh_validator_feedback_without_rebuilding_active_select():
     ui = UI_PATH.read_text(encoding="utf-8")
-    preserve_start = ui.index("function preserveCaseSelections()")
+    preserve_start = ui.index("function preserveCaseSelections(changedSelect=null)")
     preserve_end = ui.index("function collectState()", preserve_start)
     preserve = ui[preserve_start:preserve_end]
 
     assert '!event.target.matches("select[data-case-field]")' in ui
-    assert 'if (event.target.matches("select[data-case-field]")) preserveCaseSelections();' in ui
+    assert 'if (event.target.matches("select[data-case-field]")) preserveCaseSelections(event.target);' in ui
     assert 'const activeCaseSelect = document.activeElement?.matches?.("select[data-case-field]");' in ui
     assert 'if (!activeCaseSelect) $("caseMatrix").innerHTML' in ui
     assert 'lastCaseDeleteNoticeVisible = false;' in preserve

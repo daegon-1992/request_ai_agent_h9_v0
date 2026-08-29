@@ -207,7 +207,7 @@ def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts(
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
-        '> .section-head > .case-section-actions button{height:auto;min-height:36px;'
+        '.case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;'
         'padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}'
     ) in HTML_TEMPLATE
     assert (
@@ -218,6 +218,117 @@ def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts(
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
         '.matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}'
     ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
+        '.matrix-wrap tbody td{height:80px;padding:8px;vertical-align:middle}'
+    ) in HTML_TEMPLATE
+
+
+def test_case_matrix_selection_presentations_are_derived_from_source_objects():
+    start = HTML_TEMPLATE.index("function operatingFanDisplay")
+    end = HTML_TEMPLATE.index("function caseSourceReferenceHtml()", start)
+    helpers = HTML_TEMPLATE[start:end]
+    script = f'''
+const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+const asArray = value => Array.isArray(value) ? value : [];
+const contextText = value => String(value ?? "").trim();
+const fieldDisplayValue = value => typeof value === "object" && value !== null
+  ? contextText(value.display_value || value.value)
+  : contextText(value);
+const productText = (product, key) => fieldDisplayValue(asObj(product)[key]);
+const heatExchangerType = cards => contextText(asObj(asArray(cards)[0]).heat_exchanger_type) || "Fin&Tube";
+const heatExchangerFieldLabels = type => type === "Micro-Channel"
+  ? {{tube_diameter:"채널 폭 (Witdth)",fin_type:"Fin type",row_count:"열 수",fpi:"FPDM"}}
+  : {{tube_diameter:"관 직경(Pi)",fin_type:"Fin type",row_count:"열 수",fpi:"FPI"}};
+const esc = value => contextText(value);
+let requestState = {{
+  geometry:{{
+    base_product:{{geometry_id:"base_1",role:"base",drawing_no:"1"}},
+    comparison_products:[{{geometry_id:"comparison_1",role:"comparison",drawing_no:"11"}}]
+  }},
+  conditions:{{condition_sets:[
+    {{id:"operating_1",type:"operating",fans:[{{id:"fan_1",values:{{fan_rpm:"1"}}}}]}},
+    {{id:"operating_2",type:"operating",fans:[
+      {{id:"fan_1",values:{{fan_rpm:"11111"}}}},{{id:"fan_2",values:{{fan_rpm:"11111"}}}},
+      {{id:"fan_3",values:{{fan_rpm:"11111"}}}},{{id:"fan_4",values:{{fan_rpm:"11111"}}}}
+    ]}},
+    {{id:"operating_3",type:"operating",fan_rpm_mode:"individual",fans:[
+      {{id:"fan_1",location:"상",values:{{fan_rpm:"100"}}}},
+      {{id:"fan_2",location:"중상",values:{{fan_rpm:"200"}}}},
+      {{id:"fan_3",location:"중하",values:{{fan_rpm:"300"}}}},
+      {{id:"fan_4",location:"하",values:{{fan_rpm:"1000"}}}}
+    ]}},
+    {{id:"heat_exchanger_1",type:"heat_exchanger",heat_exchanger_type:"Fin&Tube",fields:{{
+      tube_diameter:"5",fin_type:"Slit(Half)",row_count:"1",fpi:"21"
+    }}}}
+  ]}}
+}};
+{helpers}
+const sources = caseSelectionSources();
+const output = {{
+  base:caseSelectionPresentation("geometry_id","base_1","형상 1",sources),
+  comparison:caseSelectionPresentation("geometry_id","comparison_1","형상 2",sources),
+  single:caseSelectionPresentation("fan","operating_1","운전 1",sources),
+  common:caseSelectionPresentation("fan","operating_2","운전 2",sources),
+  individual:caseSelectionPresentation("fan","operating_3","운전 3",sources),
+  specification:caseSelectionPresentation("heat_exchanger","heat_exchanger_1","사양 1",sources)
+}};
+process.stdout.write(JSON.stringify(output));
+'''
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", check=False)
+
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout) == {
+        "base": {"label": "형상 1 · Base", "summary": "도면번호 1"},
+        "comparison": {"label": "형상 2", "summary": "도면번호 11"},
+        "single": {"label": "운전 1 · 팬 1개", "summary": "1 RPM"},
+        "common": {"label": "운전 2 · 팬 4개", "summary": "모든 팬 11111 RPM"},
+        "individual": {"label": "운전 3 · 팬 4개", "summary": "상 100 · 중상 200 / 중하 300 · 하 1000 RPM"},
+        "specification": {"label": "사양 1 · Fin&Tube", "summary": "5Pi · Slit(Half) · 1열 · FPI 21"},
+    }
+
+
+def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action_path():
+    source_reference = HTML_TEMPLATE.split("function caseSourceReferenceHtml()", 1)[1].split(
+        "function caseTableValidationPresentation()", 1
+    )[0]
+    case_table = HTML_TEMPLATE.split("function caseTableHtml()", 1)[1].split(
+        "function caseValidatorState", 1
+    )[0]
+    screen_start = HTML_TEMPLATE.index('class="screen-group stage-static-screen" data-screen="SCREEN-05"')
+    screen_end = HTML_TEMPLATE.index('class="workspace-form screen-group" data-screen="SCREEN-06"', screen_start)
+    screen = HTML_TEMPLATE[screen_start:screen_end]
+    preserve = HTML_TEMPLATE.split("function preserveCaseSelections(changedSelect=null)", 1)[1].split(
+        "function collectState()", 1
+    )[0]
+
+    assert "입력값 요약" in source_reference
+    assert "형상 ${asArray(options.geometry_id).length} · 운전 ${asArray(options.fan).length} · 사양 ${asArray(options.heat_exchanger).length}" in source_reference
+    assert 'data-action="toggle-case-source"' in source_reference
+    assert 'aria-expanded="${String(caseSourceSummaryExpanded)}"' in source_reference
+    assert "caseSourceSummaryExpanded ? \"접기\" : \"펼치기\"" in source_reference
+    assert "Case 조합표" in case_table
+    assert 'class="case-select-field"' in HTML_TEMPLATE
+    assert 'class="case-select-summary"' in HTML_TEMPLATE
+    assert "caseSelectFieldHtml(id, key, selected, optionMap[key], sources)" in case_table
+    assert HTML_TEMPLATE.count('data-action="add-case">Case 추가</button>') == 1
+    assert 'data-action="add-case"' not in screen.split('id="section-case"', 1)[1].split('<div class="section-body">', 1)[0]
+    assert 'aria-label="Case ${index + 1} 삭제"' in case_table
+    assert '>삭제</button>' in case_table
+    assert "updateCaseSelectSummary(changedSelect);" in preserve
+    assert 'preserveCaseSelections(event.target);' in HTML_TEMPLATE
+    assert "caseConfigurationIssues().length" in HTML_TEMPLATE.split("function caseTableValidationPresentation()", 1)[1].split("function caseTableHtml()", 1)[0]
+    assert "caseCoverageState()" in HTML_TEMPLATE.split("function caseTableValidationPresentation()", 1)[1].split("function caseTableHtml()", 1)[0]
+
+
+def test_case_matrix_ui_wraps_long_values_and_keeps_native_select_focus_contract():
+    assert '.case-source-list li{display:grid;grid-template-columns:minmax(110px,125px) minmax(0,1fr);' in HTML_TEMPLATE
+    assert '.case-source-details{min-width:0;color:#45484B;font-weight:400;overflow-wrap:anywhere;white-space:normal}' in HTML_TEMPLATE
+    assert '.case-select-field{width:100%;min-width:0;min-height:64px;' in HTML_TEMPLATE
+    assert '.case-select-field:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}' in HTML_TEMPLATE
+    assert '.case-select-field select{display:block;width:100%;min-width:0;min-height:38px;' in HTML_TEMPLATE
+    assert '.case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;' in HTML_TEMPLATE
+    assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}' in HTML_TEMPLATE
 
 
 def test_case_error_warning_groups_missing_fields_uses_visible_labels_and_clears_when_resolved():
@@ -395,7 +506,7 @@ def test_last_case_delete_uses_local_notice_and_case_manipulations_clear_it():
     mutate_start = HTML_TEMPLATE.index('function mutateCaseRows(action, caseId="")')
     mutate_end = HTML_TEMPLATE.index("function jumpToIssue", mutate_start)
     mutate = HTML_TEMPLATE[mutate_start:mutate_end]
-    preserve_start = HTML_TEMPLATE.index("function preserveCaseSelections()")
+    preserve_start = HTML_TEMPLATE.index("function preserveCaseSelections(changedSelect=null)")
     preserve_end = HTML_TEMPLATE.index("function collectState()", preserve_start)
     preserve = HTML_TEMPLATE[preserve_start:preserve_end]
     script = f"""
