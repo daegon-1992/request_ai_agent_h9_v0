@@ -187,7 +187,7 @@ def test_request_content_has_navigation_only_action_bar_without_save_or_preview_
     assert 'navigateScreen(screenAction.dataset.screenAction || "SCREEN-01")' in HTML_TEMPLATE
 
 
-def test_screen_two_sections_are_always_expanded_and_shell_has_three_rows():
+def test_screen_two_sections_are_always_expanded_and_shell_uses_content_row():
     screen_start = HTML_TEMPLATE.index('class="screen-group request-content-screen" data-screen="SCREEN-02"')
     screen_end = HTML_TEMPLATE.index('data-screen="SCREEN-03"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
@@ -198,7 +198,7 @@ def test_screen_two_sections_are_always_expanded_and_shell_has_three_rows():
     assert 'class="section open" id="section-overview"' in screen
     assert '.request-content-screen .section-body{display:block}' in HTML_TEMPLATE
     assert '.request-content-screen .section-head{cursor:default}' in HTML_TEMPLATE
-    assert '.workspace-shell{min-width:0;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;overflow:hidden}' in HTML_TEMPLATE
+    assert '.workspace-shell{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);gap:10px;overflow:hidden}' in HTML_TEMPLATE
     assert 'width:min(100%,820px)' not in HTML_TEMPLATE
     assert 'if ($("requestNoDisplay")) $("requestNoDisplay").textContent = requestNo;' in HTML_TEMPLATE
     assert 'if ($("requestNoDisplay")) $("requestNoDisplay").textContent = `해석의뢰 번호: ${requestNo}`;' not in HTML_TEMPLATE
@@ -207,21 +207,22 @@ def test_screen_two_sections_are_always_expanded_and_shell_has_three_rows():
     assert '.workspace-shell .screen-heading-code{display:none}' in HTML_TEMPLATE
 
 
-def test_workspace_top_actions_and_agent_use_the_existing_two_columns_in_two_rows():
+def test_navigation_form_and_agent_use_the_full_layout_row_below_header():
     header = HTML_TEMPLATE[HTML_TEMPLATE.index('<header class="topbar"'):HTML_TEMPLATE.index('</header>')]
     assert 'class="top-actions"' in header
     assert HTML_TEMPLATE.count('id="newRequestBtn"') == 1
     assert HTML_TEMPLATE.count('id="previewSlotBtn"') == 0
     assert HTML_TEMPLATE.count('id="orchestratorPanelToggle"') == 0
-    assert '.layout{grid-template-areas:"workspace-bar workspace-bar" "workspace-content agent";grid-template-rows:auto minmax(0,1fr)}' in HTML_TEMPLATE
+    assert '.layout{grid-template-areas:"workspace-content agent";grid-template-rows:minmax(0,1fr)}' in HTML_TEMPLATE
     assert '.workspace-shell{display:contents}' in HTML_TEMPLATE
     assert '.workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px;overflow:visible}' in HTML_TEMPLATE
     assert '.agent-dock{grid-area:agent;height:100%}' in HTML_TEMPLATE
     assert 'id="agentDock"' in HTML_TEMPLATE
     assert 'id="agentWorkPanel"' not in HTML_TEMPLATE
     assert 'id="orchestratorPanel"' not in HTML_TEMPLATE
-    assert '.workspace-shell .workspace-request-summary{display:flex;align-items:center;gap:0;width:100%}' in HTML_TEMPLATE
-    assert '.workspace-shell .workspace-number-block{margin-left:16px;padding-left:16px}' in HTML_TEMPLATE
+    assert 'data-shell="WorkspaceBar"' not in HTML_TEMPLATE
+    assert '<nav class="step-navigation" data-shell="StepNavigation"' in HTML_TEMPLATE
+    assert '<div class="screen-navigation-status" id="screenNavigationStatus"' in HTML_TEMPLATE
 
 
 def test_request_content_visual_corrections_use_connected_chevrons_and_page_scroll():

@@ -3,7 +3,8 @@ from request_ai_agent_h8_v0.ui import HTML_TEMPLATE
 
 def test_desktop_panels_default_to_reference_image_ratio_without_changing_total_layout_width():
     assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
-    assert 'grid-template-areas:"workspace-bar workspace-bar workspace-bar" "workspace-content panel-resizer agent"' in HTML_TEMPLATE
+    assert 'grid-template-areas:"workspace-content panel-resizer agent"' in HTML_TEMPLATE
+    assert 'grid-template-rows:minmax(0,1fr)' in HTML_TEMPLATE
 
 
 def test_panel_separator_supports_pointer_drag_between_one_to_one_and_three_to_one():
@@ -27,7 +28,7 @@ def test_resizer_stays_out_of_overlay_and_hidden_agent_layouts():
 
 
 def test_agent_hide_expands_workspace_and_reopen_restores_default_ratio():
-    assert '.layout.agent-hidden{grid-template-columns:minmax(0,1fr);grid-template-areas:"workspace-bar" "workspace-content"}' in HTML_TEMPLATE
+    assert '.layout.agent-hidden{grid-template-columns:minmax(0,1fr);grid-template-areas:"workspace-content"}' in HTML_TEMPLATE
     assert 'document.querySelector(".layout")?.style.removeProperty("grid-template-columns")' in HTML_TEMPLATE
     assert '$("panelResizer")?.setAttribute("aria-valuenow", "2.29")' in HTML_TEMPLATE
     set_agent_open = HTML_TEMPLATE[HTML_TEMPLATE.index("function setAgentOpen"):HTML_TEMPLATE.index("function syncChatMetadata")]

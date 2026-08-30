@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `E668BE13BB3BB5AB079471D6970ED4AE70D65F845C34117099CB61578A8A7FBC`.
+- 기준 소스 SHA-256: `27DAF1FAF16DBBB5A23E040BB2E1ECAC227B7B5EEB8459C80C8F1B2A52795B4C`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation
@@ -66,7 +66,7 @@ Root spacing scale은 다음과 같다.
 | Form control / Button | `input, textarea, select`, `button` | `8px` |
 | Standard Workspace Group Card | SCREEN-02 `.section` | `10px` |
 | Summary inner surface | `.prep-summary-values` | `8px` |
-| 의뢰 제목/번호 card | `.workspace-title-summary`, `.workspace-number-block` | `10px` |
+| Header 의뢰 정보 | `.header-request-summary` | 별도 surface 없음 |
 | 6-Step navigation shell | `.screen-map` | `11px` |
 | Main Workspace / Agent 주요 panel | `.panel`, `.main`, `.workspace`, `.agent-dock` | `12px` |
 | Agent message | `.msg` | `9px` |
@@ -78,7 +78,7 @@ Root spacing scale은 다음과 같다.
 --shadow-soft: 0 1px 4px rgba(0,0,0,.035);
 ```
 
-`--shadow`는 Global shell의 의뢰 제목/번호 card, 6-Step navigation, Main Workspace, Agent Dock에 사용한다. SCREEN-02를 기준으로 Workspace 내부의 Standard Group Card에는 shadow를 사용하지 않고 border와 whitespace로 계층을 만든다. `--shadow-soft`는 root에 정의되어 있지만 현재 `ui.py`에서 실제 `var(--shadow-soft)` 참조는 없다.
+`--shadow`는 Global shell의 6-Step navigation, Main Workspace, Agent Dock에 사용한다. 의뢰 제목과 의뢰 번호는 별도 card 없이 Global Header에 배치한다. SCREEN-02를 기준으로 Workspace 내부의 Standard Group Card에는 shadow를 사용하지 않고 border와 whitespace로 계층을 만든다. `--shadow-soft`는 root에 정의되어 있지만 현재 `ui.py`에서 실제 `var(--shadow-soft)` 참조는 없다.
 
 ### 2.6 Focus와 Disabled
 
@@ -97,6 +97,8 @@ Root spacing scale은 다음과 같다.
 | Role | 대표 selector | Size | Weight | Line-height | Color |
 |---|---|---:|---:|---:|---|
 | App Title | `h1` | `18px` | `600` | `1.2` | `--ink` 상속 |
+| Header Request Title | `.header-request-title` | `14px` | `500` | `1.35` | `--ink` |
+| Header Request Number | `.header-request-number` | `13px` | `400` | `1.35` | `--muted` |
 | Screen Heading | `.screen-heading` + `.screen-heading span` | `24px` | `600` | `1.3` | text `--ink`, heading container `--muted` |
 | Screen Description | `.screen-description` | `13px` | `400` | `1.35` | `--muted` |
 | Group / Card Title | SCREEN-02 `.section-head h3` | `16px` | `600` | `1.6` 상속 | `--ink` |
@@ -122,8 +124,7 @@ SCREEN-02의 heading은 `24px/600/1.3`, `margin-bottom:8px`, `padding:3px 0`, le
 | Global Header | `.topbar[data-shell="GlobalHeader"]` | 높이 `72px`, padding `12px 24px`, paper surface, 하단 `--line` border, shadow 없음 |
 | CAE Brand Mark | `.brand-mark` | `40×40px`, radius `8px`, `--brand-strong`, white `12px/700` text |
 | 새 의뢰 시작 Button | `#newRequestBtn.primary`, `.top-actions .primary` | 최소 높이 `40px`, padding `9px 16px`, radius `8px`, charcoal primary surface |
-| 의뢰 제목 Card | `.workspace-title-summary` | 최소 높이 `88px`, padding `15px 18px`, `--line` border, radius `10px`, paper, `--shadow`; label `12px/500`, title `16px/600` |
-| 의뢰 번호 Card | `.workspace-number-block` | 제목 card와 같은 surface; value `15px/600` |
+| Header 의뢰 정보 | `.header-request-summary` | Portal 제목 우측 inline 배치, 좌측 divider; 별도 label/card 없음; 제목 `14px/500`, 번호 `13px/400` |
 | 6-Step Navigation | `.step-navigation`, `.screen-map`, `.screen-map-item` | 6열 chevron hierarchy, shell 최소 높이 `82px`, `--line` border, radius `11px`, paper, `--shadow` |
 | Active Navigation | `.screen-map-item[aria-current="page"]` | `--brand-strong` background, white text, `z-index:2` |
 | Locked Navigation | `.screen-map-item[aria-disabled="true"]` | 기존 paper surface 유지, muted text `opacity:.55`, leading lock icon, not-allowed cursor |

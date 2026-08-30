@@ -101,6 +101,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       font-size:12px;font-weight:500;
     }
     h1{margin:0;font-size:16px;line-height:1.2;letter-spacing:0}
+    .portal-heading{flex:0 0 auto;min-width:0}
+    .header-request-summary{display:flex;align-items:center;gap:12px;min-width:0;margin-left:10px;padding-left:22px;border-left:1px solid var(--line-strong)}
+    .header-request-title{min-width:0;max-width:560px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:14px;font-weight:500;line-height:1.35;letter-spacing:-.01em}
+    .header-request-number{flex:0 0 auto;margin:0;padding-left:12px;border-left:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:400;line-height:1.35;font-variant-numeric:tabular-nums;white-space:nowrap}
     .subtitle{margin-top:2px;color:var(--muted);font-size:12px}
     .top-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
     .request-pill{
@@ -135,14 +139,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .rail-head{padding:12px;border-bottom:1px solid var(--line);background:var(--soft)}
     .rail-list{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
     .main{display:grid;grid-template-rows:auto minmax(0,1fr)}
-    .workspace-shell{min-width:0;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;overflow:hidden}
-    .workspace-bar{
-      min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);box-shadow:none;
-    }
-    .workspace-bar-copy{display:flex;align-items:baseline;gap:8px;min-width:0}
-    .workspace-bar-copy strong{font-size:13px;color:var(--ink);white-space:nowrap}
-    .workspace-bar-copy span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .workspace-shell{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);gap:10px;overflow:hidden}
     .step-navigation{min-width:0}
     .screen-map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;min-height:96px;padding:0;background:transparent;isolation:isolate}
     .screen-map-item{
@@ -706,7 +703,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     /* T2-01A: completed Shell, SCREEN-01/02, and Agent Dock share the design-lock surface system. */
     .brand-mark{background:var(--brand)}
-    .hero h2,.prep-head h3,.prep-step-title strong,.section h3,.workspace-bar-copy strong,.screen-heading span{color:var(--ink)}
+    .hero h2,.prep-head h3,.prep-step-title strong,.section h3,.screen-heading span{color:var(--ink)}
     .prep-choice{border-color:var(--line);background:var(--paper);color:var(--ink)}
     .prep-choice.selected{border-color:var(--brand);background:var(--soft);color:var(--brand)}
     .chip{border-color:var(--line);background:var(--soft);color:var(--muted)}
@@ -735,15 +732,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       font-family:var(--request-workspace-font);
       color:var(--request-workspace-ink);
     }
-    .workspace-shell .workspace-bar{position:relative;border-color:var(--request-workspace-border);border-radius:var(--request-workspace-radius);background:var(--request-workspace-surface);box-shadow:var(--request-workspace-shadow)}
-    .workspace-shell .workspace-request-summary{display:flex;align-items:center;gap:10px;min-width:0}
-    .workspace-shell .workspace-title-block,.workspace-shell .workspace-number-block{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .workspace-shell .workspace-title-block{flex:1}
-    .workspace-shell .workspace-number-block{border-left:1px solid var(--request-workspace-border)}
-    .workspace-shell .workspace-bar-label{color:var(--request-workspace-muted);font-size:12px;font-weight:500}
-    .workspace-shell .workspace-bar h2,.workspace-shell .workspace-request-number{margin:0;color:var(--request-workspace-ink);font-size:15px;font-weight:600;line-height:1.2}
-    .workspace-shell .workspace-request-number{font-size:12px}
-    .workspace-shell .workspace-bar-status{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+    .screen-navigation-status{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
     .workspace-shell .main{border-color:var(--request-workspace-border);background:var(--request-workspace-content);box-shadow:var(--request-workspace-shadow)}
     .workspace-shell .hero[hidden]{display:none}
     .workspace-shell .workspace{background:var(--request-workspace-content)}
@@ -802,7 +791,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-map-item[aria-current="page"]{background:var(--request-workspace-accent);color:#fff}
     .workspace-shell .screen-map-item:focus-visible{outline-color:var(--request-workspace-accent)}
     .topbar .subtitle{display:none}
-    .workspace-shell .workspace-bar{min-height:64px;padding:8px 14px}
     .workspace-shell .screen-map{min-height:64px}
     .workspace-shell .screen-map-item{padding-top:5px;padding-bottom:5px}
     .workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}
@@ -920,18 +908,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
     .workspace-shell .request-content-screen textarea{min-height:70px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
-    .layout{grid-template-areas:"workspace-bar workspace-bar" "workspace-content agent";grid-template-rows:auto minmax(0,1fr)}
+    .layout{grid-template-areas:"workspace-content agent";grid-template-rows:minmax(0,1fr)}
     .workspace-shell{display:contents}
-    .workspace-bar{grid-area:workspace-bar}
     .workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px;overflow:visible}
     .workspace-content{align-content:start;row-gap:10px}
     .agent-dock{grid-area:agent;height:100%}
-    .layout.agent-hidden{grid-template-areas:"workspace-bar" "workspace-content";grid-template-rows:auto minmax(0,1fr)}
-    .workspace-shell .workspace-request-summary{display:flex;align-items:center;gap:0;width:100%}
-    .workspace-shell .workspace-title-summary{display:flex;align-items:center;gap:10px;min-width:0}
-    .workspace-shell .workspace-title-block{min-width:0}
-    .workspace-shell .workspace-bar h2{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .workspace-shell .workspace-number-block{margin-left:16px;padding-left:16px}
+    .layout.agent-hidden{grid-template-areas:"workspace-content";grid-template-rows:minmax(0,1fr)}
     .workspace-shell .main{overflow:visible}
     .workspace-shell .main{background:var(--request-workspace-surface);border-radius:var(--request-workspace-radius);box-shadow:var(--request-workspace-shadow)}
     .workspace-shell .workspace{background:var(--request-workspace-surface);border-radius:var(--request-workspace-radius)}
@@ -942,7 +924,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-map{overflow:hidden;border-radius:10px}
     .workspace-shell .screen-map-item[aria-current="page"]{z-index:2}
     @media (max-width:1039px){
-      .layout{grid-template-areas:"workspace-bar" "workspace-content";grid-template-rows:auto auto}
+      .layout{grid-template-areas:"workspace-content";grid-template-rows:auto}
       .product-table-row{grid-template-columns:92px minmax(126px,1fr) minmax(220px,1.8fr) 34px}
     }
     /* Desktop height contract: SCREEN-03 with four product rows defines the common panel maximum. */
@@ -952,9 +934,9 @@ HTML_TEMPLATE = r"""<!doctype html>
         --stage-panel-reference-height:810px;
         height:100%;max-height:calc(var(--stage-panel-reference-height) + 100px);min-height:0;
         grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr);
-        grid-template-areas:"workspace-bar workspace-bar workspace-bar" "workspace-content panel-resizer agent";
-        grid-template-rows:auto minmax(0,1fr);
-        column-gap:0;row-gap:12px;
+        grid-template-areas:"workspace-content panel-resizer agent";
+        grid-template-rows:minmax(0,1fr);
+        column-gap:0;row-gap:0;
       }
       .panel-resizer{
         position:relative;z-index:6;grid-area:panel-resizer;display:grid;place-items:center;
@@ -964,7 +946,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       .panel-resizer::before{content:"";width:2px;height:100%;border-radius:999px;background:var(--line);transition:background .15s ease,width .15s ease}
       .panel-resizer:hover::before,.panel-resizer.is-dragging::before{width:4px;background:var(--accent)}
       body.panel-resizing{cursor:col-resize;user-select:none}
-      .layout.agent-hidden{grid-template-columns:minmax(0,1fr);grid-template-areas:"workspace-bar" "workspace-content"}
+      .layout.agent-hidden{grid-template-columns:minmax(0,1fr);grid-template-areas:"workspace-content"}
       .layout.agent-hidden .panel-resizer{display:none}
       .workspace-content{height:100%;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
       .workspace-shell .main{min-height:0;overflow:hidden}
@@ -976,7 +958,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     /* H8 global visual shell: neutral, spacious application framing. */
     .topbar{
       height:var(--global-header-height);padding:12px 24px;
-      grid-template-columns:auto minmax(260px,1fr);gap:24px;
+      grid-template-columns:minmax(0,1fr) auto;gap:24px;
       border-bottom-color:var(--line);box-shadow:none;
     }
     .brand{gap:14px}
@@ -992,29 +974,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       width:min(100%,1536px);padding:18px 22px 22px;gap:16px;
     }
     .panel{border-color:var(--line);border-radius:12px;box-shadow:var(--shadow)}
-    .workspace-shell .workspace-bar{
-      min-height:88px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;
-    }
-    .workspace-shell .workspace-request-summary{
-      display:grid;grid-template-columns:minmax(0,2.285fr) minmax(280px,1fr);gap:16px;width:100%;
-    }
-    .workspace-shell .workspace-title-summary,
-    .workspace-shell .workspace-number-block{
-      min-height:88px;margin:0;padding:15px 18px;
-      justify-content:center;border:1px solid var(--line);border-radius:10px;
-      background:var(--paper);box-shadow:var(--shadow);
-    }
-    .workspace-shell .workspace-title-summary{display:flex;align-items:stretch}
-    .workspace-shell .workspace-title-block{justify-content:center;gap:5px}
-    .workspace-shell .workspace-number-block{gap:5px;border-left:1px solid var(--line)}
-    .workspace-shell .workspace-bar-label{
-      color:var(--muted);font-size:12px;font-weight:500;letter-spacing:.02em;
-    }
-    .workspace-shell .workspace-bar h2,
-    .workspace-shell .workspace-request-number{
-      color:var(--ink);font-size:16px;font-weight:600;line-height:1.3;
-    }
-    .workspace-shell .workspace-request-number{font-size:15px}
     .workspace-content{row-gap:10px}
     .workspace-shell .screen-map{
       min-height:82px;padding:0;border:1px solid var(--line);border-radius:11px;
@@ -1074,21 +1033,24 @@ HTML_TEMPLATE = r"""<!doctype html>
       .topbar{
         height:var(--global-header-height);grid-template-columns:auto minmax(220px,1fr);align-items:center;
       }
+      .header-request-title{max-width:340px}
     }
     @media (max-width:1039px){
       .layout{min-height:calc(100vh - var(--global-header-height));padding:16px}
-      .workspace-shell .workspace-request-summary{grid-template-columns:minmax(0,2fr) minmax(240px,1fr)}
+      .header-request-title{max-width:260px}
       .agent-dock{right:16px;bottom:16px;width:min(380px,calc(100vw - 32px));height:min(640px,calc(100vh - 32px))}
     }
     @media (max-width:720px){
-      .topbar{padding:10px 14px;gap:12px}
-      .brand{gap:10px}
+      .topbar{height:auto;grid-template-columns:1fr;padding:10px 14px;gap:8px}
+      .brand{gap:10px;flex-wrap:wrap}
       .brand-mark{width:36px;height:36px}
       h1{font-size:16px}
+      .header-request-summary{width:calc(100% - 46px);margin-left:46px;padding-left:0;border-left:0;gap:9px}
+      .header-request-title{max-width:none;flex:1;font-size:13px}
+      .header-request-number{font-size:12px}
+      .top-actions{justify-content:flex-end}
       .top-actions button{min-height:36px;padding:7px 10px}
       .layout{padding:12px}
-      .workspace-shell .workspace-request-summary{grid-template-columns:1fr;gap:10px}
-      .workspace-shell .workspace-title-summary,.workspace-shell .workspace-number-block{min-height:66px;padding:11px 14px}
       .workspace-shell .screen-map{padding:4px}
       .workspace-shell .screen-map-item{min-height:72px}
       .screen-map-item:nth-child(n+2):not(:last-child)::after{display:none}
@@ -1101,9 +1063,13 @@ HTML_TEMPLATE = r"""<!doctype html>
   <header class="topbar" data-shell="GlobalHeader">
     <div class="brand">
       <div class="brand-mark">CAE</div>
-      <div>
+      <div class="portal-heading">
         <h1>해석 의뢰 Agent</h1>
         <div class="subtitle">__APP_VERSION__</div>
+      </div>
+      <div class="header-request-summary" aria-label="현재 의뢰 정보">
+        <h2 class="header-request-title" id="heroTitle">해석 의뢰를 시작해 주세요.</h2>
+        <p class="header-request-number" id="requestNoDisplay">-</p>
       </div>
     </div>
     <div class="top-actions" aria-label="request actions">
@@ -1115,21 +1081,6 @@ HTML_TEMPLATE = r"""<!doctype html>
 
   <main class="layout">
     <div class="workspace-shell" data-shell="MainWorkspace">
-      <div class="workspace-bar" data-shell="WorkspaceBar">
-        <div class="workspace-request-summary">
-          <div class="workspace-title-summary">
-            <div class="workspace-title-block">
-              <span class="workspace-bar-label">의뢰 제목 (자동 생성)</span>
-              <h2 id="heroTitle">해석 의뢰를 시작해 주세요.</h2>
-            </div>
-          </div>
-          <div class="workspace-number-block">
-            <span class="workspace-bar-label">의뢰 번호</span>
-            <p class="workspace-request-number" id="requestNoDisplay">해석의뢰 번호: -</p>
-          </div>
-        </div>
-        <div class="workspace-bar-status" id="screenNavigationStatus" role="status" aria-live="polite"></div>
-      </div>
       <div class="workspace-content">
       <nav class="step-navigation" data-shell="StepNavigation" aria-label="6개 화면군">
         <div class="screen-map" aria-label="화면 순서">
@@ -1140,6 +1091,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           <span class="screen-map-item" data-screen="SCREEN-05"><span class="screen-map-number">05</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>Case Matrix</span></span></span>
           <span class="screen-map-item" data-screen="SCREEN-06"><span class="screen-map-number">06</span><span class="screen-map-label"><span>전체 확인·Preview·Word</span></span></span>
         </div>
+        <div class="screen-navigation-status" id="screenNavigationStatus" role="status" aria-live="polite"></div>
       </nav>
 
     <section class="panel main" data-shell="MainWorkspaceContent">

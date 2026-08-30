@@ -33,14 +33,22 @@ def test_visual_foundation_uses_neutral_charcoal_tokens_without_gradients():
     assert 'font-weight:650' not in HTML_TEMPLATE
 
 
-def test_global_shell_has_spacious_header_separate_summary_surfaces_and_charcoal_navigation():
+def test_global_shell_moves_request_values_into_portal_header_and_removes_summary_surfaces():
     assert "height:var(--global-header-height);padding:12px 24px" in HTML_TEMPLATE
     assert "min-height:calc(100vh - var(--global-header-height))" in HTML_TEMPLATE
-    assert ".workspace-shell .workspace-title-summary," in HTML_TEMPLATE
-    assert ".workspace-shell .workspace-number-block{" in HTML_TEMPLATE
-    assert "grid-template-columns:minmax(0,2.285fr) minmax(280px,1fr)" in HTML_TEMPLATE
-    assert "gap:16px;width:100%" in HTML_TEMPLATE
-    assert "border:1px solid var(--line);border-radius:10px" in HTML_TEMPLATE
+    assert 'class="portal-heading"' in HTML_TEMPLATE
+    assert 'class="header-request-summary" aria-label="현재 의뢰 정보"' in HTML_TEMPLATE
+    assert 'class="header-request-title" id="heroTitle"' in HTML_TEMPLATE
+    assert 'class="header-request-number" id="requestNoDisplay"' in HTML_TEMPLATE
+    assert ".header-request-title{min-width:0;max-width:560px" in HTML_TEMPLATE
+    assert "font-size:14px;font-weight:500" in HTML_TEMPLATE
+    assert ".header-request-number{flex:0 0 auto" in HTML_TEMPLATE
+    assert "font-size:13px;font-weight:400" in HTML_TEMPLATE
+    assert 'data-shell="WorkspaceBar"' not in HTML_TEMPLATE
+    assert "workspace-title-summary" not in HTML_TEMPLATE
+    assert "workspace-number-block" not in HTML_TEMPLATE
+    assert "의뢰 제목 (자동 생성)" not in HTML_TEMPLATE
+    assert ">의뢰 번호<" not in HTML_TEMPLATE
     assert '.workspace-shell .screen-map-item[aria-current="page"]{background:var(--brand-strong);color:#fff}' in HTML_TEMPLATE
     assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
 
@@ -72,7 +80,7 @@ def test_guided_workspace_shell_preserves_the_six_screen_map_and_existing_sectio
         positions.append(HTML_TEMPLATE.index(f'id="{marker}"'))
     assert positions == sorted(positions)
 
-    for wrapper in ("GlobalHeader", "WorkspaceBar", "StepNavigation", "MainWorkspace", "AgentDock", "GlobalFooter"):
+    for wrapper in ("GlobalHeader", "StepNavigation", "MainWorkspace", "AgentDock", "GlobalFooter"):
         assert wrapper in HTML_TEMPLATE
     assert 'class="screen-map"' in HTML_TEMPLATE
     assert 'id="stageRail"' not in HTML_TEMPLATE
