@@ -108,7 +108,7 @@ def test_thermal_flow_excludes_humidity_from_conditions_matrix_and_screen_data()
     assert list(cards["supply_air"]["fields"]) == ["heat_exchanger_temp"]
     assert list(cards["space_environment"]["fields"]) == ["room_temp"]
     assert [column["key"] for column in get_active_case_matrix_columns(context)] == [
-        "fan", "heat_exchanger", "room_temp", "heat_exchanger_temp",
+        "fan", "heat_exchanger", "space_environment", "supply_air",
     ]
 
     normalized = sanitize_state(_configured_state("열유동 해석"))
@@ -127,7 +127,7 @@ def test_thermal_flow_excludes_humidity_from_conditions_matrix_and_screen_data()
 def test_analysis_type_controls_active_cards_columns_and_clears_inactive_values():
     state = _configured_state("이슬맺힘")
     assert [column["key"] for column in get_active_case_matrix_columns(_context())] == [
-        "fan", "heat_exchanger", "room_temp", "room_rh", "heat_exchanger_temp", "heat_exchanger_rh",
+        "fan", "heat_exchanger", "space_environment", "supply_air",
     ]
     assert 'const previewConditionOrder = {operating: 10, heat_exchanger: 20, space_environment: 30, supply_air: 40};' in HTML_TEMPLATE
     state[SECTION_REQUEST_CONTEXT].update(_context("일반 유동 해석"))
@@ -169,17 +169,15 @@ def test_manual_matrix_starts_with_one_row_per_geometry_and_uses_shape_names():
     assert [row["visible_cells"]["case_no"] for row in matrix["rows"]] == ["1", "2"]
     assert matrix["visible_columns"][0]["label"] == "No."
     assert matrix["visible_columns"][1]["label"] == "형상"
-    assert next(column for column in matrix["visible_columns"] if column["key"] == "fan")["label"] == "운전"
-    assert next(column for column in matrix["visible_columns"] if column["key"] == "heat_exchanger")["label"] == "사양"
+    assert next(column for column in matrix["visible_columns"] if column["key"] == "fan")["label"] == "운전 조건"
+    assert next(column for column in matrix["visible_columns"] if column["key"] == "heat_exchanger")["label"] == "열교환기 사양"
     assert matrix["visible_columns"][-1]["label"] == "제거"
     assert [item["label"] for item in matrix["dropdown_options"]["geometry_id"]] == ["형상 1", "형상 2"]
     assert all(row["condition_values"] == {
         "fan": "operating_1",
         "heat_exchanger": "heat_exchanger_1",
-        "heat_exchanger_temp": "10",
-        "heat_exchanger_rh": "70",
-        "room_temp": "25",
-        "room_rh": "50",
+        "space_environment": "space_environment_1",
+        "supply_air": "supply_air_1",
     } for row in matrix["rows"])
 
 
@@ -283,10 +281,14 @@ def test_removed_condition_rows_disappear_from_every_case_matrix_option_list():
     with_extras = sanitize_state(state)
     assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["fan"]] == ["operating_1", "operating_2"]
     assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger"]] == ["heat_exchanger_1", "heat_exchanger_2"]
-    assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["room_temp"]] == ["25", "30"]
-    assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["room_rh"]] == ["50", "60"]
-    assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger_temp"]] == ["10", "15"]
-    assert [item["value"] for item in with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger_rh"]] == ["70", "80"]
+    assert with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["space_environment"] == [
+        {"value": "space_environment_1", "label": "25 °C / 50 %"},
+        {"value": "space_environment_2", "label": "30 °C / 60 %"},
+    ]
+    assert with_extras[SECTION_CASE_MATRIX]["dropdown_options"]["supply_air"] == [
+        {"value": "supply_air_1", "label": "10 °C / 70 %"},
+        {"value": "supply_air_2", "label": "15 °C / 80 %"},
+    ]
 
     with_extras[SECTION_CONDITIONS]["condition_sets"] = [
         card for card in with_extras[SECTION_CONDITIONS]["condition_sets"] if card["is_default"] is True
@@ -295,10 +297,12 @@ def test_removed_condition_rows_disappear_from_every_case_matrix_option_list():
 
     assert after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["fan"] == [{"value": "operating_1", "label": "운전 1"}]
     assert after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger"] == [{"value": "heat_exchanger_1", "label": "사양 1"}]
-    assert [item["value"] for item in after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["room_temp"]] == ["25"]
-    assert [item["value"] for item in after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["room_rh"]] == ["50"]
-    assert [item["value"] for item in after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger_temp"]] == ["10"]
-    assert [item["value"] for item in after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["heat_exchanger_rh"]] == ["70"]
+    assert after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["space_environment"] == [
+        {"value": "space_environment_1", "label": "25 °C / 50 %"}
+    ]
+    assert after_removal[SECTION_CASE_MATRIX]["dropdown_options"]["supply_air"] == [
+        {"value": "supply_air_1", "label": "10 °C / 70 %"}
+    ]
 
 
 def test_multiple_rpms_in_one_fan_row_remain_one_case_in_full_preview():

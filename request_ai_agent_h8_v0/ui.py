@@ -3301,6 +3301,25 @@ HTML_TEMPLATE = r"""<!doctype html>
       return notices.join("");
     }
 
+    function caseGroupedConditionLabel(type, fields){
+      const specs = {
+        space_environment:[["room_temp","°C"],["room_rh","%"]],
+        supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]],
+      }[type] || [];
+      const parts = [];
+      for (const [key, unit] of specs) {
+        if (!Object.prototype.hasOwnProperty.call(fields, key)) continue;
+        const value = contextText(fieldDisplayValue(fields[key]));
+        if (!value) return "";
+        const compact = value.replace(/\s+/g, "").toLowerCase();
+        const hasUnit = unit === "°C"
+          ? compact.endsWith("°c") || compact.endsWith("℃")
+          : unit === "%" ? compact.endsWith("%") : true;
+        parts.push(hasUnit ? value : `${value} ${unit}`);
+      }
+      return parts.join(" / ");
+    }
+
     function liveCaseDropdownOptions(){
       const matrix = asObj(requestState.case_matrix);
       const options = {...asObj(matrix.dropdown_options)};
@@ -3324,6 +3343,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         }
         if (type === "heat_exchanger") {
           add("heat_exchanger", card.id, `사양 ${++heatExchangerIndex}`);
+          return;
+        }
+        if (type === "space_environment" || type === "supply_air") {
+          const label = caseGroupedConditionLabel(type, fields);
+          if (label) add(type, card.id, label);
           return;
         }
         conditionKeys.forEach(key => {

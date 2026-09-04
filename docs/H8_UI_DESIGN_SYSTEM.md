@@ -9,7 +9,7 @@
 - Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
-- 기준 소스 SHA-256: `27DAF1FAF16DBBB5A23E040BB2E1ECAC227B7B5EEB8459C80C8F1B2A52795B4C`.
+- 기준 소스 SHA-256: `0048347BB25EE63A5FE41344120EACD034F9A722D45F4E07AB50679560F68888`.
 - 아래 값은 CSS cascade의 후반 H8 override까지 반영한 값이다. 반응형 분기가 있는 항목은 별도로 표시한다.
 
 ## 2. Design Foundation

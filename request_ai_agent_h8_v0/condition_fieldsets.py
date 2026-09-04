@@ -37,12 +37,10 @@ CARD_TEMPLATES = (
 # Case Matrix is a manual mapping table.  These are the only active-condition
 # columns it may expose, and their order is part of the public UI contract.
 CASE_MATRIX_CONDITION_COLUMNS = (
-    {"key": "fan", "label": "운전", "card_type": "operating"},
-    {"key": "heat_exchanger", "label": "사양", "card_type": "heat_exchanger"},
-    {"key": "room_temp", "label": "공간 온도 (°C)", "card_type": "space_environment"},
-    {"key": "room_rh", "label": "공간 상대습도 (%)", "card_type": "space_environment"},
-    {"key": "heat_exchanger_temp", "label": "취출 온도 (°C)", "card_type": "supply_air"},
-    {"key": "heat_exchanger_rh", "label": "취출 상대습도 (%)", "card_type": "supply_air"},
+    {"key": "fan", "label": "운전 조건", "card_type": "operating"},
+    {"key": "heat_exchanger", "label": "열교환기 사양", "card_type": "heat_exchanger"},
+    {"key": "space_environment", "label": "공간 환경 조건", "card_type": "space_environment"},
+    {"key": "supply_air", "label": "취출 공기 조건", "card_type": "supply_air"},
 )
 
 _THERMAL_FLOW_REQUIRED_CARDS = {"operating", "heat_exchanger", "supply_air", "space_environment"}
@@ -264,7 +262,7 @@ def sanitize_condition_sets(raw: Any, request_context: Mapping[str, Any] | None 
 
 
 def get_active_case_matrix_columns(request_context: Mapping[str, Any] | None = None) -> list[dict[str, str]]:
-    """Return ordered manual-mapping columns enabled by the selected analysis type."""
+    """Return ordered condition-instance columns enabled by the selected analysis type."""
 
     fieldset = build_condition_fieldset(request_context)
     active_card_types = {
@@ -272,20 +270,10 @@ def get_active_case_matrix_columns(request_context: Mapping[str, Any] | None = N
         for group in fieldset.get("groups", [])
         if group.get("active") is True
     }
-    active_fields = {
-        field["key"]
-        for group in fieldset.get("groups", [])
-        if group.get("active") is True
-        for field in group.get("fields", [])
-        if field.get("active") is True
-    }
     return [
         dict(column)
         for column in CASE_MATRIX_CONDITION_COLUMNS
-        if column["card_type"] in active_card_types and (
-            column["card_type"] == "operating"
-            or ("name" if column["key"] == "heat_exchanger" else column["key"]) in active_fields
-        )
+        if column["card_type"] in active_card_types
     ]
 
 

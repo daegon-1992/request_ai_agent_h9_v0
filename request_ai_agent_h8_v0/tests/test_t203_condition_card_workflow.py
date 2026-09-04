@@ -92,6 +92,8 @@ def test_case_matrix_uses_live_values_after_any_condition_row_is_removed():
 
     assert 'add("fan", card.id, `운전 ${++operatingIndex}`);' in helper
     assert 'add("heat_exchanger", card.id, `사양 ${++heatExchangerIndex}`);' in helper
+    assert 'const label = caseGroupedConditionLabel(type, fields);' in helper
+    assert 'if (label) add(type, card.id, label);' in helper
     assert 'Object.prototype.hasOwnProperty.call(fields, key)' in helper
     assert 'const options = liveCaseDropdownOptions();' in source_reference
     assert 'const sources = caseSelectionSources();' in source_reference
@@ -467,3 +469,13 @@ def test_legacy_stopped_fan_without_rpm_restores_to_zero_and_preserves_explicit_
     )
     assert [fan["values"]["fan_rpm"] for fan in cards[0]["fans"]] == ["0", "0"]
     assert [fan["name"] for fan in cards[0]["fans"]] == ["Indoor", "Aux"]
+
+
+def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contract():
+    helper = HTML_TEMPLATE.split('function caseGroupedConditionLabel(type, fields)', 1)[1].split('function caseSourceReferenceHtml()', 1)[0]
+
+    assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in helper
+    assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in helper
+    assert 'return parts.join(" / ");' in helper
+    assert 'if (type === "space_environment" || type === "supply_air")' in helper
+    assert 'if (label) add(type, card.id, label);' in helper

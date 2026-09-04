@@ -27,7 +27,7 @@ def test_explicit_server_latest_action_uses_existing_engine_without_request_writ
     assert result.code == "case_matrix_ready"
     assert result.request_id == created.request_id
     assert result.request_version == created.version
-    assert result.matrix_summary == {"row_count": 0, "column_count": 9, "generation_status": "missing", "read_only": True}
+    assert result.matrix_summary == {"row_count": 0, "column_count": 7, "generation_status": "missing", "read_only": True}
     assert seen and seen[0] == before.state
     assert requests.read(created.request_id) == before
 

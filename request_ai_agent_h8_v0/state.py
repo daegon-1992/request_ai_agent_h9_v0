@@ -1025,6 +1025,36 @@ def _manual_matrix_product_options(products: list[dict[str, Any]]) -> list[dict[
     return options
 
 
+_CASE_MATRIX_GROUP_FIELD_SPECS: dict[str, tuple[tuple[str, str], ...]] = {
+    "space_environment": (("room_temp", "°C"), ("room_rh", "%")),
+    "supply_air": (("heat_exchanger_temp", "°C"), ("heat_exchanger_rh", "%")),
+}
+
+
+def _manual_matrix_value_with_unit(value: Any, unit: str) -> str:
+    text = _clean_text(value)
+    if not text or not unit:
+        return text
+    compact = text.replace(" ", "")
+    if unit == "°C" and (compact.casefold().endswith("°c") or compact.endswith("℃")):
+        return text
+    if unit == "%" and compact.endswith("%"):
+        return text
+    return f"{text} {unit}"
+
+
+def _manual_matrix_group_label(card_type: str, fields: Mapping[str, Any]) -> str:
+    parts: list[str] = []
+    for field_key, unit in _CASE_MATRIX_GROUP_FIELD_SPECS.get(card_type, ()):
+        if field_key not in fields:
+            continue
+        value = field_value(fields.get(field_key))
+        if not _clean_text(value):
+            return ""
+        parts.append(_manual_matrix_value_with_unit(value, unit))
+    return " / ".join(parts)
+
+
 def _manual_matrix_condition_options(
     condition_sets: list[dict[str, Any]],
     columns: list[dict[str, str]],
@@ -1048,9 +1078,15 @@ def _manual_matrix_condition_options(
         if card_type == "heat_exchanger":
             add("heat_exchanger", card.get("id"), field_value(fields.get("name")))
             continue
-        for column in columns:
-            if column.get("card_type") == card_type:
-                add(column["key"], field_value(fields.get(column["key"])))
+        group_column = next(
+            (column for column in columns if column.get("card_type") == card_type),
+            None,
+        )
+        if group_column is None or card_type not in _CASE_MATRIX_GROUP_FIELD_SPECS:
+            continue
+        label = _manual_matrix_group_label(card_type, fields)
+        if label:
+            add(group_column["key"], card.get("id"), label)
     return options
 
 
@@ -1080,6 +1116,48 @@ def _migrate_manual_condition_label(key: str, value: Any) -> str:
         if suffix.isdigit():
             return f"{current_prefix} {suffix}"
     return text
+
+
+def _migrate_grouped_manual_condition_value(
+    condition_values: Mapping[str, Any],
+    *,
+    column: Mapping[str, Any],
+    condition_sets: list[dict[str, Any]],
+) -> tuple[str, bool]:
+    """Safely map legacy scalar Matrix selections to one current condition card."""
+
+    card_type = _clean_text(column.get("card_type"))
+    specs = _CASE_MATRIX_GROUP_FIELD_SPECS.get(card_type, ())
+    if not specs:
+        return "", False
+    matching_cards = [
+        card
+        for card in condition_sets
+        if isinstance(card, Mapping) and _clean_text(card.get("type")) == card_type
+    ]
+    active_field_keys = [
+        field_key
+        for field_key, _unit in specs
+        if any(
+            isinstance(card.get("fields"), Mapping) and field_key in card["fields"]
+            for card in matching_cards
+        )
+    ]
+    if not active_field_keys or not any(field_key in condition_values for field_key in active_field_keys):
+        return "", False
+    if not all(field_key in condition_values and _clean_text(condition_values.get(field_key)) for field_key in active_field_keys):
+        return "", True
+
+    wanted = {field_key: _clean_text(condition_values.get(field_key)) for field_key in active_field_keys}
+    matches: list[str] = []
+    for card in matching_cards:
+        fields = card.get("fields") if isinstance(card.get("fields"), Mapping) else {}
+        if not all(_clean_text(field_value(fields.get(field_key))) == value for field_key, value in wanted.items()):
+            continue
+        card_id = _clean_text(card.get("id"))
+        if card_id:
+            matches.append(card_id)
+    return (matches[0] if len(matches) == 1 else ""), True
 
 
 def _sanitize_manual_case_matrix(
@@ -1133,6 +1211,19 @@ def _sanitize_manual_case_matrix(
         if row["geometry_id"] not in valid_geometry_ids:
             row["geometry_id"] = ""
         supplied_condition_keys = set(row["condition_values"])
+        for column in condition_columns:
+            column_key = column["key"]
+            if _clean_text(row["condition_values"].get(column_key)):
+                continue
+            migrated_value, legacy_group_was_supplied = _migrate_grouped_manual_condition_value(
+                row["condition_values"],
+                column=column,
+                condition_sets=condition_sets,
+            )
+            if legacy_group_was_supplied:
+                supplied_condition_keys.add(column_key)
+            if migrated_value:
+                row["condition_values"][column_key] = migrated_value
         row["condition_values"] = {
             column["key"]: value
             for column in condition_columns
