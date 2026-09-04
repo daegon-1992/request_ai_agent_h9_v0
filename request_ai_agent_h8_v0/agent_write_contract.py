@@ -226,7 +226,15 @@ def _operating_fan_targets(condition_targets: list[dict[str, Any]]) -> list[dict
             "unit": target.get("unit", "RPM"),
             "current_fans": deepcopy(target.get("fans", [])),
             "fan_rpm_mode": _clean(target.get("fan_rpm_mode")),
-            "semantics": "values 항목들은 한 운전 조건에 동시에 존재하는 Fan들에 각각 대응",
+            "can_reconfigure_fan_count": True,
+            "fan_count_range": {"min": 2, "max": MAX_FANS_PER_OPERATING_CONDITION},
+            "semantics": (
+                "current_fans는 현재 상태를 설명할 뿐 작성 가능한 Fan 수의 제한이 아니다. "
+                "set_operating_fans의 values 개수가 적용 후 해당 운전 조건의 Fan 개수가 되며, "
+                "현재 Fan 개수와 달라도 2~최대 Fan 수 범위에서 기존 Fan 구성을 재구성할 수 있다. "
+                "새 Fan을 미리 만들거나 새 fan_id를 지정할 필요가 없다. "
+                "locations가 있으면 values와 같은 순서로 각 Fan의 위치와 RPM이 대응한다."
+            ),
         }
         for target in condition_targets
         if target.get("card_type") == "operating" and target.get("field_key") == "fan_rpm"

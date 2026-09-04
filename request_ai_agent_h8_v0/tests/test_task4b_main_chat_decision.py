@@ -128,6 +128,9 @@ def test_decision_callable_makes_one_llm_call_without_duplicating_current_messag
     assert "특정 단어나 숫자 개수만으로 정하지 않는다" in instruction
     assert "set_condition_card_series" in instruction
     assert "set_operating_fans" in instruction
+    assert "current_fans는 현재 상태일 뿐 작성 가능한 Fan 수의 제한이 아니다" in instruction
+    assert "values 개수로 적용 후 Fan 수를 정하고" in instruction
+    assert "새 Fan이나 fan_id를 먼저 만들라고 요구하지 않은 채" in instruction
     assert "Base 제품이나 비교 제품을 언급하지 않고" in instruction
     assert "해석 제품은 해석에 사용할 총 조립 형상을 기준" in instruction
     assert "조립 상태가 다른 해석 대상은 서로 다른 총 조립 형상이며 각각 다른 도면번호" in instruction
@@ -151,6 +154,11 @@ def test_decision_callable_makes_one_llm_call_without_duplicating_current_messag
     assert "pairing이나 Cartesian product는 새로 추론하지 않는다" in instruction
     assert "pending_write_candidates" in instruction
     assert "특정 확인 문구에 의존하지 말고" in instruction
+    assert "Deferred Input 계약의 단일 fact 형태" in instruction
+    assert '"kind":"geometry_field"' in instruction
+    assert '"kind":"condition_field"' in instruction
+    assert "Fan별로 condition_field fact를 각각 만들며 fans 배열" in instruction
+    assert "fact_type, condition_type, condition_name, card_ref" in instruction
     assert "요청자(사용자가 요청사라고 표현한 경우 포함)" in instruction
     assert "basic_info.division은 의뢰자 소속 사업부" in instruction
     assert "request_context.division은 해석 대상 제품의 Division" in instruction
@@ -166,6 +174,8 @@ def test_decision_callable_makes_one_llm_call_without_duplicating_current_messag
     assert "전체 확인 화면에서 의뢰서 미리보기를 검토하고 의뢰서 생성(Word)" in instruction
     assert "생성된 Word 파일, 이메일 제출 방식과 recipient" in instruction
     assert "질문과 관계없는 미정 항목이나 누락 항목을 매번 반복하지 않는다" in instruction
+    assert "특정 기존 Fan 하나를 set_condition_field로 수정할 때는 fan_id를 추측하지 않는다" in instruction
+    assert "set_operating_fans로 그 구성을 재구성할 수 있으며" in instruction
     assert "sedo.hong@lge.com" not in instruction
     assert "resume_workflow=false" in instruction
     assert "product_hierarchy_query" in instruction

@@ -87,6 +87,8 @@ def test_form_context_has_complete_minimum_metadata_and_excludes_internal_regist
             expected_keys.update({"allowed_values", "allow_custom_input"})
         elif field.allow_custom_input:
             expected_keys.add("allow_custom_input")
+        if field.value_semantics:
+            expected_keys.add("value_semantics")
         assert set(payload) == expected_keys
         assert all(payload[key] for key in ("field_id", "screen", "section", "label", "description"))
         assert isinstance(payload["example"], str)
@@ -145,8 +147,15 @@ def test_form_context_reuses_registry_requirement_units_and_existing_guidance():
     fan = context["conditions.operating_1.fan_rpm"]
     assert fan.required == registry[fan.field_id].required
     assert fan.unit == registry[fan.field_id].unit == "RPM"
-    assert fan.example == "예: 780"
-    assert fan.description == "해당 Fan의 회전수 조건입니다. 해당 운전 조건에서 적용할 회전수를 입력합니다."
+    assert fan.value_semantics == "fan_configuration"
+    assert fan.to_dict()["value_semantics"] == "fan_configuration"
+    assert fan.example == "예: 모든 팬 1200 RPM 또는 상 1000 / 중 700 / 하 640 RPM"
+    assert fan.description == (
+        "하나의 운전 조건에서 동시에 운전하는 Fan의 구성과 회전수를 입력합니다. "
+        "Fan이 1개이면 하나의 RPM을 입력하고, Fan이 여러 개인 경우 모든 Fan에 동일한 RPM을 적용하거나 "
+        "Fan별 위치와 RPM을 각각 입력할 수 있습니다. Fan별 입력에서는 위치와 RPM이 같은 순서로 한 쌍을 이루며, "
+        "Fan 위치는 사용자가 업무상 식별 가능한 표현으로 입력할 수 있습니다."
+    )
 
 
 def test_form_context_uses_current_active_fieldset_without_mutating_state():

@@ -235,7 +235,15 @@ def test_canonical_noop_does_not_create_pending_proposal():
 def test_operating_fan_write_supports_legacy_values_locations_modes_and_the_shared_limit():
     state = _configured_state()
     contract = build_agent_write_contract(state)
-    assert contract["operations"]["set_operating_fans"]["optional"] == ["locations", "fan_rpm_mode"]
+    fan_operation = contract["operations"]["set_operating_fans"]
+    assert fan_operation["optional"] == ["locations", "fan_rpm_mode"]
+    operating_2_target = next(target for target in fan_operation["targets"] if target["card_id"] == "operating_2")
+    assert len(operating_2_target["current_fans"]) == 1
+    assert operating_2_target["can_reconfigure_fan_count"] is True
+    assert operating_2_target["fan_count_range"] == {"min": 2, "max": 10}
+    assert "current_fans는 현재 상태를 설명할 뿐 작성 가능한 Fan 수의 제한이 아니다" in operating_2_target["semantics"]
+    assert "values 개수가 적용 후 해당 운전 조건의 Fan 개수" in operating_2_target["semantics"]
+    assert "새 Fan을 미리 만들거나 새 fan_id를 지정할 필요가 없다" in operating_2_target["semantics"]
 
     values_only = normalize_structural_write_operation(
         {"op": "set_operating_fans", "card_id": "operating_1", "values": ["1000", "700"]},
@@ -273,12 +281,23 @@ def test_operating_fan_write_supports_legacy_values_locations_modes_and_the_shar
         contract=contract,
         source="agent",
     )
+    expanded_common = normalize_structural_write_operation(
+        {
+            "op": "set_operating_fans",
+            "card_id": "operating_2",
+            "values": ["1200", "1200", "1200", "1200"],
+            "fan_rpm_mode": "common",
+        },
+        contract=contract,
+        source="agent",
+    )
 
     assert values_only is not None and "fan_rpm_mode" not in values_only
     assert ten_fans is not None
     assert eleven_fans is None
     assert individual is not None and individual["locations"] == ["상", "중", "하"]
     assert common is not None
+    assert expanded_common is not None
     assert normalize_structural_write_operation(
         {
             "op": "set_operating_fans",
@@ -296,6 +315,14 @@ def test_operating_fan_write_supports_legacy_values_locations_modes_and_the_shar
     assert card["fan_rpm_mode"] == "individual"
     assert [fan["location"] for fan in card["fans"]] == ["상", "중", "하"]
     assert [fan["values"]["fan_rpm"] for fan in card["fans"]] == ["1000", "700", "640"]
+
+    expanded = apply_patch_operations(state, [expanded_common])
+    expanded_card = _card(expanded, "operating_2")
+    assert expanded_card["id"] == "operating_2"
+    assert expanded_card["fan_rpm_mode"] == "common"
+    assert len(expanded_card["fans"]) == 4
+    assert [fan["id"] for fan in expanded_card["fans"]] == ["fan_1", "fan_2", "fan_3", "fan_4"]
+    assert [fan["values"]["fan_rpm"] for fan in expanded_card["fans"]] == ["1200"] * 4
 
     defended = apply_patch_operations(
         state,

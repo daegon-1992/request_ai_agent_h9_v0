@@ -39,6 +39,7 @@ class FormFieldContext:
     read_only: bool = False
     allowed_values: tuple[str, ...] = ()
     allow_custom_input: bool = False
+    value_semantics: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
@@ -48,6 +49,8 @@ class FormFieldContext:
             payload.pop("allowed_values")
         if not self.allowed_values and not self.allow_custom_input:
             payload.pop("allow_custom_input")
+        if not self.value_semantics:
+            payload.pop("value_semantics")
         return payload
 
 
@@ -244,7 +247,12 @@ _DESCRIPTIONS = {
     "geometry.comparison_products[].drawing_no": "해석에 사용할 비교 제품의 총 조립 형상을 식별하는 도면번호입니다. 형상 또는 조립 상태가 다른 해석 대상은 각각 다른 도면번호를 사용하며, 필요 시 임시 도면번호를 사용할 수 있습니다.",
     "geometry.comparison_products[].difference_from_base": "비교 제품의 총 조립 형상에 이미 반영된 Base 제품 대비 형상·조립 상태 차이를 작성합니다.",
     "material_type": "해석 영역 안에서 흐르거나 열을 전달하는 작동유체입니다.",
-    "fan_rpm": "해당 Fan의 회전수 조건입니다. 해당 운전 조건에서 적용할 회전수를 입력합니다.",
+    "fan_rpm": (
+        "하나의 운전 조건에서 동시에 운전하는 Fan의 구성과 회전수를 입력합니다. "
+        "Fan이 1개이면 하나의 RPM을 입력하고, Fan이 여러 개인 경우 모든 Fan에 동일한 RPM을 적용하거나 "
+        "Fan별 위치와 RPM을 각각 입력할 수 있습니다. Fan별 입력에서는 위치와 RPM이 같은 순서로 한 쌍을 이루며, "
+        "Fan 위치는 사용자가 업무상 식별 가능한 표현으로 입력할 수 있습니다."
+    ),
     "name": "Case에서 열교환기 사양을 구분하기 위해 시스템이 자동 생성하는 이름입니다.",
     "tube_diameter": "Fin&Tube 열교환기의 관 직경(Pi) 또는 Micro-Channel의 채널 폭(Width)입니다.",
     "fin_type": "열교환기에 적용된 Fin 형상 유형입니다.",
@@ -278,7 +286,7 @@ _EXAMPLES = {
     "geometry.base_product.drawing_no": "예: AJT000123 또는 TEMP-BASE-01",
     "geometry.comparison_products[].drawing_no": "예: AJT000234 또는 TEMP-COMP-01",
     "geometry.comparison_products[].difference_from_base": "예: 베인 각도 30° 적용, Fan 위치 상향 20 mm",
-    "fan_rpm": "예: 780",
+    "fan_rpm": "예: 모든 팬 1200 RPM 또는 상 1000 / 중 700 / 하 640 RPM",
     "name": "예: 사양 1",
     "tube_diameter": "예: 7.0",
     "fin_type": "예: Slit",
@@ -609,6 +617,7 @@ def _condition_fields(
                 read_only=system_generated or micro_channel_fin,
                 allowed_values=allowed_values,
                 allow_custom_input=allow_custom_input,
+                value_semantics=str(field_metadata.get("value_semantics") or ""),
             )
         )
     return fields
