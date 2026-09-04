@@ -2951,7 +2951,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         const modeSelect = `<label class="fan-input-column">${showLabel ? `<span>팬 회전수 설정</span>` : ""}<select data-card-id="${esc(cardId)}" data-fan-rpm-mode aria-label="팬 회전수 입력방식">${modeOptions}</select></label>`;
         if (mode === "common") {
           const rpm = commonFanRpm(fans);
-          return `<span class="fan-rpm-editor">${modeSelect}<label class="fan-input-column">${showLabel ? `<span>RPM</span>` : ""}<input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /></label></span>`;
+          return `<span class="fan-rpm-editor"><label class="fan-input-column">${showLabel ? `<span>RPM</span>` : ""}<input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /></label>${modeSelect}</span>`;
         }
         if (mode !== "individual") return `<span class="fan-rpm-editor mode-pending">${modeSelect}</span>`;
         const expanded = expandedFanCardId === cardId;
@@ -2959,7 +2959,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           const fan = asObj(rawFan);
           return `<div class="fan-input-set" data-fan-set="${fanIndex + 1}"><span class="fan-input-order" aria-hidden="true">${fanIndex + 1}</span><label class="fan-input-column"><span>${esc(fieldLabels.fan_location)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_location" value="${esc(fan.location)}" placeholder="예 : 상/중/하" aria-label="${esc(fieldLabels.fan_location)} ${fanIndex + 1}" /></label><label class="fan-input-column"><span>${esc(fieldLabels.fan_rpm)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_rpm" value="${esc(asObj(fan.values).fan_rpm)}" aria-label="${esc(fieldLabels.fan_rpm)} ${fanIndex + 1}" /></label></div>`;
         }).join("");
-        return `<span class="fan-rpm-editor">${modeSelect}<button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button></span><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
+        return `<span class="fan-rpm-editor"><button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button>${modeSelect}</span><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
       };
       const rowHtml = (card, isFirst, rowIndex) => {
         const row = asObj(card), cardId = contextText(row.id), type = contextText(row.type), fields = asObj(row.fields);
