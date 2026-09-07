@@ -1,7 +1,7 @@
-# h8_v0 UI Design System
+# h9_v0 UI Design System
 
 > **Canonical UI Reference**
-> 현재 `h8_v0`의 **SCREEN-02 실행 화면**을 Workspace Component Design의 단일 Canonical UI Reference로 선언한다. 화면별 업무 구성과 Grid는 달라질 수 있지만, 같은 역할의 card, field, control, action, icon, guidance, feedback surface는 SCREEN-02에서 확정한 동일한 시각 계약을 사용한다. Global Shell과 Agent Dock은 Workspace component와 계층이 다른 Shell Component Family로 유지한다.
+> 현재 `h9_v0`의 **SCREEN-02 실행 화면**을 Workspace Component Design의 단일 Canonical UI Reference로 선언한다. 화면별 업무 구성과 Grid는 달라질 수 있지만, 같은 역할의 card, field, control, action, icon, guidance, feedback surface는 SCREEN-02에서 확정한 동일한 시각 계약을 사용한다. Global Shell과 Agent Dock은 Workspace component와 계층이 다른 Shell Component Family로 유지한다.
 
 ## 1. 기준과 적용 범위
 

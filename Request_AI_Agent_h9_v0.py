@@ -1,4 +1,4 @@
-"""Launcher for the h8_v0 request assistant Flask app."""
+"""Launcher for the h9_v0 request assistant Flask app."""
 
 from __future__ import annotations
 

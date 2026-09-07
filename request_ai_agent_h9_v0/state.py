@@ -1310,7 +1310,7 @@ def create_initial_state() -> State:
         SECTION_METADATA: {
             "schema_version": STATE_SCHEMA_VERSION,
             "app_domain": "cae_request_assistant",
-            "app_version_tag": "h8_v0",
+            "app_version_tag": "h9_v0",
             "request_no": request_no,
             "request_no_generated": False,
             "rag_enabled": False,
