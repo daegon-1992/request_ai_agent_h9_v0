@@ -325,7 +325,7 @@ def test_case_matrix_ui_wraps_long_values_and_keeps_native_select_focus_contract
     assert '.case-source-list li{display:grid;grid-template-columns:minmax(110px,125px) minmax(0,1fr);' in HTML_TEMPLATE
     assert '.case-source-details{min-width:0;color:#45484B;font-weight:400;overflow-wrap:anywhere;white-space:normal}' in HTML_TEMPLATE
     assert '.case-select-field{width:100%;min-width:0;min-height:64px;' in HTML_TEMPLATE
-    assert '.case-select-field:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}' in HTML_TEMPLATE
+    assert '.case-select-field:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}' in HTML_TEMPLATE
     assert '.case-select-field select{display:block;width:100%;min-width:0;min-height:38px;' in HTML_TEMPLATE
     assert '.case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;' in HTML_TEMPLATE
     assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}' in HTML_TEMPLATE

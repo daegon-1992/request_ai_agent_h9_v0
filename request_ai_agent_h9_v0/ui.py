@@ -11,31 +11,72 @@ HTML_TEMPLATE = r"""<!doctype html>
   <title>CAE Request Assistant __APP_VERSION__</title>
   <style>
     :root{
-      --ink:#202124;
-      --muted:#76797D;
-      --bg:#F8F8F8;
-      --paper:#FFFFFF;
-      --soft:#FAFAFA;
-      --line:#E0E1E2;
-      --line-strong:#D4D5D6;
-      --brand:#5A5A5A;
-      --brand-strong:#545454;
-      --accent:#545454;
-      --danger:#4a4a4a;
-      --warning:#5c5c5c;
-      --ok:#4a4a4a;
-      --blue:#5c5c5c;
-      --disabled-bg:#F2F2F2;
-      --disabled-text:#A8AAAC;
-      --space-1:4px;
-      --space-2:8px;
-      --space-3:12px;
-      --space-4:16px;
-      --space-5:20px;
-      --space-6:24px;
-      --space-8:32px;
-      --shadow:0 3px 14px rgba(0,0,0,.05);
-      --shadow-soft:0 1px 4px rgba(0,0,0,.035);
+      /* Engineering UI Design Standard v3.0 foundation tokens. */
+      --ui-content-max:1536px;
+      --ui-page:#FDFDFE;
+      --ui-header:#FDFDFE;
+      --ui-nav-bg:#F6F7F9;
+      --ui-surface:#FFFFFF;
+      --ui-surface-subtle:#F6F7F9;
+      --ui-input-bg:#F8F9FA;
+      --ui-preview-canvas:#CED1D6;
+      --ui-text-primary:#111214;
+      --ui-text-secondary:#50535A;
+      --ui-text-muted:#7A7E86;
+      --ui-border:#D3D6DB;
+      --ui-border-subtle:#E7E9EC;
+      --ui-active:#34373E;
+      --ui-primary:#56595E;
+      --ui-primary-hover:#45484D;
+      --ui-step-inactive:#B8BCC3;
+      --ui-agent-blue:#5F8FEA;
+      --ui-user-bubble:#EDF2F9;
+      --ui-warning-bg:#FEF9EA;
+      --ui-warning-border:#F2D58A;
+      --ui-warning:#F2B447;
+      --ui-warning-text:#7A3B16;
+      --ui-error:#DA1E28;
+      --ui-error-bg:#FFF1F1;
+      --ui-disabled-bg:#F3F4F5;
+      --ui-disabled-text:#A5A8AE;
+      --ui-disabled-border:#E0E2E5;
+      --ui-radius-control:7px;
+      --ui-radius-panel:8px;
+      --ui-shadow-paper:0 2px 8px rgba(0,0,0,.08);
+      --ui-space-1:4px;
+      --ui-space-2:8px;
+      --ui-space-3:12px;
+      --ui-space-4:16px;
+      --ui-space-5:20px;
+      --ui-space-6:24px;
+      --ui-space-7:32px;
+
+      /* Compatibility aliases while screen-specific CSS is migrated in later patches. */
+      --ink:var(--ui-text-primary);
+      --muted:var(--ui-text-muted);
+      --bg:var(--ui-page);
+      --paper:var(--ui-surface);
+      --soft:var(--ui-surface-subtle);
+      --line:var(--ui-border-subtle);
+      --line-strong:var(--ui-border);
+      --brand:var(--ui-primary);
+      --brand-strong:var(--ui-primary);
+      --accent:var(--ui-active);
+      --danger:var(--ui-error);
+      --warning:var(--ui-warning-text);
+      --ok:var(--ui-active);
+      --blue:var(--ui-agent-blue);
+      --disabled-bg:var(--ui-disabled-bg);
+      --disabled-text:var(--ui-disabled-text);
+      --space-1:var(--ui-space-1);
+      --space-2:var(--ui-space-2);
+      --space-3:var(--ui-space-3);
+      --space-4:var(--ui-space-4);
+      --space-5:var(--ui-space-5);
+      --space-6:var(--ui-space-6);
+      --space-8:var(--ui-space-7);
+      --shadow:0 1px 3px rgba(0,0,0,.03);
+      --shadow-soft:none;
       --global-header-height:72px;
     }
     *{box-sizing:border-box}
@@ -53,37 +94,37 @@ HTML_TEMPLATE = r"""<!doctype html>
     button,input,textarea,select{font-family:inherit}
     [hidden]{display:none!important}
     button{
-      min-height:36px;
-      border:1px solid var(--line-strong);
-      border-radius:8px;
-      background:var(--paper);
-      color:var(--ink);
+      min-height:40px;
+      border:1px solid var(--ui-border);
+      border-radius:var(--ui-radius-control);
+      background:var(--ui-surface);
+      color:var(--ui-text-primary);
       cursor:pointer;
       font-size:14px;
       font-weight:500;
       padding:7px 11px;
     }
-    button.primary{border-color:var(--brand-strong);background:var(--brand-strong);color:#fff}
-    button.primary:hover:not(:disabled){border-color:#474747;background:#474747}
-    button.danger{border-color:var(--line);background:var(--soft);color:var(--danger)}
+    button.primary{border-color:var(--ui-primary);background:var(--ui-primary);color:#fff}
+    button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}
+    button.danger{border-color:var(--ui-error);background:var(--ui-surface);color:var(--ui-error)}
     button.icon{width:34px;padding:0;display:grid;place-items:center}
-    button.ghost{background:var(--paper);border-color:var(--line-strong)}
-    button.ghost:hover:not(:disabled){border-color:#D4D5D6;background:#F7F7F7}
-    button:disabled{border-color:var(--line);background:var(--disabled-bg);color:var(--disabled-text);cursor:not-allowed}
+    button.ghost{background:var(--ui-surface);border-color:var(--ui-border)}
+    button.ghost:hover:not(:disabled){border-color:var(--ui-border);background:var(--ui-surface-subtle)}
+    button:disabled{border-color:var(--ui-disabled-border);background:var(--ui-disabled-bg);color:var(--ui-disabled-text);cursor:not-allowed}
     input,textarea,select{
       width:100%;
       min-width:0;
-      min-height:36px;
-      border:1px solid var(--line-strong);
-      border-radius:8px;
-      background:var(--paper);
-      color:var(--ink);
+      min-height:40px;
+      border:1px solid var(--ui-border);
+      border-radius:var(--ui-radius-control);
+      background:var(--ui-surface);
+      color:var(--ui-text-primary);
       padding:10px 12px;
       font-size:14px;
     }
     textarea{min-height:70px;resize:vertical;line-height:1.45}
     label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--ink)}
-    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
     .topbar{
       height:48px;
       padding:6px 16px;
@@ -129,10 +170,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     .panel{
       min-height:0;
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:var(--paper);
-      box-shadow:var(--shadow);
+      border:1px solid var(--ui-border);
+      border-radius:var(--ui-radius-panel);
+      background:var(--ui-surface);
+      box-shadow:none;
       overflow:hidden;
     }
     .rail{display:grid;grid-template-rows:auto minmax(0,1fr)}
@@ -332,9 +373,9 @@ HTML_TEMPLATE = r"""<!doctype html>
     .gate strong{display:block;margin-bottom:8px;font-size:18px;color:var(--ink)}
     .section{
       margin-bottom:10px;
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:var(--paper);
+      border:1px solid var(--ui-border);
+      border-radius:var(--ui-radius-panel);
+      background:var(--ui-surface);
       overflow:hidden;
     }
     .section-head{
@@ -378,7 +419,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       position:relative;min-width:0;height:36px;display:grid;grid-template-columns:minmax(0,1fr) 36px;
       border:1px solid var(--line);border-radius:7px;background:var(--paper)
     }
-    .undecided-combobox:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+    .undecided-combobox:focus-within{outline:2px solid rgba(95,143,234,.24);outline-offset:2px}
     .undecided-combobox input{height:34px;min-height:34px;border:0;border-radius:6px 0 0 6px;padding:8px 9px;background:transparent}
     .undecided-combobox input:focus-visible,
     .undecided-combobox-toggle:focus-visible{outline:0}
@@ -505,11 +546,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       font-size:11px;font-weight:500;line-height:1.2;
     }
     .chip.required{border-color:#c6c6c6;background:#f7f7f7;color:#4a4a4a}
-    .chip.blocking{border-color:#bdbdbd;background:#f3f3f3;color:var(--danger)}
-    .chip.warning{border-color:#c6c6c6;background:#eeeeee;color:var(--warning)}
-    .chip.info{border-color:#d6d6d6;background:#f7f7f7;color:var(--blue)}
-    .chip.ok{border-color:#c6c6c6;background:#f7f7f7;color:var(--ok)}
-    .chip.candidate{border-color:#c6c6c6;background:#f7f7f7;color:var(--warning)}
+    .chip.blocking{border-color:var(--ui-error);background:var(--ui-error-bg);color:var(--ui-error)}
+    .chip.warning{border-color:var(--ui-warning-border);background:var(--ui-warning-bg);color:var(--ui-warning-text)}
+    .chip.info{border-color:var(--ui-border);background:var(--ui-surface-subtle);color:var(--ui-agent-blue)}
+    .chip.ok{border-color:var(--ui-border);background:var(--ui-surface-subtle);color:var(--ok)}
+    .chip.candidate{border-color:var(--ui-border);background:var(--ui-surface-subtle);color:var(--ui-text-secondary)}
     .field-status-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:500}
     .matrix-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
     .case-source-reference{display:grid;margin-bottom:16px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden}
@@ -530,12 +571,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-matrix-title h4{margin:0;color:var(--ink);font-size:16px;font-weight:600;line-height:1.55}
     .case-count{color:#55585B;font-size:13px;font-weight:500;line-height:1.45}
     .case-validation-status{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border:1px solid var(--line);border-radius:8px;background:#F7F7F7;color:#55585B;font-size:12px;font-weight:500;line-height:1.3}
-    .case-validation-status.error{border-color:#E8B4B0;background:#FFF2F1;color:#C62828}
-    .case-validation-status.warning{border-color:#E4D3AD;background:#FFF9ED;color:#A76200}
+    .case-validation-status.error{border-color:var(--ui-error);background:var(--ui-error-bg);color:var(--ui-error)}
+    .case-validation-status.warning{border-color:var(--ui-warning-border);background:var(--ui-warning-bg);color:var(--ui-warning-text)}
     .case-validation-status.ok{color:#3E6B48}
     .case-matrix-toolbar>[data-action="add-case"]{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap}
     .case-select-field{width:100%;min-width:0;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);overflow:hidden}
-    .case-select-field:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    .case-select-field:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
     .case-select-field select{display:block;width:100%;min-width:0;min-height:38px;padding:8px 11px 5px;border:0;border-radius:7px 7px 0 0;background-color:var(--paper);color:var(--ink);font-size:14px;font-weight:600;line-height:1.35;box-shadow:none}
     .case-select-field select:focus-visible{border:0;outline:0;outline-offset:0;box-shadow:none}
     .case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;font-weight:400;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
@@ -545,11 +586,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-remove-action{min-height:36px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap}
     .geometry-drawing-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
     .case-review-message{display:grid;gap:7px;position:relative;margin-top:10px;padding:8px 10px;border-radius:8px;color:#242424;font-size:12px;line-height:1.4}
-    .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
-    .case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}
+    .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
+    .case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}
     .coverage-warning-head{display:flex;align-items:center;gap:6px}
-    .coverage-warning-icon{display:inline-grid;flex:0 0 16px;width:16px;height:16px;place-items:center;color:#C77800;font-size:14px;line-height:1}
-    .case-review-message.error .coverage-warning-icon{color:#C62828}
+    .coverage-warning-icon{display:inline-grid;flex:0 0 16px;width:16px;height:16px;place-items:center;color:var(--ui-warning);font-size:14px;line-height:1}
+    .case-review-message.error .coverage-warning-icon{color:var(--ui-error)}
     .coverage-warning-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
     .coverage-warning-title{color:#242424;font-size:13px;font-weight:600}
     .coverage-warning-copy{margin:0;color:#333333;font-size:12px}
@@ -579,14 +620,14 @@ HTML_TEMPLATE = r"""<!doctype html>
     .metric strong{display:block;margin-top:3px;font-size:15px}
     .issue-list{display:flex;flex-direction:column;gap:7px}
     .issue{border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--paper);font-size:12px;line-height:1.45}
-    .issue.blocking{border-color:#bdbdbd;background:#f3f3f3}
-    .issue.warning{border-color:#c6c6c6;background:#f7f7f7}
-    .issue.info{border-color:#d6d6d6;background:#f7f7f7}
+    .issue.blocking{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .issue.warning{border-color:var(--ui-warning-border);background:var(--ui-warning-bg)}
+    .issue.info{border-color:var(--ui-border);background:var(--ui-surface-subtle)}
     .issue button{margin-top:7px}
     .issue code{display:block;margin-top:3px;color:var(--muted);font-size:11px;white-space:normal}
     .inline-issue{display:none;margin-top:4px;font-size:11px;line-height:1.35}
     .field-touched .inline-issue{display:block}
-    .field-highlight{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+    .field-highlight{outline:2px solid rgba(95,143,234,.24);outline-offset:3px;border-radius:var(--ui-radius-panel)}
     .draft-output{margin-top:10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:10px;white-space:pre-wrap;font-size:12px;line-height:1.5}
     .preview-doc{display:grid;gap:10px}
     .preview-section{border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:10px}
@@ -597,7 +638,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .preview-field-label,.preview-condition-item,.word-export-required-warning{display:inline-flex;align-items:center;gap:4px}
     .preview-condition-list{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
     .preview-condition-separator{color:var(--muted)}
-    .preview-missing-icon{width:14px;height:14px;display:inline-grid;flex:0 0 14px;place-items:center;color:#c62828}
+    .preview-missing-icon{width:14px;height:14px;display:inline-grid;flex:0 0 14px;place-items:center;color:var(--ui-error)}
     .preview-missing-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
     .preview-table{width:100%;border-collapse:collapse;font-size:12px}
     .preview-table caption{text-align:left;padding:7px 0;font-weight:600;color:var(--ink)}
@@ -718,17 +759,17 @@ HTML_TEMPLATE = r"""<!doctype html>
     /* SCREEN-01~06 workspace-only visual surface; Agent Dock is a sibling of .workspace-shell. */
     .workspace-shell{
       --request-workspace-font:"Noto Sans KR","Malgun Gothic","Segoe UI",sans-serif;
-      --request-workspace-page:var(--bg);
-      --request-workspace-content:var(--bg);
-      --request-workspace-surface:var(--paper);
-      --request-workspace-border:var(--line);
-      --request-workspace-ink:var(--ink);
-      --request-workspace-muted:var(--muted);
-      --request-workspace-accent:var(--accent);
-      --request-workspace-radius:10px;
-      --request-workspace-shadow:var(--shadow);
-      --request-workspace-card-content-padding:10px;
-      --request-workspace-card-section-gap:20px;
+      --request-workspace-page:var(--ui-page);
+      --request-workspace-content:var(--ui-page);
+      --request-workspace-surface:var(--ui-surface);
+      --request-workspace-border:var(--ui-border);
+      --request-workspace-ink:var(--ui-text-primary);
+      --request-workspace-muted:var(--ui-text-muted);
+      --request-workspace-accent:var(--ui-active);
+      --request-workspace-radius:var(--ui-radius-panel);
+      --request-workspace-shadow:none;
+      --request-workspace-card-content-padding:16px;
+      --request-workspace-card-section-gap:16px;
       font-family:var(--request-workspace-font);
       color:var(--request-workspace-ink);
     }
@@ -767,10 +808,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .geometry-screen :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;font-weight:400;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;font-style:normal;font-weight:500;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;font-weight:400;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
-    .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
     .workspace-shell .workspace-form button{font-family:var(--request-workspace-font);font-weight:500;border-color:var(--request-workspace-border);background-color:var(--request-workspace-surface);color:var(--request-workspace-ink);box-shadow:none}
-    .workspace-shell .workspace-form button.primary{border-color:var(--request-workspace-accent);background-color:var(--request-workspace-accent);color:#fff}
-    .workspace-shell .workspace-form button.primary:hover:not(:disabled){border-color:#474747;background:#474747}
+    .workspace-shell .workspace-form button.primary{border-color:var(--ui-primary);background-color:var(--ui-primary);color:#fff}
+    .workspace-shell .workspace-form button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}
     .workspace-shell .workspace-form button:disabled{border-color:var(--line);background:var(--disabled-bg);color:var(--disabled-text)}
     .workspace-shell .workspace-form table{color:var(--request-workspace-ink);border-color:var(--request-workspace-border)}
     .workspace-shell .request-content-screen > #section-overview{background:var(--request-workspace-surface)}
@@ -797,11 +838,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace{padding-top:6px;padding-bottom:6px}
     .workspace-shell .request-content-screen .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
     .workspace-shell .screen-heading-code{display:none}
-    .workspace-shell .screen-description{margin:0 0 7px;color:var(--request-workspace-muted);font-size:13px;line-height:1.35}
+    .workspace-shell .screen-description{margin:0 0 8px;color:var(--request-workspace-muted);font-size:14px;font-weight:400;line-height:1.45}
     .workspace-shell .geometry-screen .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-accent);font-size:15px;font-weight:600}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-ink);font-size:17px;font-weight:600}
     .workspace-shell .geometry-screen .chev,
     .workspace-shell .stage-static-screen .chev,
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .chev{display:none}
@@ -822,7 +863,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen :is(.condition-card-type-space_environment,.condition-card-type-supply_air) .condition-group-head{border-radius:9px 9px 0 0}
     .workspace-shell .case-toolbar{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .preview-actions{display:flex;align-items:center;gap:9px;border-top:1px solid var(--request-workspace-border);padding-top:10px}
-    .workspace-shell .word-export-required-warning{color:#c62828;font-size:12px;font-weight:600!important}
+    .workspace-shell .word-export-required-warning{color:var(--ui-error);font-size:12px;font-weight:600!important}
     .workspace-shell .request-content-screen > .section{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}
     .workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:16px 16px 0;background:transparent;border-bottom:0}
     .workspace-shell .request-content-screen > .section > .section-body{padding:16px;border-top:0}
@@ -838,7 +879,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-group-head-actions button{min-height:24px;height:24px;padding:2px 7px}
     .workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{min-height:46px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background-color:var(--paper);color:var(--ink)}
     .workspace-shell .request-content-screen .undecided-combobox{height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
-    .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
     .workspace-shell .request-content-screen .undecided-combobox input{height:44px;min-height:44px;padding:10px 12px;border:0;border-radius:7px 0 0 7px;background:transparent}
     .workspace-shell .request-content-screen .undecided-combobox input:focus-visible,
     .workspace-shell .request-content-screen .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}
@@ -851,7 +892,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:46px;padding:10px 12px;font-size:14px;font-weight:400;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .workspace-shell .condition-input-screen .condition-spec-name{min-height:46px;padding-block:10px;font-size:14px;font-weight:400;line-height:1.45}
     .workspace-shell .condition-input-screen .condition-temperature-combobox{height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
-    .workspace-shell .condition-input-screen .condition-temperature-combobox:focus-within{border-color:#8E9092;outline:3px solid rgba(84,84,84,.16);outline-offset:1px}
+    .workspace-shell .condition-input-screen .condition-temperature-combobox:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
     .workspace-shell .condition-input-screen .condition-temperature-combobox input{height:44px;min-height:44px;padding:10px 12px;border:0;border-radius:7px 0 0 7px;background:transparent}
     .workspace-shell .condition-input-screen .condition-temperature-combobox input:focus-visible,
     .workspace-shell .condition-input-screen .condition-temperature-combobox .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}
@@ -894,19 +935,21 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table td{font-size:14px;font-weight:400;line-height:1.45}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] :is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:#C62828}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:var(--ui-error)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message:empty{display:none}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-head{display:flex;align-items:flex-start;gap:12px}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon{display:inline-grid;flex:0 0 20px;width:20px;height:20px;place-items:center;color:#C77800;font-size:18px;line-height:1}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error .coverage-warning-icon{color:#C62828}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon{display:inline-grid;flex:0 0 20px;width:20px;height:20px;place-items:center;color:var(--ui-warning);font-size:18px;line-height:1}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error .coverage-warning-icon{color:var(--ui-error)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-title{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-copy{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
+    .workspace-shell :is(.request-content-screen,.geometry-screen,.stage-static-screen,.workspace-form[data-screen="SCREEN-06"]) > .section > .section-head h3,
+    .workspace-shell .condition-input-screen .condition-group-head h3{font-size:17px;font-weight:600;color:var(--ui-text-primary)}
     .workspace-shell .request-content-screen textarea{min-height:70px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .layout{grid-template-areas:"workspace-content agent";grid-template-rows:minmax(0,1fr)}
     .workspace-shell{display:contents}
@@ -955,7 +998,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       .chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}
       .chat-input{position:relative;z-index:1}
     }
-    /* H8 global visual shell: neutral, spacious application framing. */
+    /* Engineering UI Design Standard v3.0: common shell/component foundation. */
     .topbar{
       height:var(--global-header-height);padding:12px 24px;
       grid-template-columns:minmax(0,1fr) auto;gap:24px;
@@ -973,7 +1016,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .layout{
       width:min(100%,1536px);padding:18px 22px 22px;gap:16px;
     }
-    .panel{border-color:var(--line);border-radius:12px;box-shadow:var(--shadow)}
+    .panel{border-color:var(--ui-border);border-radius:var(--ui-radius-panel);box-shadow:none}
     .workspace-content{row-gap:10px}
     .workspace-shell .screen-map{
       min-height:82px;padding:0;border:1px solid var(--line);border-radius:11px;
@@ -983,31 +1026,31 @@ HTML_TEMPLATE = r"""<!doctype html>
       min-height:80px;padding-top:9px;padding-bottom:9px;background:var(--paper);color:var(--muted);
     }
     .workspace-shell .screen-map-item:hover:not([aria-disabled="true"]){background:var(--soft);color:var(--ink)}
-    .workspace-shell .screen-map-item[aria-current="page"]{background:var(--brand-strong);color:#fff}
+    .workspace-shell .screen-map-item[aria-current="page"]{background:var(--ui-active);color:#fff}
     .workspace-shell .screen-map-number{font-size:26px;font-weight:600;line-height:1}
     .workspace-shell .screen-map-label{font-size:12px;font-weight:500;line-height:1.25}
     .workspace-shell .main{
-      border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow);
+      border:0;border-radius:0;background:var(--ui-page);box-shadow:none;
     }
-    .workspace-shell .workspace{padding:16px 18px;background:var(--paper);border-radius:12px}
+    .workspace-shell .workspace{padding:16px 18px;background:var(--ui-page);border-radius:0}
     .agent-dock{
-      border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow);
+      border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;
     }
-    .chat-head{padding:16px 18px;border-bottom-color:var(--line-strong);background:#F7F7F7}
+    .chat-head{padding:16px 18px;border-bottom-color:var(--ui-border);background:var(--ui-surface)}
     .stage-assist-title{font-size:18px;font-weight:600;color:#151617}
-    .title-icon{width:28px;height:28px;flex-basis:28px;border-radius:8px;background:var(--soft);color:var(--brand-strong)}
+    .title-icon{width:28px;height:28px;flex-basis:28px;border-radius:var(--ui-radius-panel);background:var(--ui-surface-subtle);color:var(--ui-agent-blue)}
     .title-icon svg{width:16px;height:16px}
     .chat-head-actions{gap:6px}
     .chat-head-actions button{min-height:40px;padding:8px 12px;background:var(--paper);color:var(--muted)}
     .chat-head-actions button:hover{border-color:#c9caca;background:var(--soft);color:var(--ink)}
-    .chat-log{padding:18px 16px 20px 12px;background:var(--paper)}
+    .chat-log{padding:18px 16px 20px 12px;background:var(--ui-surface)}
     .msg{max-width:100%;margin-bottom:12px;border-radius:9px;padding:11px 12px;font-size:14px;font-weight:400;line-height:1.65}
-    .msg.assistant{border-color:var(--line);background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.025)}
-    .msg.user{border-color:var(--line);background:#f1f1f0}
-    .chat-input{padding:14px;border-top-color:var(--line);background:var(--paper)}
+    .msg.assistant{border-color:var(--ui-border-subtle);background:var(--ui-surface);box-shadow:none}
+    .msg.user{border-color:var(--ui-border-subtle);background:var(--ui-user-bubble)}
+    .chat-input{padding:14px;border-top-color:var(--ui-border);background:var(--ui-input-bg)}
     .chat-row{gap:10px;align-items:flex-start}
-    .chat-row textarea{height:50px;min-height:50px;border-radius:8px;background:var(--paper)}
-    .chat-row .primary{min-width:64px;min-height:50px;border-color:var(--brand-strong);background:var(--brand-strong)}
+    .chat-row textarea{height:50px;min-height:50px;border-radius:var(--ui-radius-control);background:var(--ui-surface)}
+    .chat-row .primary{min-width:64px;min-height:50px;border-color:var(--ui-primary);background:var(--ui-primary)}
     .brand .subtitle{display:none}
     .app-footer{
       min-height:44px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;

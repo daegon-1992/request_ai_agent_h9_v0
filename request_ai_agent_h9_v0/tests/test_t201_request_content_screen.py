@@ -51,7 +51,7 @@ def test_request_content_cards_match_the_condition_card_bottom_spacing():
 
 
 def test_request_content_sections_match_the_condition_card_vertical_gap():
-    assert '--request-workspace-card-section-gap:20px' in HTML_TEMPLATE
+    assert '--request-workspace-card-section-gap:16px' in HTML_TEMPLATE
     assert (
         '.workspace-shell .request-content-screen > .section{'
         'margin-bottom:var(--request-workspace-card-section-gap);'

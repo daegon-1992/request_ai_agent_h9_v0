@@ -223,7 +223,7 @@ def test_screen_three_duplicate_error_uses_shared_feedback_surface_and_blocks_fo
         '.workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],'
         '.workspace-form[data-screen="SCREEN-06"]) '
     )
-    assert f'{feedback_scope}.case-review-message.error{{border:1px solid #E8B4B0;background:#FFF2F1}}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message.error{{border:1px solid var(--ui-error);background:var(--ui-error-bg)}}' in HTML_TEMPLATE
     assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE
     assert 'if (screenId === "SCREEN-03" && geometryDrawingDuplicateIssues().length) return $("geometryDrawingDuplicateWarning");' in HTML_TEMPLATE
 

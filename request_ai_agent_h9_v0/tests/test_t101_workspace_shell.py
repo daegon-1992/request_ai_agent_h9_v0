@@ -5,32 +5,71 @@ import re
 from request_ai_agent_h9_v0.ui import HTML_TEMPLATE
 
 
-def test_visual_foundation_uses_neutral_charcoal_tokens_without_gradients():
+def test_visual_foundation_uses_engineering_ui_v3_tokens_and_compatibility_aliases():
     for token in (
-        "--ink:#202124",
-        "--muted:#76797D",
-        "--bg:#F8F8F8",
-        "--paper:#FFFFFF",
-        "--soft:#FAFAFA",
-        "--line:#E0E1E2",
-        "--line-strong:#D4D5D6",
-        "--brand:#5A5A5A",
-        "--brand-strong:#545454",
-        "--accent:#545454",
-        "--disabled-bg:#F2F2F2",
-        "--disabled-text:#A8AAAC",
-        "--shadow:0 3px 14px rgba(0,0,0,.05)",
-        "--shadow-soft:0 1px 4px rgba(0,0,0,.035)",
-        "--global-header-height:72px",
-        "--request-workspace-shadow:var(--shadow)",
+        "--ui-content-max:1536px",
+        "--ui-page:#FDFDFE",
+        "--ui-header:#FDFDFE",
+        "--ui-nav-bg:#F6F7F9",
+        "--ui-surface:#FFFFFF",
+        "--ui-surface-subtle:#F6F7F9",
+        "--ui-input-bg:#F8F9FA",
+        "--ui-preview-canvas:#CED1D6",
+        "--ui-text-primary:#111214",
+        "--ui-text-secondary:#50535A",
+        "--ui-text-muted:#7A7E86",
+        "--ui-border:#D3D6DB",
+        "--ui-border-subtle:#E7E9EC",
+        "--ui-active:#34373E",
+        "--ui-primary:#56595E",
+        "--ui-primary-hover:#45484D",
+        "--ui-step-inactive:#B8BCC3",
+        "--ui-agent-blue:#5F8FEA",
+        "--ui-user-bubble:#EDF2F9",
+        "--ui-warning-bg:#FEF9EA",
+        "--ui-warning-border:#F2D58A",
+        "--ui-warning:#F2B447",
+        "--ui-warning-text:#7A3B16",
+        "--ui-error:#DA1E28",
+        "--ui-error-bg:#FFF1F1",
+        "--ui-radius-control:7px",
+        "--ui-radius-panel:8px",
+        "--ui-shadow-paper:0 2px 8px rgba(0,0,0,.08)",
+        "--ui-space-1:4px",
+        "--ui-space-2:8px",
+        "--ui-space-3:12px",
+        "--ui-space-4:16px",
+        "--ui-space-5:20px",
+        "--ui-space-6:24px",
+        "--ui-space-7:32px",
     ):
         assert token in HTML_TEMPLATE
-    assert "#586f8c" not in HTML_TEMPLATE
-    assert "--ui-" not in HTML_TEMPLATE
+    for alias in (
+        "--ink:var(--ui-text-primary)",
+        "--muted:var(--ui-text-muted)",
+        "--bg:var(--ui-page)",
+        "--paper:var(--ui-surface)",
+        "--soft:var(--ui-surface-subtle)",
+        "--line:var(--ui-border-subtle)",
+        "--line-strong:var(--ui-border)",
+        "--brand-strong:var(--ui-primary)",
+        "--accent:var(--ui-active)",
+        "--request-workspace-shadow:none",
+    ):
+        assert alias in HTML_TEMPLATE
     assert "linear-gradient" not in HTML_TEMPLATE
     assert '*{box-sizing:border-box;font-weight:400}' not in HTML_TEMPLATE
     assert 'font-family:"Noto Sans KR","Malgun Gothic","Segoe UI",sans-serif' in HTML_TEMPLATE
     assert 'font-weight:650' not in HTML_TEMPLATE
+
+
+def test_common_controls_use_v3_radius_primary_and_soft_blue_focus():
+    assert 'min-height:40px;\n      border:1px solid var(--ui-border);\n      border-radius:var(--ui-radius-control);' in HTML_TEMPLATE
+    assert 'button.primary{border-color:var(--ui-primary);background:var(--ui-primary);color:#fff}' in HTML_TEMPLATE
+    assert 'button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}' in HTML_TEMPLATE
+    assert 'button.danger{border-color:var(--ui-error);background:var(--ui-surface);color:var(--ui-error)}' in HTML_TEMPLATE
+    assert 'button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-description{margin:0 0 8px;color:var(--request-workspace-muted);font-size:14px;font-weight:400;line-height:1.45}' in HTML_TEMPLATE
 
 
 def test_global_shell_moves_request_values_into_portal_header_and_removes_summary_surfaces():
@@ -49,17 +88,19 @@ def test_global_shell_moves_request_values_into_portal_header_and_removes_summar
     assert "workspace-number-block" not in HTML_TEMPLATE
     assert "의뢰 제목 (자동 생성)" not in HTML_TEMPLATE
     assert ">의뢰 번호<" not in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item[aria-current="page"]{background:var(--brand-strong);color:#fff}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"]{background:var(--ui-active);color:#fff}' in HTML_TEMPLATE
     assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
 
 
-def test_workspace_and_agent_are_independent_white_work_surfaces():
+def test_workspace_and_agent_follow_v3_surface_hierarchy_without_shell_shadow():
     assert ".workspace-shell .main{" in HTML_TEMPLATE
-    assert "border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow)" in HTML_TEMPLATE
+    assert "border:0;border-radius:0;background:var(--ui-page);box-shadow:none" in HTML_TEMPLATE
     assert ".agent-dock{" in HTML_TEMPLATE
-    assert ".chat-head{padding:16px 18px;border-bottom-color:var(--line-strong);background:#F7F7F7}" in HTML_TEMPLATE
-    assert ".chat-log{padding:18px 16px 20px 12px;background:var(--paper)}" in HTML_TEMPLATE
-    assert ".chat-input{padding:14px;border-top-color:var(--line);background:var(--paper)}" in HTML_TEMPLATE
+    assert "border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none" in HTML_TEMPLATE
+    assert ".chat-head{padding:16px 18px;border-bottom-color:var(--ui-border);background:var(--ui-surface)}" in HTML_TEMPLATE
+    assert ".chat-log{padding:18px 16px 20px 12px;background:var(--ui-surface)}" in HTML_TEMPLATE
+    assert ".msg.user{border-color:var(--ui-border-subtle);background:var(--ui-user-bubble)}" in HTML_TEMPLATE
+    assert ".chat-input{padding:14px;border-top-color:var(--ui-border);background:var(--ui-input-bg)}" in HTML_TEMPLATE
     assert ".panel-resizer::before{width:1px;height:46px;background:#d4d5d5}" in HTML_TEMPLATE
 
 
