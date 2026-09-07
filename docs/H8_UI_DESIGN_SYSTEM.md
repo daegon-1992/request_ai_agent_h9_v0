@@ -5,8 +5,8 @@
 
 ## 1. 기준과 적용 범위
 
-- Workspace Component Standard의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 현재 SCREEN-02 구현.
-- Foundation과 Shell의 Source of Truth: `request_ai_agent_h8_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
+- Workspace Component Standard의 Source of Truth: `request_ai_agent_h9_v0/ui.py`의 현재 SCREEN-02 구현.
+- Foundation과 Shell의 Source of Truth: `request_ai_agent_h9_v0/ui.py`의 후반 H8 override가 반영된 현재 구현.
 - 이 문서는 현재 구현값과 목표 표준을 구분한다. SCREEN-02와 다른 현재 화면의 값은 표준의 근거가 아니라 migration 대상이다.
 - 과거 h7 UI, Blue-Gray 디자인, mockup, 이전 지시와 현재 코드가 다르면 현재 `ui.py`를 우선한다.
 - 기준 소스 SHA-256: `0048347BB25EE63A5FE41344120EACD034F9A722D45F4E07AB50679560F68888`.

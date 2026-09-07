@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import os
 
-from request_ai_agent_h8_v0.config import load_local_env
+from request_ai_agent_h9_v0.config import load_local_env
 
 
 load_local_env()
 
-from request_ai_agent_h8_v0 import create_app
+from request_ai_agent_h9_v0 import create_app
 
 
 app = create_app()
