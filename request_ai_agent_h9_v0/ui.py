@@ -312,7 +312,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .prep-choice-lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
     .prep-quick-groups{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}
     .prep-quick-group{min-width:0;padding:0;border:0;background:transparent}
-    .prep-quick-group-analysis{padding:0}
+    .prep-quick-group-analysis{padding:24px 0 0;border-top:1px solid var(--ui-border-subtle)}
     .prep-quick-group-title{margin:0 0 16px;font-size:16px;font-weight:600;color:var(--ink)}
     .prep-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
     .prep-analysis-grid{display:grid;grid-template-columns:minmax(240px,.38fr) minmax(0,.62fr);gap:24px;align-items:start}

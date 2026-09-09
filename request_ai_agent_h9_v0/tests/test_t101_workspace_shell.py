@@ -219,6 +219,7 @@ def test_screen_one_uses_single_row_product_classification_and_analysis_detail()
 
     assert ">제품 분류</h4>" in screen
     assert ">해석 설정</h4>" in screen
+    assert ".prep-quick-group-analysis{padding:24px 0 0;border-top:1px solid var(--ui-border-subtle)}" in HTML_TEMPLATE
     for control_id in (
         "quickDivisionSelect",
         "quickProductLineupSelect",
