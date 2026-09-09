@@ -39,8 +39,8 @@ def test_screen_six_uses_canonical_preview_card_read_only_and_action_contracts()
     assert 'class="title-icon"' in HTML_TEMPLATE[screen_end:]
     assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;'
-        'border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}'
+        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
+        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview '

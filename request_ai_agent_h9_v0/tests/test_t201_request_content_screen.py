@@ -39,7 +39,8 @@ def test_request_content_layout_uses_three_columns_at_wide_widths():
 
 
 def test_request_content_cards_match_the_condition_card_bottom_spacing():
-    assert 'border:1px solid #DCDDDE;border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible' in HTML_TEMPLATE
+    assert 'border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen{background:transparent}' in HTML_TEMPLATE
     assert (
         '.workspace-shell .request-content-screen > .section > .section-body{padding:16px;'
         'border-top:0'
@@ -225,11 +226,12 @@ def test_navigation_form_and_agent_use_the_full_layout_row_below_header():
     assert '<div class="screen-navigation-status" id="screenNavigationStatus"' in HTML_TEMPLATE
 
 
-def test_request_content_visual_corrections_use_connected_chevrons_and_page_scroll():
-    assert 'clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%,18px 50%)' in HTML_TEMPLATE
-    assert 'clip-path:polygon(0 0,100% 0,100% 100%,0 100%,18px 50%)' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map{gap:0}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}' in HTML_TEMPLATE
+def test_request_content_visual_corrections_use_inline_circle_navigation_and_page_scroll():
+    assert 'clip-path:polygon(0 0,calc(100% - 18px)' not in HTML_TEMPLATE
+    assert 'clip-path:polygon(0 0,100% 0,100% 100%,0 100%,18px 50%)' not in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}' not in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-label{font-size:13px;font-weight:500;line-height:1.25;color:var(--ui-text-secondary)}' in HTML_TEMPLATE
     assert '.workspace{min-height:0;overflow:visible;padding:12px}' in HTML_TEMPLATE
     assert '.workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px;overflow:visible}' in HTML_TEMPLATE
     assert '.workspace-shell .main{overflow:visible}' in HTML_TEMPLATE

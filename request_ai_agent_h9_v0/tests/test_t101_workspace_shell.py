@@ -9,7 +9,7 @@ def test_visual_foundation_uses_engineering_ui_v3_tokens_and_compatibility_alias
     for token in (
         "--ui-content-max:1536px",
         "--ui-page:#FDFDFE",
-        "--ui-header:#FDFDFE",
+        "--ui-header:#F3F4F6",
         "--ui-nav-bg:#F6F7F9",
         "--ui-surface:#FFFFFF",
         "--ui-surface-subtle:#F6F7F9",
@@ -73,9 +73,12 @@ def test_common_controls_use_v3_radius_primary_and_soft_blue_focus():
 
 
 def test_global_shell_moves_request_values_into_portal_header_and_removes_summary_surfaces():
-    assert "height:var(--global-header-height);padding:12px 24px" in HTML_TEMPLATE
+    assert "--global-header-height:60px" in HTML_TEMPLATE
+    assert "height:var(--global-header-height);padding:8px 24px" in HTML_TEMPLATE
     assert "min-height:calc(100vh - var(--global-header-height))" in HTML_TEMPLATE
     assert 'class="portal-heading"' in HTML_TEMPLATE
+    assert '.brand-mark{\n      width:auto;height:auto;border-radius:0;background:transparent;color:var(--ui-text-primary);' in HTML_TEMPLATE
+    assert '.portal-heading{padding-left:16px;border-left:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
     assert 'class="header-request-summary" aria-label="현재 의뢰 정보"' in HTML_TEMPLATE
     assert 'class="header-request-title" id="heroTitle"' in HTML_TEMPLATE
     assert 'class="header-request-number" id="requestNoDisplay"' in HTML_TEMPLATE
@@ -88,13 +91,22 @@ def test_global_shell_moves_request_values_into_portal_header_and_removes_summar
     assert "workspace-number-block" not in HTML_TEMPLATE
     assert "의뢰 제목 (자동 생성)" not in HTML_TEMPLATE
     assert ">의뢰 번호<" not in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item[aria-current="page"]{background:var(--ui-active);color:#fff}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"]{background:transparent;color:var(--ui-text-primary)}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff}' in HTML_TEMPLATE
     assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
 
 
 def test_workspace_and_agent_follow_v3_surface_hierarchy_without_shell_shadow():
-    assert ".workspace-shell .main{" in HTML_TEMPLATE
-    assert "border:0;border-radius:0;background:var(--ui-page);box-shadow:none" in HTML_TEMPLATE
+    assert ".workspace-shell .panel.main{" in HTML_TEMPLATE
+    assert "border:1px solid var(--ui-border-subtle);border-radius:var(--ui-radius-panel);" in HTML_TEMPLATE
+    assert "background:var(--ui-page);box-shadow:none;outline:0" in HTML_TEMPLATE
+    assert "background:var(--ui-surface-subtle);" in HTML_TEMPLATE
+    assert ".step-navigation{background:transparent}" in HTML_TEMPLATE
+    assert "scrollbar-width:thin;background:transparent;box-shadow:none" in HTML_TEMPLATE
+    assert ".workspace-shell .workspace{" in HTML_TEMPLATE
+    assert ".workspace-content{row-gap:0}" in HTML_TEMPLATE
+    assert "padding:16px 18px;border:0;border-radius:0;" in HTML_TEMPLATE
+    assert "background:transparent;box-shadow:none" in HTML_TEMPLATE
     assert ".agent-dock{" in HTML_TEMPLATE
     assert "border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none" in HTML_TEMPLATE
     assert ".chat-head{padding:16px 18px;border-bottom-color:var(--ui-border);background:var(--ui-surface)}" in HTML_TEMPLATE
@@ -102,6 +114,8 @@ def test_workspace_and_agent_follow_v3_surface_hierarchy_without_shell_shadow():
     assert ".msg.user{border-color:var(--ui-border-subtle);background:var(--ui-user-bubble)}" in HTML_TEMPLATE
     assert ".chat-input{padding:14px;border-top-color:var(--ui-border);background:var(--ui-input-bg)}" in HTML_TEMPLATE
     assert ".panel-resizer::before{width:1px;height:46px;background:#d4d5d5}" in HTML_TEMPLATE
+    assert "border-bottom:1px solid var(--ui-border);background:var(--ui-header);box-shadow:none" in HTML_TEMPLATE
+    assert ".workspace-shell .workspace-form :is(input,textarea,select):disabled{border-color:var(--ui-disabled-border);background:var(--ui-disabled-bg);color:#9A9EA5;opacity:1}" in HTML_TEMPLATE
 
 
 def test_guided_workspace_shell_preserves_the_six_screen_map_and_existing_sections():
@@ -138,7 +152,7 @@ def test_user_facing_screen_text_uses_navigation_names_without_internal_ids():
         ("SCREEN-03", "03", "해석 제품"),
         ("SCREEN-04", "04", "해석 조건"),
         ("SCREEN-05", "05", "Case Matrix"),
-        ("SCREEN-06", "06", "전체 확인·Preview·Word"),
+        ("SCREEN-06", "06", "전체 확인"),
     )
 
     for screen_id, number, label in navigation:

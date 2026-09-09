@@ -54,8 +54,8 @@ def test_total_assembly_drawing_guidance_is_shown_without_changing_product_struc
     assert "geometry-policy-badge" not in HTML_TEMPLATE
     assert (
         '.geometry-policy-guidance{display:flex;gap:12px;align-items:flex-start;'
-        'min-height:86px;margin:0 0 10px;padding:16px;border:1px solid var(--line-strong);'
-        'border-radius:10px;background:#F7F7F7;color:var(--request-workspace-ink)}'
+        'min-height:86px;margin:0 0 10px;padding:16px;border:1px solid var(--ui-border);'
+        'border-radius:var(--ui-radius-panel);background:var(--ui-surface-subtle);color:var(--request-workspace-ink)}'
     ) in HTML_TEMPLATE
     assert '.geometry-policy-copy{min-width:0}' in HTML_TEMPLATE
     assert (
@@ -100,8 +100,8 @@ def test_total_assembly_drawing_guidance_is_shown_without_changing_product_struc
 def test_target_product_box_grows_with_the_shared_row_gap():
     assert (
         '.workspace-shell .geometry-screen > #section-geometry{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;'
-        'border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}'
+        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
+        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .geometry-screen > #section-geometry > .section-head{'

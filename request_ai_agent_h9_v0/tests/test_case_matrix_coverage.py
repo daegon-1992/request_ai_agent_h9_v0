@@ -157,10 +157,10 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     assert '.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}' in HTML_TEMPLATE
     assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE
     assert preview < preview_warning < word_button
-    assert f'{feedback_scope}.case-review-message.error{{border:1px solid #E8B4B0;background:#FFF2F1}}' in HTML_TEMPLATE
-    assert f'{feedback_scope}.case-review-message.warning{{border:1px solid #E4D3AD;background:#FFF9ED}}' in HTML_TEMPLATE
-    assert '.case-review-message.error{border:1px solid #E8B4B0;background:#FFF2F1}' in HTML_TEMPLATE
-    assert '.case-review-message.warning{border:1px solid #E4D3AD;background:#FFF9ED}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message.error{{border:1px solid var(--ui-error);background:var(--ui-error-bg)}}' in HTML_TEMPLATE
+    assert f'{feedback_scope}.case-review-message.warning{{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}}' in HTML_TEMPLATE
+    assert '.case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}' in HTML_TEMPLATE
+    assert '.case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}' in HTML_TEMPLATE
     assert "border-left:3px" not in HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message.error{{", 1)[1].split("}", 1)[0]
     assert "border-left:3px" not in HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message.warning{{", 1)[1].split("}", 1)[0]
     assert f'{feedback_scope}.coverage-warning-icon{{display:inline-grid;flex:0 0 20px;width:20px;height:20px;' in HTML_TEMPLATE
@@ -190,8 +190,8 @@ def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts(
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid #DCDDDE;'
-        'border-radius:10px;background:var(--paper);box-shadow:none;overflow:visible}'
+        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
+        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '

@@ -15,22 +15,24 @@ def test_step_navigation_stays_in_the_main_workspace_and_keeps_all_six_labels():
         "해석 제품",
         "해석 조건",
         "Case Matrix",
-        "전체 확인·Preview·Word",
+        "전체 확인",
     ):
         assert label in HTML_TEMPLATE
 
 
-def test_step_navigation_uses_chevrons_and_preserves_desktop_and_overlay_width_rules():
-    assert 'grid-template-columns:repeat(6,minmax(0,1fr))' in HTML_TEMPLATE
-    assert 'clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%)' in HTML_TEMPLATE
-    assert 'clip-path:polygon(0 0,calc(100% - 18px) 0,100% 50%,calc(100% - 18px) 100%,0 100%,18px 50%)' in HTML_TEMPLATE
-    assert 'clip-path:polygon(0 0,100% 0,100% 100%,0 100%,18px 50%)' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map{gap:0}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}' in HTML_TEMPLATE
-    assert '.screen-map-item:nth-child(n+2):not(:last-child)::after{' in HTML_TEMPLATE
-    assert 'content:"›"' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item{background:var(--paper);color:var(--request-workspace-muted)}' in HTML_TEMPLATE
-    assert '.screen-map-item[aria-current="page"]{background:var(--accent);color:#fff}' in HTML_TEMPLATE
+def test_step_navigation_uses_v3_inline_circles_without_chevrons_or_connectors():
+    assert 'grid-template-columns:repeat(6,max-content);justify-content:space-between' in HTML_TEMPLATE
+    assert '.step-navigation{background:transparent}' in HTML_TEMPLATE
+    assert 'scrollbar-width:thin;background:transparent;box-shadow:none' in HTML_TEMPLATE
+    assert 'border:0;border-radius:0' in HTML_TEMPLATE
+    assert 'width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:50%' in HTML_TEMPLATE
+    assert '.screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff}' in HTML_TEMPLATE
+    assert '.screen-map-item[aria-current="page"] .screen-map-label{color:var(--ui-text-primary);font-weight:600}' in HTML_TEMPLATE
+    assert 'clip-path:polygon(0 0,calc(100% - 18px)' not in HTML_TEMPLATE
+    assert 'clip-path:polygon(0 0,100% 0,100% 100%,0 100%,18px 50%)' not in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}' not in HTML_TEMPLATE
+    assert '.screen-map-item:nth-child(n+2):not(:last-child)::after{' not in HTML_TEMPLATE
+    assert 'content:"›"' not in HTML_TEMPLATE
     assert '@media (max-width:1039px)' in HTML_TEMPLATE
     assert 'position:fixed' in HTML_TEMPLATE
 
@@ -50,8 +52,9 @@ def test_locked_steps_keep_the_existing_surface_and_show_only_a_leading_lock_ico
         assert 'class="screen-map-lock"' not in item_lines[screen_id]
 
     assert '.screen-map-item[aria-disabled="true"]{cursor:not-allowed}' in HTML_TEMPLATE
-    assert '.screen-map-item[aria-disabled="true"] :is(.screen-map-number,.screen-map-label){color:var(--muted);opacity:.55}' in HTML_TEMPLATE
-    assert '.screen-map-item[aria-disabled="true"] .screen-map-lock{display:grid}' in HTML_TEMPLATE
+    assert '.screen-map-item[aria-disabled="true"] .screen-map-number{background:var(--ui-step-inactive);opacity:.72}' in HTML_TEMPLATE
+    assert '.screen-map-item[aria-disabled="true"] .screen-map-label{color:var(--ui-text-muted);opacity:.72}' in HTML_TEMPLATE
+    assert '.screen-map-item[aria-disabled="true"] .screen-map-lock{display:grid;opacity:.65}' in HTML_TEMPLATE
 
 
 def test_requested_headings_omit_icons_while_agent_keeps_its_identity_icon():

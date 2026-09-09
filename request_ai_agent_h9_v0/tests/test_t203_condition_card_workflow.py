@@ -222,7 +222,7 @@ def test_condition_boxes_share_the_requester_info_shadow():
 
 
 def test_condition_boxes_use_screen_four_h8_control_density():
-    assert '.workspace-shell .condition-input-screen .condition-group{border-radius:10px}' in HTML_TEMPLATE
+    assert '.workspace-shell .condition-input-screen .condition-group{border-radius:var(--ui-radius-panel)}' in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-group-head{min-height:0;'
         'padding:16px 16px 0;border-bottom:0;background:transparent}'
@@ -297,7 +297,8 @@ def test_fan_detail_uses_the_screen_four_local_action_and_subsurface_standard():
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .fan-detail{margin-top:6px;padding:16px;'
-        'border:1px solid var(--line-strong);border-radius:10px;background:#F7F7F7;box-shadow:none}'
+        'border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);'
+        'background:var(--ui-surface-subtle);box-shadow:none}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .fan-detail-title{margin:0 0 12px;'
