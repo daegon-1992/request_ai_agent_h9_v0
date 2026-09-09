@@ -29,6 +29,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       --ui-primary:#56595E;
       --ui-primary-hover:#45484D;
       --ui-step-inactive:#B8BCC3;
+      --ui-step-complete:#5F7D68;
       --ui-agent-blue:#5F8FEA;
       --ui-user-bubble:#EDF2F9;
       --ui-warning-bg:#FEF9EA;
@@ -1059,7 +1060,9 @@ HTML_TEMPLATE = r"""<!doctype html>
       width:32px;height:32px;flex-basis:32px;border-radius:50%;background:var(--ui-step-inactive);
       color:#fff;font-size:13px;font-weight:600;line-height:1;
     }
-    .workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff}
+    .workspace-shell .screen-map-item[data-completed="true"] .screen-map-number{background:var(--ui-step-complete);color:#fff;font-size:16px}
+    .workspace-shell .screen-map-item[data-completed="true"] .screen-map-label{color:var(--ui-text-primary)}
+    .workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}
     .workspace-shell .screen-map-label{font-size:13px;font-weight:500;line-height:1.25;color:var(--ui-text-secondary)}
     .workspace-shell .screen-map-item[aria-current="page"] .screen-map-label{color:var(--ui-text-primary);font-weight:600}
     .workspace-shell .panel.main{
@@ -1163,12 +1166,12 @@ HTML_TEMPLATE = r"""<!doctype html>
       <div class="workspace-content">
       <nav class="step-navigation" data-shell="StepNavigation" aria-label="6개 화면군">
         <div class="screen-map" aria-label="화면 순서">
-          <span class="screen-map-item" data-screen="SCREEN-01"><span class="screen-map-number">01</span><span class="screen-map-label"><span>의뢰 대상·시작</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-02"><span class="screen-map-number">02</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>요청 내용</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-03"><span class="screen-map-number">03</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 제품</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-04"><span class="screen-map-number">04</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 조건</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-05"><span class="screen-map-number">05</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>Case Matrix</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-06"><span class="screen-map-number">06</span><span class="screen-map-label"><span>전체 확인</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-01" data-step-number="01"><span class="screen-map-number">01</span><span class="screen-map-label"><span>의뢰 대상·시작</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-02" data-step-number="02"><span class="screen-map-number">02</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>요청 내용</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-03" data-step-number="03"><span class="screen-map-number">03</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 제품</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-04" data-step-number="04"><span class="screen-map-number">04</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 조건</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-05" data-step-number="05"><span class="screen-map-number">05</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>Case Matrix</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-06" data-step-number="06"><span class="screen-map-number">06</span><span class="screen-map-label"><span>전체 확인</span></span></span>
         </div>
         <div class="screen-navigation-status" id="screenNavigationStatus" role="status" aria-live="polite"></div>
       </nav>
@@ -2379,9 +2382,15 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function userScreenName(screenId){
       const item = document.querySelector(`.screen-map-item[data-screen="${CSS.escape(screenId)}"]`);
-      const number = contextText(item?.querySelector(".screen-map-number")?.textContent);
+      const number = contextText(item?.dataset.stepNumber);
       const label = contextText(item?.querySelector(".screen-map-label")?.textContent);
       return [number, label].filter(Boolean).join(" ") || "현재 단계";
+    }
+
+    function finalSubmissionCompleted(){
+      const submission = asObj(asObj(requestState.review).submission);
+      return submission.status === "OK" && submission.can_submit === true
+        && !!contextText(asObj(requestState.metadata).request_no);
     }
 
     function renderScreenNavigation(){
@@ -2393,10 +2402,18 @@ HTML_TEMPLATE = r"""<!doctype html>
         const screen = screenOrder.find(candidate => candidate.id === item.dataset.screen);
         const screenIndex = screenOrder.findIndex(candidate => candidate.id === screen?.id);
         const blocked = !!screen?.requiresContext && firstIncompleteIndex >= 0 && screenIndex > firstIncompleteIndex;
+        const completed = screen?.id === "SCREEN-06"
+          ? finalSubmissionCompleted()
+          : screenIndex >= 0 && screenIndex < 5 && !missingRequiredControl(screen.id) && !blockingScreenError(screen.id);
+        const numberNode = item.querySelector(".screen-map-number");
         item.setAttribute("role", "button");
         item.tabIndex = blocked ? -1 : 0;
         item.setAttribute("aria-disabled", String(blocked));
         item.setAttribute("aria-current", screen?.id === active.id ? "page" : "false");
+        item.dataset.completed = String(completed);
+        if (numberNode) numberNode.textContent = completed ? "✓" : contextText(item.dataset.stepNumber);
+        if (completed) item.setAttribute("aria-label", `${contextText(item.dataset.stepNumber)} ${contextText(item.querySelector(".screen-map-label")?.textContent)} 완료`);
+        else item.removeAttribute("aria-label");
         if (blocked) item.setAttribute("aria-describedby", "screenNavigationStatus"); else item.removeAttribute("aria-describedby");
       });
       document.querySelectorAll(".workspace-tab").forEach(panel => {

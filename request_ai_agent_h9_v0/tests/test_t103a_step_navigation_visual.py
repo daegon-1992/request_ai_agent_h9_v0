@@ -63,3 +63,15 @@ def test_requested_headings_omit_icons_while_agent_keeps_its_identity_icon():
     assert 'class="screen-heading title-with-icon" id="screen02Heading"' not in HTML_TEMPLATE
     assert 'id="agentDockHeading" class="title-with-icon"' in HTML_TEMPLATE
     assert 'aria-hidden="true"><svg viewBox="0 0 24 24">' in HTML_TEMPLATE
+
+
+def test_completed_steps_use_muted_green_check_without_changing_navigation_spacing():
+    assert '--ui-step-complete:#5F7D68' in HTML_TEMPLATE
+    assert '.screen-map-item[data-completed="true"] .screen-map-number{background:var(--ui-step-complete);color:#fff;font-size:16px}' in HTML_TEMPLATE
+    assert 'data-step-number="01"' in HTML_TEMPLATE
+    assert 'numberNode.textContent = completed ? "✓" : contextText(item.dataset.stepNumber)' in HTML_TEMPLATE
+    assert 'screen?.id === "SCREEN-06"' in HTML_TEMPLATE
+    assert 'finalSubmissionCompleted()' in HTML_TEMPLATE
+    assert 'submission.status === "OK" && submission.can_submit === true' in HTML_TEMPLATE
+    assert 'item.dataset.completed = String(completed)' in HTML_TEMPLATE
+    assert 'grid-template-columns:repeat(6,minmax(0,1fr));gap:0' in HTML_TEMPLATE
