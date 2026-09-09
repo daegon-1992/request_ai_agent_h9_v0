@@ -66,7 +66,7 @@ def test_requested_headings_omit_icons_while_agent_keeps_its_identity_icon():
 
 
 def test_completed_steps_use_muted_green_check_without_changing_navigation_spacing():
-    assert '--ui-step-complete:#79B88A' in HTML_TEMPLATE
+    assert '--ui-step-complete:#4CAF68' in HTML_TEMPLATE
     assert '.screen-map-item[data-completed="true"] .screen-map-number{background:var(--ui-step-complete);color:#fff;font-size:16px}' in HTML_TEMPLATE
     assert 'data-step-number="01"' in HTML_TEMPLATE
     assert 'numberNode.textContent = completed ? "✓" : contextText(item.dataset.stepNumber)' in HTML_TEMPLATE

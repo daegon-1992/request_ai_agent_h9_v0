@@ -29,7 +29,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       --ui-primary:#56595E;
       --ui-primary-hover:#45484D;
       --ui-step-inactive:#B8BCC3;
-      --ui-step-complete:#79B88A;
+      --ui-step-complete:#4CAF68;
       --ui-agent-blue:#5F8FEA;
       --ui-user-bubble:#EDF2F9;
       --ui-warning-bg:#FEF9EA;
