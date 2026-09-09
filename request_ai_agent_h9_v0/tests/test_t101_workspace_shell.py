@@ -9,7 +9,7 @@ def test_visual_foundation_uses_engineering_ui_v3_tokens_and_compatibility_alias
     for token in (
         "--ui-content-max:1536px",
         "--ui-page:#FDFDFE",
-        "--ui-header:#F3F4F6",
+        "--ui-header:#FFFFFF",
         "--ui-nav-bg:#F6F7F9",
         "--ui-surface:#FFFFFF",
         "--ui-surface-subtle:#F6F7F9",

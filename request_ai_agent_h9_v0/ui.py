@@ -14,7 +14,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       /* Engineering UI Design Standard v3.0 foundation tokens. */
       --ui-content-max:1536px;
       --ui-page:#FDFDFE;
-      --ui-header:#F3F4F6;
+      --ui-header:#FFFFFF;
       --ui-nav-bg:#F6F7F9;
       --ui-surface:#FFFFFF;
       --ui-surface-subtle:#F6F7F9;
