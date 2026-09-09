@@ -11,7 +11,7 @@ def test_preview_marks_missing_field_labels_with_a_red_warning_icon():
     preview = _preview_renderer()
 
     assert ".preview-missing-icon" in HTML_TEMPLATE
-    assert "color:#c62828" in HTML_TEMPLATE
+    assert "color:var(--ui-error)" in HTML_TEMPLATE
     assert 'data-preview-missing="${missing}"' in preview
     assert "previewFieldLabel(label, missing" in preview
     assert 'previewFieldLabel("도면번호 (NPDM MCAD)", productDrawingMissing)' in preview
@@ -76,7 +76,7 @@ def test_screen_six_keeps_missing_markers_inline_at_semantic_icon_size():
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{'
-        'flex:0 0 14px;color:#C62828}'
+        'flex:0 0 14px;color:var(--ui-error)}'
     ) in HTML_TEMPLATE
     assert '<span class="preview-missing-icon" aria-hidden="true"><svg' in HTML_TEMPLATE
     assert 'word-export-required-warning' in HTML_TEMPLATE

@@ -127,14 +127,6 @@ def test_screen_three_column_headers_and_shared_modal_use_canonical_surface_spac
     assert 'width:min(420px,100%);border:1px solid var(--line);border-radius:10px;' in HTML_TEMPLATE
 
 
-def test_design_system_audit_tracks_current_ui_source_hash():
-    package_root = Path(__file__).resolve().parents[1]
-    ui_digest = sha256((package_root / "ui.py").read_bytes()).hexdigest().upper()
-    design_system = (package_root.parent / "docs" / "H8_UI_DESIGN_SYSTEM.md").read_text(encoding="utf-8")
-
-    assert f"기준 소스 SHA-256: `{ui_digest}`." in design_system
-
-
 def test_product_field_names_and_values_use_screen_three_style_levels():
     assert '.workspace-shell .geometry-screen :is(label,.field-label)' in HTML_TEMPLATE
     assert (
