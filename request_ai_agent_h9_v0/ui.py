@@ -310,12 +310,20 @@ HTML_TEMPLATE = r"""<!doctype html>
     .prep-choice:disabled{opacity:.48}
     .prep-choice-lock{width:12px;height:12px;display:inline-grid;flex:0 0 12px;place-items:center}
     .prep-choice-lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
-    .prep-quick-groups{display:grid;grid-template-columns:minmax(0,3.2fr) minmax(220px,1fr);gap:14px;align-items:stretch}
-    .prep-quick-group{min-width:0;min-height:152px;padding:16px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface)}
-    .prep-quick-group-analysis{padding:16px}
+    .prep-quick-groups{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}
+    .prep-quick-group{min-width:0;padding:0;border:0;background:transparent}
+    .prep-quick-group-analysis{padding:0}
     .prep-quick-group-title{margin:0 0 16px;font-size:16px;font-weight:600;color:var(--ink)}
     .prep-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
-    .prep-analysis-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:end}
+    .prep-analysis-grid{display:grid;grid-template-columns:minmax(240px,.38fr) minmax(0,.62fr);gap:24px;align-items:start}
+    .analysis-type-detail{min-width:0;padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
+    .analysis-type-detail-eyebrow{margin:0 0 8px;color:var(--ui-text-muted);font-size:12px;font-weight:500}
+    .analysis-type-detail-title{margin:0 0 12px;color:var(--ink);font-size:16px;font-weight:600}
+    .analysis-type-detail-description{margin:0;color:var(--ui-text-secondary);font-size:14px;line-height:1.65;white-space:pre-line}
+    .analysis-type-detail-subheading{margin:18px 0 8px;color:var(--ink);font-size:13px;font-weight:600}
+    .analysis-type-detail-list{margin:0;padding-left:20px;color:var(--ui-text-secondary);font-size:13px;line-height:1.65}
+    .prep-start-actions{display:flex;justify-content:flex-end;margin-top:20px}
+    .prep-start-actions .primary{min-width:164px;min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
     .workspace-shell .prep-quick-groups select{min-height:46px;padding:10px 12px;font-size:14px;border-color:var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
     .workspace-shell .prep-quick-groups select:hover:not(:disabled){border-color:#BFC1C3}
     .workspace-shell .prep-quick-groups select:disabled{background:var(--disabled-bg);color:var(--disabled-text)}
@@ -721,7 +729,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       .topbar{height:auto;grid-template-columns:1fr;align-items:start}
       .hero-row,.condition-grid,.heat-exchanger-grid,.review-grid,.prep-quick-groups,.condition-primary-grid,.condition-environment-grid{grid-template-columns:1fr}
       .prep-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .prep-quick-group-analysis{padding:16px;border:1px solid #DCDDDE}
+      .prep-analysis-grid{grid-template-columns:1fr}
+      .analysis-type-detail{padding-left:0;padding-top:20px;border-left:0;border-top:1px solid var(--ui-border-subtle)}
       .condition-primary-grid .condition-card-type-operating{width:100%}
       .grid,.grid.compact,.grid.two,.request-basic-grid,.request-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .prep-actions{justify-content:flex-start}
@@ -1213,20 +1222,15 @@ HTML_TEMPLATE = r"""<!doctype html>
                     <h4 class="prep-quick-group-title" id="analysisSettingHeading">해석 설정</h4>
                     <div class="prep-analysis-grid">
                       <label>해석유형<select id="quickAnalysisTypeSelect"></select></label>
+                      <div class="analysis-type-detail" id="analysisTypeDetail" aria-live="polite">
+                        <p class="analysis-type-detail-eyebrow">선택한 해석유형</p>
+                        <p class="analysis-type-detail-description">해석유형을 선택하면 해당 해석의 목적과 적합한 활용 사례를 확인할 수 있습니다.</p>
+                      </div>
                     </div>
                   </section>
                 </div>
               </div>
-              <div class="prep-summary" id="prepSelection">
-                <strong>선택한 내용</strong>
-                <div class="prep-summary-values">
-                  <div class="prep-summary-item"><span class="prep-summary-label">제품</span><div class="prep-summary-value product-summary">미선택 / 미선택 / 미선택 / 미선택</div></div>
-                  <div class="prep-summary-item"><span class="prep-summary-label">해석유형</span><div class="prep-summary-value analysis-summary">미선택</div></div>
-                </div>
-                <div class="prep-summary-actions">
-                  <button class="primary" id="prepStartBtn" type="button">의뢰서 작성 시작</button>
-                </div>
-              </div>
+              <div class="prep-start-actions"><button class="primary" id="prepStartBtn" type="button">의뢰서 작성 시작</button></div>
             </div>
           </section>
 
@@ -1473,6 +1477,24 @@ HTML_TEMPLATE = r"""<!doctype html>
     const disabledAnalysisTypeReason = "추후 지원 예정";
     const disabledAnalysisTypeLockIcon = `<span class="prep-choice-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span>`;
     const disabledAnalysisTypeLockPrefix = "\u{1F512}\uFE0E ";
+    const analysisTypeDetails = {
+      "풍량": {
+        description:"제품의 흡입·토출 또는 관심 위치에서의 풍량을 확인하는 해석입니다.\n형상 또는 운전조건 변경에 따른 풍량 변화와 제품 간 차이를 비교할 수 있습니다.",
+        suitable:["제품의 풍량이 충분한지 확인하려는 경우","설계 변경 전후의 풍량 차이를 비교하려는 경우","풍량 부족 원인을 검토하려는 경우"],
+      },
+      "기류 패턴": {
+        description:"제품 내부 또는 외부에서 공기가 어떤 방향과 형태로 흐르는지 확인하는 해석입니다.",
+        suitable:["바람이 어느 방향으로 흐르는지 확인하려는 경우","특정 방향으로 기류가 편중되는 원인을 확인하려는 경우","형상 변경 전후의 유동 분포를 비교하려는 경우"],
+      },
+      "이슬맺힘": {
+        description:"제품에서 이슬맺힘이 발생할 가능성이 있는 위치와 관련 원인을 검토하는 해석입니다.",
+        suitable:["제품 표면이나 특정 부위에 이슬맺힘이 발생하는 경우","이슬맺힘 발생 원인을 검토하려는 경우","개선안 적용 시 이슬맺힘이 줄어드는지 비교하려는 경우"],
+      },
+      "열교환기 유속 프로파일": {
+        description:"열교환기를 통과하는 공기의 유속 분포를 확인하는 해석입니다.",
+        suitable:["열교환기 전면의 유속이 균일한지 확인하려는 경우","열교환기 특정 영역의 유속이 낮거나 높은지 확인하려는 경우","설계 변경에 따른 열교환기 유속 분포를 비교하려는 경우"],
+      },
+    };
     const defaultDivisions = ["SAC","RAC","Air Care","Chiller"];
     const emptyProductHierarchy = {
       taxonomy_version: "",
@@ -2064,11 +2086,14 @@ HTML_TEMPLATE = r"""<!doctype html>
       document.querySelectorAll("[data-prep-step='platform']").forEach(el => el.classList.toggle("disabled", platformDisabled));
       document.querySelectorAll("[data-prep-step='chassis']").forEach(el => el.classList.toggle("disabled", chassisDisabled));
 
-      const productSummary = [context.division, context.product_lineup, context.platform, nullChassisSelected ? "null" : context.chassis].map(value => value || "미선택").join(" / ");
-      const analysisSummary = context.analysis_type || "미선택";
-      const summary = $("prepSelection");
-      if (summary) {
-        summary.innerHTML = `<strong>선택한 내용</strong><div class="prep-summary-values"><div class="prep-summary-item"><span class="prep-summary-label">제품</span><div class="prep-summary-value product-summary">${esc(productSummary)}</div></div><div class="prep-summary-item"><span class="prep-summary-label">해석유형</span><div class="prep-summary-value analysis-summary">${esc(analysisSummary)}</div></div></div><div class="prep-summary-actions"><button class="primary" id="prepStartBtn" type="button">의뢰서 작성 시작</button></div>`;
+      const detail = $("analysisTypeDetail");
+      if (detail) {
+        const selectedDetail = analysisTypeDetails[context.analysis_type];
+        if (selectedDetail) {
+          detail.innerHTML = `<p class="analysis-type-detail-eyebrow">선택한 해석유형</p><h5 class="analysis-type-detail-title">${esc(context.analysis_type)}</h5><p class="analysis-type-detail-description">${esc(selectedDetail.description)}</p><p class="analysis-type-detail-subheading">이런 경우에 적합합니다</p><ul class="analysis-type-detail-list">${selectedDetail.suitable.map(item => `<li>${esc(item)}</li>`).join("")}</ul>`;
+        } else {
+          detail.innerHTML = `<p class="analysis-type-detail-eyebrow">선택한 해석유형</p><p class="analysis-type-detail-description">해석유형을 선택하면 해당 해석의 목적과 적합한 활용 사례를 확인할 수 있습니다.</p>`;
+        }
       }
       renderContextChip();
     }

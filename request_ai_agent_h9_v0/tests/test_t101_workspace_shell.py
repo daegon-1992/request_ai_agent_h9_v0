@@ -209,7 +209,7 @@ def test_screen_one_guidance_preserves_copy_and_uses_subtle_emphasis():
     assert ".prep-actions{justify-content:flex-start}" in responsive.group("content")
 
 
-def test_screen_one_separates_product_analysis_groups_and_summary_values():
+def test_screen_one_uses_single_row_product_classification_and_analysis_detail():
     screen = HTML_TEMPLATE.split('<section class="screen-group" data-screen="SCREEN-01"', 1)[1].split(
         '<section class="screen-group request-content-screen" data-screen="SCREEN-02"', 1
     )[0]
@@ -228,22 +228,13 @@ def test_screen_one_separates_product_analysis_groups_and_summary_values():
     ):
         assert f'id="{control_id}"' in screen
 
-    assert "<strong>선택한 내용</strong>" in screen
-    assert 'class="prep-summary-value product-summary"' in screen
-    assert 'class="prep-summary-value analysis-summary"' in screen
-    assert 'const productSummary = [' in render
-    assert 'const analysisSummary = context.analysis_type || "미선택";' in render
-    assert "<strong>선택한 내용</strong>" in render
-    assert 'class="prep-summary-value product-summary"' in render
-    assert 'class="prep-summary-value analysis-summary"' in render
+    assert "<strong>선택한 내용</strong>" not in screen
+    assert 'id="prepSelection"' not in screen
+    assert 'id="analysisTypeDetail"' in screen
+    assert "선택한 해석유형" in screen
+    assert "이런 경우에 적합합니다" in render
+    assert "제품의 흡입·토출 또는 관심 위치에서의 풍량을 확인하는 해석입니다." in HTML_TEMPLATE
+    assert "제품의 풍량이 충분한지 확인하려는 경우" in HTML_TEMPLATE
     assert 'id="prepStartBtn"' in screen
-    assert "선택을 확정하면 맞춤 입력항목이 준비됩니다." not in screen
-    assert "모든 항목을 선택해야 시작할 수 있습니다." not in screen
-    assert "grid-template-columns:minmax(0,3.2fr) minmax(220px,1fr)" in HTML_TEMPLATE
     assert "grid-template-columns:repeat(4,minmax(0,1fr));gap:12px" in HTML_TEMPLATE
-    assert "min-height:46px;padding:10px 12px;font-size:14px" in HTML_TEMPLATE
-    assert "grid-template-columns:140px minmax(0,1fr)" in HTML_TEMPLATE
-    assert 'class="prep-summary-label"><svg' not in screen
-    assert 'class="prep-summary-label"><svg' not in render
-    assert ".prep-summary-value{padding-left:24px" in HTML_TEMPLATE
-    assert ".prep-summary-actions .primary{min-width:164px;min-height:44px" in HTML_TEMPLATE
+    assert "grid-template-columns:minmax(240px,.38fr) minmax(0,.62fr)" in HTML_TEMPLATE
