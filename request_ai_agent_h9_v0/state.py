@@ -314,14 +314,7 @@ def compose_request_title(raw_state: Mapping[str, Any], fallback: str = "") -> s
 def apply_analysis_overview_defaults(raw_state: Mapping[str, Any]) -> State:
     state = dict(raw_state or {})
     overview = dict(state.get(SECTION_ANALYSIS_OVERVIEW) if isinstance(state.get(SECTION_ANALYSIS_OVERVIEW), Mapping) else {})
-    today_text = date.today().isoformat()
-    request_date_field = sanitize_field(
-        overview.get("request_date"),
-        default=make_field(today_text, source=VALUE_SOURCE_SYSTEM),
-    )
-    if request_date_field.get("status") != FIELD_STATUS_PROVIDED:
-        request_date_field = make_field(today_text, source=VALUE_SOURCE_SYSTEM)
-    overview["request_date"] = request_date_field
+    overview.pop("request_date", None)
     state[SECTION_ANALYSIS_OVERVIEW] = overview
     return state
 
@@ -1304,7 +1297,6 @@ def create_initial_state() -> State:
     basic_info["requester_name"] = make_field("김대곤", source=VALUE_SOURCE_SYSTEM)
     basic_info["requester_role"] = make_field("선임연구원", source=VALUE_SOURCE_SYSTEM)
     analysis_overview = _initial_fields(ANALYSIS_OVERVIEW_SPECS)
-    analysis_overview["request_date"] = make_field(date.today().isoformat(), source=VALUE_SOURCE_SYSTEM)
 
     state: State = {
         SECTION_METADATA: {

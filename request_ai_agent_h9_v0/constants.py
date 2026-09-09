@@ -123,11 +123,11 @@ REQUEST_CONTEXT_FIELD_DEFS = (
 )
 
 ANALYSIS_OVERVIEW_FIELD_DEFS = (
+    {"key": "request_type", "label": "의뢰 유형", "required": True},
     {"key": "project_name", "label": "프로젝트명(PMS)", "required": True},
     {"key": "development_grade", "label": "개발 등급", "required": True},
     {"key": "npi_stage", "label": "NPI 단계", "required": True},
     {"key": "model_suffix", "label": "모델명(Model Suffix)", "required": True},
-    {"key": "request_date", "label": "의뢰 요청일", "required": True, "value_type": "date"},
     {"key": "desired_completion_date", "label": "희망 완료일", "required": True, "value_type": "date"},
     {"key": "request_description", "label": "해석을 요청하게 된 배경", "required": True, "track_progress": True},
     {"key": "decision_use", "label": "결과 활용 목적", "required": False},

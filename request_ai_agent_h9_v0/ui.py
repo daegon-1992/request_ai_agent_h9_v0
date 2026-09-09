@@ -419,6 +419,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
     .grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
     .request-basic-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+    .request-type-field{grid-column:span 1}
+    .request-project-field{grid-column:span 2}
     .request-basic-grid select[data-dropdown-path]{
       appearance:none;padding-right:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23687480' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='m7 9 5 5 5-5'/%3E%3C/svg%3E");
       background-repeat:no-repeat;background-position:right 10px center;background-size:16px 16px
@@ -754,6 +756,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       .screen-map{grid-template-columns:repeat(6,max-content);gap:18px;min-height:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
       .screen-map-item{min-height:36px}
       .grid,.grid.compact,.grid.two,.request-basic-grid,.request-detail-grid,.prep-quick-grid{grid-template-columns:1fr}
+      .request-type-field,.request-project-field{grid-column:auto}
     }
     /* T2-01A: completed Shell, SCREEN-01/02, and Agent Dock share the design-lock surface system. */
     .brand-mark{background:var(--brand)}
@@ -876,9 +879,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .case-toolbar{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .preview-actions{display:flex;align-items:center;gap:9px;border-top:1px solid var(--request-workspace-border);padding-top:10px}
     .workspace-shell .word-export-required-warning{color:var(--ui-error);font-size:12px;font-weight:600!important}
-    .workspace-shell .request-content-screen > .section{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
-    .workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:16px 16px 0;background:transparent;border-bottom:0}
-    .workspace-shell .request-content-screen > .section > .section-body{padding:16px;border-top:0}
+    .workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+    .workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .request-content-screen > #analysisGate + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}
+    .workspace-shell .request-content-screen > .section > .section-body{padding:16px 0 0;border-top:0}
     .workspace-shell .request-content-screen > .section > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
     .workspace-shell .geometry-screen > #section-geometry{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
     .workspace-shell .geometry-screen > #section-geometry > .section-head{min-height:0;padding:16px 16px 0;background:transparent;border-bottom:0}
@@ -1271,7 +1276,8 @@ HTML_TEMPLATE = r"""<!doctype html>
             </div>
             <div class="section-body">
               <div class="grid request-basic-grid">
-                <div class="undecided-field">
+                <label class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.request_type" hidden><input class="custom-input" data-path="analysis_overview.request_type" aria-label="의뢰 유형 직접 입력" placeholder="의뢰 유형을 직접 입력해 주세요." /><button type="button" data-dropdown-restore-path="analysis_overview.request_type" title="의뢰 유형 목록으로 돌아가기" aria-label="의뢰 유형 목록으로 돌아가기">↩</button></span></label>
+                <div class="undecided-field request-project-field">
                   <label for="projectNameInput">프로젝트명(PMS)</label>
                   <div class="undecided-combobox" data-undecided-combobox>
                     <input id="projectNameInput" data-path="analysis_overview.project_name" data-undecided-input role="combobox" aria-autocomplete="none" aria-haspopup="listbox" aria-controls="projectNameMenu" aria-expanded="false" autocomplete="off" />
@@ -1295,7 +1301,6 @@ HTML_TEMPLATE = r"""<!doctype html>
                     </div>
                   </div>
                 </div>
-                <label>의뢰 요청일<input data-path="analysis_overview.request_date" type="date" /></label>
                 <label>희망 완료일<input data-path="analysis_overview.desired_completion_date" type="date" /></label>
               </div>
             </div>
@@ -1463,7 +1468,7 @@ HTML_TEMPLATE = r"""<!doctype html>
   <script>
     const $ = (id) => document.getElementById(id);
     const basicKeys = ["division","department","requester_name","requester_role"];
-    const overviewInputKeys = ["project_name","development_grade","npi_stage","model_suffix","request_date","desired_completion_date","request_description","additional_result_request"];
+    const overviewInputKeys = ["request_type","project_name","development_grade","npi_stage","model_suffix","desired_completion_date","request_description","additional_result_request"];
     const decisionUseCatalog = {
       problem_analysis:"문제·현상 분석",
       design_review:"설계·변경 검토",
@@ -1509,6 +1514,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     const dropdownOptions = {
       "basic_info.division": ["SAC","RAC","Aircare","Chiller","연구소","직접 입력"],
       "basic_info.requester_role": ["책임연구원","선임연구원","연구원","직접 입력"],
+      "analysis_overview.request_type": ["개발 프로젝트","품질 개선","필드 이슈","선행 검토","기타(직접 입력)"],
       "analysis_overview.development_grade": ["A","B","Ca","Cb","Cc","선행","미정","직접 입력"],
       "analysis_overview.npi_stage": ["CP","DV","PV","MP","미정","직접 입력"],
       "conditions.material_type": ["","Air","직접 입력"],
@@ -1747,14 +1753,14 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function dropdownOptionHtml(options){
       return [`<option value="" disabled hidden>선택</option>`, ...asArray(options).filter(option => option !== "").map(option => {
-        if (option === "직접 입력") return `<option value="__custom__">직접 입력</option>`;
+        if (option === "직접 입력" || String(option).includes("(직접 입력)")) return `<option value="__custom__">${esc(option)}</option>`;
         return `<option value="${esc(option)}">${esc(option)}</option>`;
       })].join("");
     }
 
     function dropdownOptionHtmlWithSelected(options, selected){
       return [`<option value="" disabled hidden ${selected === "" ? "selected" : ""}>선택</option>`, ...asArray(options).filter(option => option !== "").map(option => {
-        const value = option === "직접 입력" ? "__custom__" : option;
+        const value = option === "직접 입력" || String(option).includes("(직접 입력)") ? "__custom__" : option;
         const label = option;
         return `<option value="${esc(value)}" ${String(value) === String(selected) ? "selected" : ""}>${esc(label)}</option>`;
       })].join("");
@@ -2449,8 +2455,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (screenId === "SCREEN-02") {
         const paths = [
           "basic_info.division", "basic_info.department", "basic_info.requester_name", "basic_info.requester_role",
-          "analysis_overview.project_name", "analysis_overview.development_grade", "analysis_overview.npi_stage",
-          "analysis_overview.model_suffix", "analysis_overview.request_date", "analysis_overview.desired_completion_date",
+          "analysis_overview.request_type", "analysis_overview.project_name", "analysis_overview.development_grade", "analysis_overview.npi_stage",
+          "analysis_overview.model_suffix", "analysis_overview.desired_completion_date",
           "analysis_overview.request_description", "analysis_overview.additional_result_request",
         ];
         const desiredCompletionDate = requiredPathControl("analysis_overview.desired_completion_date");
@@ -3883,7 +3889,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const matrixTable = matrixColumns.length && matrixRows ? `<div class="matrix-wrap"><table class="preview-table" data-preview-table="case_matrix"><thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th>${previewFieldLabel(row.label || key, missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table></div>` : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
       panel.innerHTML = `<div class="preview-doc" data-preview-document="current-state">
         ${section("requester", "의뢰자 정보", kv("사업부", basic.division) + kv("부서", basic.department) + kv("요청자", basic.requester_name) + kv("직급", basic.requester_role))}
-        ${section("overview", "요청 내용", kv("프로젝트명(PMS)", overview.project_name) + kv("모델명(Model Suffix)", overview.model_suffix) + kv("개발 등급", overview.development_grade) + kv("NPI 단계", overview.npi_stage) + kv("의뢰 요청일", overview.request_date) + kv("희망 완료일", overview.desired_completion_date) + kv("해석을 요청하게 된 배경", overview.request_description) + kv("해석으로 확인하고 싶은 내용", overview.additional_result_request) + kv("해석유형", context.analysis_type))}
+        ${section("overview", "요청 내용", kv("의뢰 유형", overview.request_type) + kv("프로젝트명(PMS)", overview.project_name) + kv("모델명(Model Suffix)", overview.model_suffix) + kv("개발 등급", overview.development_grade) + kv("NPI 단계", overview.npi_stage) + kv("희망 완료일", overview.desired_completion_date) + kv("해석을 요청하게 된 배경", overview.request_description) + kv("해석으로 확인하고 싶은 내용", overview.additional_result_request) + kv("해석유형", context.analysis_type))}
         ${section("geometry", "해석 제품", `<div class="matrix-wrap"><table class="preview-table" data-preview-table="geometry"><thead><tr><th>형상</th><th>${previewFieldLabel("도면번호 (NPDM MCAD)", productDrawingMissing)}</th><th>${previewFieldLabel("설명", productDescriptionMissing)}</th></tr></thead><tbody>${productRows}</tbody></table></div>`)}
         ${section("conditions", "해석 조건", `<div class="matrix-wrap"><table class="preview-table" data-preview-table="conditions"><thead><tr><th>조건</th><th>입력값</th></tr></thead><tbody>${conditionRows}</tbody></table></div>`)}
         ${section("case-matrix", "Case Matrix", matrixTable)}

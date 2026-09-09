@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import date
 from typing import Any, Mapping
 
 from .constants import (
@@ -144,7 +143,6 @@ def apply_demo_analysis_type_state(raw_state: Mapping[str, Any]) -> dict[str, An
             "platform": make_field("Fluent 242R2", source=VALUE_SOURCE_SYSTEM),
             "chassis_name": make_field(product_name, source=VALUE_SOURCE_SYSTEM),
             "analysis_type": make_field(DEMO_ANALYSIS_TYPE_NAME, source=VALUE_SOURCE_USER, note="selected demo analysis type"),
-            "request_date": make_field(date.today().isoformat(), source=VALUE_SOURCE_SYSTEM),
             "purpose": make_field("msh.h5 mesh 기반 Fluent case 생성 POC", source=VALUE_SOURCE_SYSTEM),
             "goal": make_field("DB 저장 조건을 journal에 반영하고 cas 파일 생성을 확인", source=VALUE_SOURCE_SYSTEM),
             "deliverables": make_field("Fluent journal, DB snapshot, run log, case file", source=VALUE_SOURCE_SYSTEM),

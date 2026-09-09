@@ -117,7 +117,7 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
                 _kv("PMS 제품군", _display_field(overview.get("pms_group"))),
                 _kv("플랫폼", _value(overview, "platform")),
                 _kv("샷시명", _value(overview, "chassis_name")),
-                _kv("요청일", _value(overview, "request_date")),
+                _kv("의뢰 유형", _value(overview, "request_type")),
                 _kv("희망 완료일", _value(overview, "due_date")),
                 _kv("배경", _value(overview, "background")),
                 _kv("목적", _value(overview, "purpose")),

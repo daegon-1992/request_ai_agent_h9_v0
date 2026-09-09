@@ -121,7 +121,7 @@ def test_screen_two_required_policy_matches_the_two_request_detail_fields():
         "division", "department", "requester_name", "requester_role",
     }
     assert {spec.key for spec in ANALYSIS_OVERVIEW_SPECS if spec.required} >= {
-        "project_name", "development_grade", "npi_stage", "model_suffix", "request_date",
+        "request_type", "project_name", "development_grade", "npi_stage", "model_suffix",
         "desired_completion_date", "request_description", "additional_result_request",
     }
     assert "decision_use" not in {spec.key for spec in ANALYSIS_OVERVIEW_SPECS if spec.required}

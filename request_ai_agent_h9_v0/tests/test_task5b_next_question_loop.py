@@ -44,6 +44,7 @@ def _complete_state():
         }
     )
     for key, value in {
+        "request_type": "개발 프로젝트",
         "project_name": "PROJECT",
         "development_grade": "A",
         "npi_stage": "DV",

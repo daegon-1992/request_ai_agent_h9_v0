@@ -26,6 +26,7 @@ def _runtime(monkeypatch, decider, analysis_type="열교환기 유속 프로파�
             "context_locked": True,
         }
     )
+    state["analysis_overview"]["request_type"] = {"value": "개발 프로젝트"}
     state["analysis_overview"]["project_name"] = {"value": "ABC"}
     cards = default_condition_sets(state["request_context"])
     operating = next(card for card in cards if card["type"] == "operating")

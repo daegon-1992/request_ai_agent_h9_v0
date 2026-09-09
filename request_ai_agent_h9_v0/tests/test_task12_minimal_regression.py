@@ -44,8 +44,8 @@ def _configured_state(analysis_type: str = "이슬맺힘") -> dict[str, object]:
     state[SECTION_REQUEST_CONTEXT].update(_context(analysis_type))
     state["basic_info"].update({"division": "RAC", "department": "개발1팀", "requester_name": "테스터", "requester_role": "책임연구원"})
     state["analysis_overview"].update({
-        "project_name": "T2-01B", "development_grade": "A", "npi_stage": "DV", "model_suffix": "MODEL-A",
-        "request_date": "2026-08-03", "desired_completion_date": "2026-08-10",
+        "request_type": "개발 프로젝트", "project_name": "T2-01B", "development_grade": "A", "npi_stage": "DV", "model_suffix": "MODEL-A",
+        "desired_completion_date": "2026-08-10",
     })
     state[SECTION_GEOMETRY]["base_product"].update({"drawing_no": "DRAW-A", "display_name": "형상 A", "display_name_custom": True})
     cards = state[SECTION_CONDITIONS]["condition_sets"]
@@ -424,6 +424,11 @@ def test_manual_matrix_rows_are_used_by_preview_draft_and_review():
 
     draft = build_request_draft(state)
     assert draft["status"] == "ready"
+    assert draft["document"]["request_schedule"] == {
+        "request_type": "개발 프로젝트",
+        "desired_completion_date": "2026-08-10",
+    }
+    assert "request_date" not in draft["document"]["request_schedule"]
     assert draft["document"]["case_matrix_summary"]["case_count"] == 1
     assert "final_cases" not in draft["document"]["case_matrix_summary"]
 

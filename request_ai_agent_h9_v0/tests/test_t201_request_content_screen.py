@@ -22,8 +22,8 @@ def test_screen_two_groups_basic_information_and_two_request_detail_fields():
         assert f'data-path="basic_info.{path}"' in requester_section
         assert f'data-path="basic_info.{path}"' not in request_basic_section
     for key in (
-        'project_name', 'development_grade', 'npi_stage', 'model_suffix',
-        'request_date', 'desired_completion_date',
+        'request_type', 'project_name', 'development_grade', 'npi_stage', 'model_suffix',
+        'desired_completion_date',
     ):
         assert f'data-path="analysis_overview.{key}"' in request_basic_section
     for key in ('request_description', 'additional_result_request'):
@@ -38,25 +38,12 @@ def test_request_content_layout_uses_three_columns_at_wide_widths():
     assert '.grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}' in HTML_TEMPLATE
 
 
-def test_request_content_cards_match_the_condition_card_bottom_spacing():
-    assert 'border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible' in HTML_TEMPLATE
+def test_request_content_sections_use_dividers_instead_of_cards():
     assert '.workspace-shell .request-content-screen{background:transparent}' in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .request-content-screen > .section > .section-body{padding:16px;'
-        'border-top:0'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .request-content-screen > .section > .section-head{min-height:0;'
-        'padding:16px 16px 0;background:transparent;border-bottom:0'
-    ) in HTML_TEMPLATE
-
-
-def test_request_content_sections_match_the_condition_card_vertical_gap():
-    assert '--request-workspace-card-section-gap:16px' in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .request-content-screen > .section{'
-        'margin-bottom:var(--request-workspace-card-section-gap);'
-    ) in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .section > .section-body{padding:16px 0 0;border-top:0}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}' in HTML_TEMPLATE
 
 
 def test_request_content_uses_canonical_heading_and_control_density():
@@ -259,3 +246,52 @@ def test_screen_two_request_details_are_two_line_fields_in_two_columns():
     assert '결과 활용 목적' not in screen
     assert '해석 결과 안내' not in screen
     assert '결과에서 더 확인하고 싶은 내용' not in screen
+
+
+def test_screen_two_uses_divider_sections_and_request_type_two_column_project_layout():
+    screen_start = HTML_TEMPLATE.index('class="screen-group request-content-screen" data-screen="SCREEN-02"')
+    screen_end = HTML_TEMPLATE.index('data-screen="SCREEN-03"', screen_start)
+    screen = HTML_TEMPLATE[screen_start:screen_end]
+
+    assert '.workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert 'class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"' in screen
+    assert 'class="undecided-field request-project-field"' in screen
+    assert '.request-project-field{grid-column:span 2}' in HTML_TEMPLATE
+    assert '의뢰 요청일' not in screen
+    assert 'data-path="analysis_overview.request_date"' not in screen
+
+
+def test_request_type_supports_presets_other_direct_input_and_restore_in_same_slot():
+    assert '"analysis_overview.request_type": ["개발 프로젝트","품질 개선","필드 이슈","선행 검토","기타(직접 입력)"]' in HTML_TEMPLATE
+    assert 'data-dropdown-custom-path="analysis_overview.request_type"' in HTML_TEMPLATE
+    assert 'data-path="analysis_overview.request_type" aria-label="의뢰 유형 직접 입력"' in HTML_TEMPLATE
+    assert 'data-dropdown-restore-path="analysis_overview.request_type"' in HTML_TEMPLATE
+    assert 'option === "직접 입력" || String(option).includes("(직접 입력)")' in HTML_TEMPLATE
+
+
+def test_request_type_replaces_request_date_across_active_screen_two_contract():
+    from request_ai_agent_h9_v0.constants import ANALYSIS_OVERVIEW_FIELD_DEFS
+    from request_ai_agent_h9_v0.form_context import _GENERAL_UI_BINDINGS
+    from request_ai_agent_h9_v0.chat_patch import _SET_ALLOWED_PATHS
+
+    overview_keys = {item["key"] for item in ANALYSIS_OVERVIEW_FIELD_DEFS}
+    assert "request_type" in overview_keys
+    assert "request_date" not in overview_keys
+    binding_paths = {row[0] for row in _GENERAL_UI_BINDINGS}
+    assert "analysis_overview.request_type" in binding_paths
+    assert "analysis_overview.request_date" not in binding_paths
+    assert "analysis_overview.request_type" in _SET_ALLOWED_PATHS
+    assert "analysis_overview.request_date" not in _SET_ALLOWED_PATHS
+
+
+def test_screen_six_review_and_word_serializer_include_request_type_not_request_date():
+    screen_start = HTML_TEMPLATE.index('class="workspace-tab" id="tab-preview"')
+    screen_end = HTML_TEMPLATE.index('class="agent"', screen_start) if 'class="agent"' in HTML_TEMPLATE[screen_start:] else len(HTML_TEMPLATE)
+    source = HTML_TEMPLATE[screen_start:screen_end]
+    assert 'kv("의뢰 유형", overview.request_type)' in HTML_TEMPLATE
+    assert 'kv("의뢰 요청일", overview.request_date)' not in HTML_TEMPLATE
+    assert 'function previewDomForWord()' in HTML_TEMPLATE
+    assert 'document.querySelector(\'[data-preview-document="current-state"]\')' in HTML_TEMPLATE
+    assert 'label:clean(node.textContent)' in HTML_TEMPLATE
+    assert "value:clean(row?.querySelector('[data-preview-value]')?.textContent)" in HTML_TEMPLATE

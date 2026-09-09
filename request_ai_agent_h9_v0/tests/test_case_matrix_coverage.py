@@ -60,6 +60,7 @@ def _complete_state() -> dict[str, object]:
     )
     state["analysis_overview"].update(
         {
+            "request_type": "개발 프로젝트",
             "project_name": "COVERAGE",
             "development_grade": "A",
             "npi_stage": "DV",

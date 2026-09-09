@@ -39,7 +39,7 @@ _SET_ALLOWED_PATHS = {
     "analysis_overview.development_grade",
     "analysis_overview.npi_stage",
     "analysis_overview.model_suffix",
-    "analysis_overview.request_date",
+    "analysis_overview.request_type",
     "analysis_overview.desired_completion_date",
     "analysis_overview.request_description",
     "analysis_overview.decision_use",

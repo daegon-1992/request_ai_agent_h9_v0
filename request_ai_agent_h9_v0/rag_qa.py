@@ -154,7 +154,7 @@ def summarize_current_state(state: Mapping[str, Any] | None) -> dict[str, Any]:
         },
         "analysis_overview": {
             "analysis_type": field_value(overview.get("analysis_type"), ""),
-            "request_date": field_value(overview.get("request_date"), ""),
+            "request_type": field_value(overview.get("request_type"), ""),
             "due_date": field_value(overview.get("due_date"), ""),
             "purpose": field_value(overview.get("purpose"), ""),
             "goal": field_value(overview.get("goal"), ""),

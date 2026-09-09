@@ -343,7 +343,7 @@ def build_request_draft(
         ),
         "request_schedule": _field_map(
             _as_mapping(state.get(SECTION_ANALYSIS_OVERVIEW)),
-            ("request_date", "due_date"),
+            ("request_type", "desired_completion_date"),
         ),
         "analysis_overview": {
             "background": background,
