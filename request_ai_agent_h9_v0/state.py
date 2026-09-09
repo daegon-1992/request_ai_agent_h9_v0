@@ -1,4 +1,4 @@
-"""State creation and normalization for the request assistant."""
+﻿"""State creation and normalization for the request assistant."""
 
 from __future__ import annotations
 
@@ -1014,7 +1014,7 @@ def _manual_matrix_product_options(products: list[dict[str, Any]]) -> list[dict[
         geometry_id = _clean_text(product.get("geometry_id"))
         if not geometry_id:
             continue
-        options.append({"value": geometry_id, "label": f"형상 {index}"})
+        options.append({"value": geometry_id, "label": "Base" if index == 1 else f"비교 {index - 1}"})
     return options
 
 

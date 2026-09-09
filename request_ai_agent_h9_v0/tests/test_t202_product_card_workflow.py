@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from hashlib import sha256
 import json
@@ -19,15 +19,15 @@ def test_target_products_render_as_one_geo_row_list_with_focus_recovery():
     assert 'data-product-role="${comparison ? "comparison" : "base"}"' in HTML_TEMPLATE
     assert 'data-action="add-comparison"' in HTML_TEMPLATE
     assert 'data-action="remove-comparison"' in HTML_TEMPLATE
-    assert '>형상 ${geometryNumber}</div>' in HTML_TEMPLATE
+    assert '${geometryLabel}</div>' in HTML_TEMPLATE
     assert 'window.requestAnimationFrame(() => document.querySelector(focusSelector)?.focus())' in HTML_TEMPLATE
     assert 'values.push({geometry_id:`comparison_${Date.now()}_${values.length + 1}`' in HTML_TEMPLATE
     assert 'const values = [...asArray(state.geometry.comparison_products)];' in HTML_TEMPLATE
 
 
 def test_product_rows_have_geometry_drawing_description_and_row_actions():
-    assert '<span class="field-label">형상</span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span>' in HTML_TEMPLATE
-    assert 'aria-readonly="true">Base</div>' in HTML_TEMPLATE
+    assert '<span class="field-label" aria-hidden="true"></span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span>' in HTML_TEMPLATE
+    assert 'aria-readonly="true">기존 형상</div>' in HTML_TEMPLATE
     assert 'data-product-field="description"' in HTML_TEMPLATE
     assert 'placeholder="이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)"' in HTML_TEMPLATE
     assert 'title="해석 대상 제품 행 추가"' in HTML_TEMPLATE
@@ -159,7 +159,7 @@ def test_geometry_axis_uses_the_system_geo_row_names():
 
     axis = generate_geometry_axis(sanitize_state(state))
 
-    assert [item["geometry_label"] for item in axis["geometry_variants"]] == ["형상 1", "형상 2"]
+    assert [item["geometry_label"] for item in axis["geometry_variants"]] == ["Base", "비교 1"]
 
 
 def test_geometry_issues_target_the_specific_comparison_card_and_required_fields():

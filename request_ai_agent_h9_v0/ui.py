@@ -1,4 +1,4 @@
-"""Single page UI for the request assistant."""
+﻿"""Single page UI for the request assistant."""
 
 from __future__ import annotations
 
@@ -1342,7 +1342,7 @@ HTML_TEMPLATE = r"""<!doctype html>
             <div class="section-body">
               <div class="geometry-policy-guidance"><span class="prep-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span><div class="geometry-policy-copy"><strong class="geometry-policy-heading">도면번호 입력 기준</strong><p class="geometry-policy-body">부품 도면번호가 아닌 총조립도 도면번호를 입력하세요. · 임시번호 가능</p></div></div>
               <div class="product-table" aria-label="해석 대상 제품 입력">
-                <div class="product-table-row product-table-head" aria-hidden="true"><span class="field-label">형상</span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span><span class="product-action-heading">행 작업</span></div>
+                <div class="product-table-row product-table-head" aria-hidden="true"><span class="field-label" aria-hidden="true"></span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span><span class="product-action-heading">행 작업</span></div>
                 <div class="row-list" id="productRows"></div>
               </div>
               <p class="geometry-list-guidance">각도·위치·부품 구성이 다르면 +로 비교 형상을 추가하세요.</p>
@@ -2582,17 +2582,18 @@ HTML_TEMPLATE = r"""<!doctype html>
     function productRow(product, index, comparison=false){
       const id = esc(product.geometry_id || `${comparison ? "comparison" : "base"}_${index + 1}`);
       const geometryNumber = comparison ? index + 2 : 1;
+      const geometryLabel = comparison ? `비교 ${index + 1}` : "Base";
       const description = productDescription(product, comparison);
       const drawingPlaceholder = comparison ? "변경사항이 반영된 총조립도 도면번호" : "총조립도 도면번호";
       const descriptionField = comparison
-        ? `<label><input aria-label="형상 ${geometryNumber} 설명" data-product-field="description" value="${esc(description)}" placeholder="이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)" /></label>`
-        : `<div class="base-product-description" aria-label="형상 1 설명" aria-readonly="true">Base</div>`;
+        ? `<label><input aria-label="${geometryLabel} 설명" data-product-field="description" value="${esc(description)}" placeholder="이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)" /></label>`
+        : `<div class="base-product-description" aria-label="Base 설명" aria-readonly="true">기존 형상</div>`;
       const action = comparison
-        ? `<button class="condition-row-action remove" type="button" data-action="remove-comparison" data-index="${index}" title="해석 대상 제품 행 삭제" aria-label="형상 ${geometryNumber} 행 삭제">−</button>`
+        ? `<button class="condition-row-action remove" type="button" data-action="remove-comparison" data-index="${index}" title="해석 대상 제품 행 삭제" aria-label="${geometryLabel} 행 삭제">−</button>`
         : `<button class="primary condition-row-action" type="button" data-action="add-comparison" title="해석 대상 제품 행 추가" aria-label="해석 대상 제품 행 추가">+</button>`;
       return `<div class="product-table-row" data-product-id="${id}" data-product-index="${index}" data-product-role="${comparison ? "comparison" : "base"}">
-        <div class="product-geometry-name" data-geometry-name>형상 ${geometryNumber}</div>
-        <label><input aria-label="형상 ${geometryNumber} 도면번호 (NPDM MCAD)" data-product-field="drawing_no" value="${esc(productText(product, "drawing_no"))}" placeholder="${drawingPlaceholder}" pattern="[A-Za-z0-9-]+" title="영문, 숫자, 하이픈(-)만 입력" /></label>
+        <div class="product-geometry-name" data-geometry-name>${geometryLabel}</div>
+        <label><input aria-label="${geometryLabel} 도면번호 (NPDM MCAD)" data-product-field="drawing_no" value="${esc(productText(product, "drawing_no"))}" placeholder="${drawingPlaceholder}" pattern="[A-Za-z0-9-]+" title="영문, 숫자, 하이픈(-)만 입력" /></label>
         ${descriptionField}
         <div class="condition-row-actions">${action}</div>
       </div>`;
@@ -2604,13 +2605,13 @@ HTML_TEMPLATE = r"""<!doctype html>
     function reindexProductRows(){
       Array.from(document.querySelectorAll('#productRows [data-product-role="comparison"]')).forEach((row, index) => {
         row.dataset.productIndex = String(index);
-        const geometryNumber = index + 2;
+        const geometryLabel = `비교 ${index + 1}`;
         const geometryName = row.querySelector("[data-geometry-name]");
-        if (geometryName) geometryName.textContent = `형상 ${geometryNumber}`;
+        if (geometryName) geometryName.textContent = geometryLabel;
         const removeButton = row.querySelector('[data-action="remove-comparison"]');
         if (removeButton) {
           removeButton.dataset.index = String(index);
-          removeButton.setAttribute("aria-label", `형상 ${geometryNumber} 행 삭제`);
+          removeButton.setAttribute("aria-label", `${geometryLabel} 행 삭제`);
         }
       });
     }
@@ -3528,7 +3529,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (productSource.product) {
         const product = asObj(productSource.product);
         const base = contextText(product.role) === "base";
-        const label = `${fallbackLabel}${base ? " · Base" : ""}`;
+        const label = fallbackLabel;
         const drawingNo = productText(product, "drawing_no");
         return {label, summary:drawingNo ? `도면번호 ${drawingNo}` : ""};
       }
@@ -3573,7 +3574,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       };
       const geometryList = listHtml(options.geometry_id, value => {
         const product = asObj(productsById.get(value));
-        const description = contextText(product.role) === "base" ? "Base" : productDescription(product, true) || "-";
+        const description = contextText(product.role) === "base" ? "기존 형상" : productDescription(product, true) || "-";
         return `도면번호: ${productText(product, "drawing_no") || "-"} · 설명: ${description}`;
       });
       const operatingList = listHtml(options.fan, value => {
@@ -3842,7 +3843,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const products = [asObj(asObj(state.geometry).base_product), ...asArray(asObj(state.geometry).comparison_products)].filter(product => Object.keys(product).length);
       const productDrawingMissing = !products.length || products.some(product => !contextText(productText(product, "drawing_no")));
       const productDescriptionMissing = products.some((product, index) => index > 0 && !contextText(productDescription(product, true)));
-      const productRows = products.length ? products.map((product, index) => `<tr data-preview-product="${esc(product.role || (index ? "comparison" : "base"))}"><td>${esc(`형상 ${index + 1}`)}</td><td>${esc(productText(product, "drawing_no") || "-")}</td><td>${esc(index ? productDescription(product, true) || "-" : "Base")}</td></tr>`).join("") : `<tr><td colspan="3">등록된 제품이 없습니다.</td></tr>`;
+      const productRows = products.length ? products.map((product, index) => `<tr data-preview-product="${esc(product.role || (index ? "comparison" : "base"))}"><td>${esc(index ? `비교 ${index}` : "Base")}</td><td>${esc(productText(product, "drawing_no") || "-")}</td><td>${esc(index ? productDescription(product, true) || "-" : "기존 형상")}</td></tr>`).join("") : `<tr><td colspan="3">등록된 제품이 없습니다.</td></tr>`;
       const conditionLabels = {operating:"운전 조건",heat_exchanger:"열교환기 사양",supply_air:"취출 공기 조건",space_environment:"공간 환경 조건",name:"사양",fan:"운전",fan_rpm:"팬 회전수(RPM)",fin_type:"Fin type",tube_diameter:"관 직경(Pi)",row_count:"열 수",fpi:"FPI",heat_exchanger_temp:"취출 온도 (°C)",heat_exchanger_rh:"취출 상대습도 (%)",room_temp:"공간 온도 (°C)",room_rh:"공간 상대습도 (%)"};
       const previewFieldKeysFor = (type, fields) => {
         const orderedKeys = {

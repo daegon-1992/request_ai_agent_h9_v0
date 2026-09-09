@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from copy import deepcopy
 import importlib
@@ -165,14 +165,14 @@ def test_manual_matrix_starts_with_one_row_per_geometry_and_uses_shape_names():
         {"geometry_id": "comparison_001", "role": "comparison", "drawing_no": "DRAW-B", "display_name": "형상 B", "display_name_custom": True, "difference_from_base": "토출부 변경"}
     ]
     matrix = sanitize_state(state)[SECTION_CASE_MATRIX]
-    assert [row["visible_cells"]["geometry_id"] for row in matrix["rows"]] == ["형상 1", "형상 2"]
+    assert [row["visible_cells"]["geometry_id"] for row in matrix["rows"]] == ["Base", "비교 1"]
     assert [row["visible_cells"]["case_no"] for row in matrix["rows"]] == ["1", "2"]
     assert matrix["visible_columns"][0]["label"] == "No."
     assert matrix["visible_columns"][1]["label"] == "형상"
     assert next(column for column in matrix["visible_columns"] if column["key"] == "fan")["label"] == "운전 조건"
     assert next(column for column in matrix["visible_columns"] if column["key"] == "heat_exchanger")["label"] == "열교환기 사양"
     assert matrix["visible_columns"][-1]["label"] == "제거"
-    assert [item["label"] for item in matrix["dropdown_options"]["geometry_id"]] == ["형상 1", "형상 2"]
+    assert [item["label"] for item in matrix["dropdown_options"]["geometry_id"]] == ["Base", "비교 1"]
     assert all(row["condition_values"] == {
         "fan": "operating_1",
         "heat_exchanger": "heat_exchanger_1",

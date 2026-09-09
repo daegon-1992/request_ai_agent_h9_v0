@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from copy import deepcopy
 import json
@@ -267,8 +267,8 @@ let requestState = {{
 {helpers}
 const sources = caseSelectionSources();
 const output = {{
-  base:caseSelectionPresentation("geometry_id","base_1","형상 1",sources),
-  comparison:caseSelectionPresentation("geometry_id","comparison_1","형상 2",sources),
+  base:caseSelectionPresentation("geometry_id","base_1","Base",sources),
+  comparison:caseSelectionPresentation("geometry_id","comparison_1","비교 1",sources),
   single:caseSelectionPresentation("fan","operating_1","운전 1",sources),
   common:caseSelectionPresentation("fan","operating_2","운전 2",sources),
   individual:caseSelectionPresentation("fan","operating_3","운전 3",sources),
@@ -280,8 +280,8 @@ process.stdout.write(JSON.stringify(output));
 
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == {
-        "base": {"label": "형상 1 · Base", "summary": "도면번호 1"},
-        "comparison": {"label": "형상 2", "summary": "도면번호 11"},
+        "base": {"label": "Base", "summary": "도면번호 1"},
+        "comparison": {"label": "비교 1", "summary": "도면번호 11"},
         "single": {"label": "운전 1 · 팬 1개", "summary": "1 RPM"},
         "common": {"label": "운전 2 · 팬 4개", "summary": "모든 팬 11111 RPM"},
         "individual": {"label": "운전 3 · 팬 4개", "summary": "상 100 · 중상 200 / 중하 300 · 하 1000 RPM"},

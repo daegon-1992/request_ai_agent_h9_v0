@@ -46,7 +46,7 @@ def generate_geometry_axis(source: Mapping[str, Any]) -> GeometryPayload:
         display_name = _clean_text(field_value(product.get("display_name"))) or drawing_no
         variants.append({
             "geometry_id": _clean_text(product.get("geometry_id")),
-            "geometry_label": f"형상 {index}",
+            "geometry_label": "Base" if index == 1 else f"비교 {index - 1}",
             "drawing_no": drawing_no,
             "display_name": display_name,
             "role": _clean_text(product.get("role")),

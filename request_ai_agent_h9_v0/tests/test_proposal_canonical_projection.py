@@ -1,4 +1,4 @@
-from request_ai_agent_h9_v0.agent_decision import proposal_changes
+﻿from request_ai_agent_h9_v0.agent_decision import proposal_changes
 from request_ai_agent_h9_v0.chat_patch import apply_patch_operations
 from request_ai_agent_h9_v0.state import create_initial_state, sanitize_state
 
@@ -26,12 +26,12 @@ def test_product_list_proposal_is_split_by_canonical_geometry():
 
     assert proposal_changes(current, proposed) == [
         {
-            "label": "형상 1 · 총조립도 도면번호 (NPDM MCAD)",
+            "label": "Base · 총조립도 도면번호 (NPDM MCAD)",
             "current_value": "",
             "new_value": "AJT123123",
         },
         {
-            "label": "형상 2 · 총조립도 도면번호 (NPDM MCAD)",
+            "label": "비교 1 · 총조립도 도면번호 (NPDM MCAD)",
             "current_value": "",
             "new_value": "T-123123",
         },

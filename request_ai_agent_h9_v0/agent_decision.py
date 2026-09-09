@@ -1,4 +1,4 @@
-"""Single semantic LLM decision for the Main Agent Chat."""
+﻿"""Single semantic LLM decision for the Main Agent Chat."""
 
 from __future__ import annotations
 
@@ -510,8 +510,8 @@ def _proposal_field_projection(state: Mapping[str, Any]) -> dict[str, dict[str, 
             label = _clean(field.get("label")) or field_id
             if registry_field is None:
                 if not field_id.startswith("request_context."):
-                    geometry_index = indexes[0] + 2 if indexes else 1
-                    label = f"형상 {geometry_index} · {label}"
+                    geometry_label = f"비교 {indexes[0] + 1}" if indexes else "Base"
+                    label = f"{geometry_label} · {label}"
             elif registry_field is not None and registry_field.card_id:
                 card, card_index, card_count = _condition_card(state, registry_field.card_id)
                 instance_label = _condition_instance_label(card, card_index, card_count)
