@@ -770,7 +770,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .title-icon{border-color:var(--line);border-radius:7px;background:var(--soft);color:var(--brand)}
     .screen-heading{margin:0 0 16px;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--muted)}
     .screen-heading-code{font-size:12px;font-weight:500;color:var(--muted)!important}
-    .screen-action-bar{position:sticky;z-index:5;bottom:-6px;display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding:12px 0;border-top:1px solid var(--ui-border-subtle);background:var(--ui-surface)}
+    .screen-action-bar{position:sticky;z-index:5;bottom:0;display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding:12px 0;border-top:1px solid var(--ui-border-subtle);background:var(--ui-surface)}
     .screen-action-bar button{min-width:136px}
     .agent-dock{background:var(--paper);border-color:var(--line)}
     /* SCREEN-01~06 workspace-only visual surface; Agent Dock is a sibling of .workspace-shell. */
@@ -834,7 +834,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form table{color:var(--request-workspace-ink);border-color:var(--request-workspace-border)}
     .workspace-shell .request-content-screen > #section-overview{background:var(--request-workspace-surface)}
     .workspace-shell .request-content-screen > #section-overview .analysis-result-guidance{border-color:var(--request-workspace-border);background:var(--soft)}
-    .workspace-shell .screen-action-bar{border-color:var(--request-workspace-border);background:transparent}
+    .workspace-shell .screen-action-bar{border-color:var(--request-workspace-border);background:var(--ui-surface)}
     .workspace-shell .request-content-screen > .screen-action-bar{margin-top:20px;padding:6px 0;border-top:0}
     .workspace-shell .request-content-screen > .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}
     .workspace-shell .request-content-screen > .screen-action-bar button.primary{font-size:15px;font-weight:600}
