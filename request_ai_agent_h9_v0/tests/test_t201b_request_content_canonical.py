@@ -126,7 +126,6 @@ def test_screen_two_required_policy_matches_the_two_request_detail_fields():
     }
     assert "decision_use" not in {spec.key for spec in ANALYSIS_OVERVIEW_SPECS if spec.required}
     assert 'if (activeScreen === "SCREEN-02" && screen.id === "SCREEN-03")' not in HTML_TEMPLATE
-    assert 'position:static;display:flex' in HTML_TEMPLATE
     assert 'class="request-detail-grid"' in HTML_TEMPLATE
 
 

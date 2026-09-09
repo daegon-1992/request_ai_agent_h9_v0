@@ -766,7 +766,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .title-icon{border-color:var(--line);border-radius:7px;background:var(--soft);color:var(--brand)}
     .screen-heading{margin:0 0 16px;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--muted)}
     .screen-heading-code{font-size:12px;font-weight:500;color:var(--muted)!important}
-    .screen-action-bar{position:static;display:flex;justify-content:space-between;gap:10px;margin-top:16px;padding:10px 0;border-top:1px solid var(--line);background:var(--paper)}
+    .screen-action-bar{position:sticky;z-index:5;bottom:-6px;display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding:12px 0;border-top:1px solid var(--ui-border-subtle);background:var(--ui-surface)}
     .screen-action-bar button{min-width:136px}
     .agent-dock{background:var(--paper);border-color:var(--line)}
     /* SCREEN-01~06 workspace-only visual surface; Agent Dock is a sibling of .workspace-shell. */
@@ -1006,6 +1006,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       .workspace-content{height:100%;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
       .workspace-shell .main{min-height:0;overflow:hidden}
       .workspace-shell .workspace{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+      .workspace-tab.active{min-height:100%}
+      .workspace-form{min-height:100%}
+      .workspace-form > .screen-group:not([hidden]){min-height:100%;display:flex;flex-direction:column}
+      .workspace-form > .screen-group:not([hidden]) > .screen-action-bar{flex:0 0 auto}
       .agent-dock{height:100%;min-height:0}
       .chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}
       .chat-input{position:relative;z-index:1}
