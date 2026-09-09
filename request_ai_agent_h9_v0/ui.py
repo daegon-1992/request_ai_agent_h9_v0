@@ -419,7 +419,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
     .grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
     .request-basic-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
-    .request-type-field{grid-column:span 1}
+    .request-type-field{grid-column:span 2}
     .request-project-field{grid-column:span 2}
     .request-basic-grid select[data-dropdown-path]{
       appearance:none;padding-right:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23687480' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='m7 9 5 5 5-5'/%3E%3C/svg%3E");
