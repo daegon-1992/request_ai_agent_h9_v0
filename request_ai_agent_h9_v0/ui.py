@@ -29,7 +29,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       --ui-primary:#56595E;
       --ui-primary-hover:#45484D;
       --ui-step-inactive:#B8BCC3;
-      --ui-step-complete:#5F7D68;
+      --ui-step-complete:#79B88A;
       --ui-agent-blue:#5F8FEA;
       --ui-user-bubble:#EDF2F9;
       --ui-warning-bg:#FEF9EA;
@@ -1062,7 +1062,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     .workspace-shell .screen-map-item[data-completed="true"] .screen-map-number{background:var(--ui-step-complete);color:#fff;font-size:16px}
     .workspace-shell .screen-map-item[data-completed="true"] .screen-map-label{color:var(--ui-text-primary)}
-    .workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}
+    .workspace-shell .screen-map-item[aria-current="page"]:not([data-completed="true"]) .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}
     .workspace-shell .screen-map-label{font-size:13px;font-weight:500;line-height:1.25;color:var(--ui-text-secondary)}
     .workspace-shell .screen-map-item[aria-current="page"] .screen-map-label{color:var(--ui-text-primary);font-weight:600}
     .workspace-shell .panel.main{
@@ -2404,7 +2404,8 @@ HTML_TEMPLATE = r"""<!doctype html>
         const blocked = !!screen?.requiresContext && firstIncompleteIndex >= 0 && screenIndex > firstIncompleteIndex;
         const completed = screen?.id === "SCREEN-06"
           ? finalSubmissionCompleted()
-          : screenIndex >= 0 && screenIndex < 5 && !missingRequiredControl(screen.id) && !blockingScreenError(screen.id);
+          : screenIndex >= 0 && screenIndex < 5 && screenIndex < screenOrder.findIndex(candidate => candidate.id === active.id)
+            && !blocked && !missingRequiredControl(screen.id) && !blockingScreenError(screen.id);
         const numberNode = item.querySelector(".screen-map-number");
         item.setAttribute("role", "button");
         item.tabIndex = blocked ? -1 : 0;

@@ -217,7 +217,7 @@ def test_request_content_visual_corrections_use_inline_circle_navigation_and_pag
     assert 'clip-path:polygon(0 0,calc(100% - 18px)' not in HTML_TEMPLATE
     assert 'clip-path:polygon(0 0,100% 0,100% 100%,0 100%,18px 50%)' not in HTML_TEMPLATE
     assert '.workspace-shell .screen-map-item:not(:first-child){margin-left:-18px}' not in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"]:not([data-completed="true"]) .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-map-label{font-size:13px;font-weight:500;line-height:1.25;color:var(--ui-text-secondary)}' in HTML_TEMPLATE
     assert '.workspace{min-height:0;overflow:visible;padding:12px}' in HTML_TEMPLATE
     assert '.workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px;overflow:visible}' in HTML_TEMPLATE

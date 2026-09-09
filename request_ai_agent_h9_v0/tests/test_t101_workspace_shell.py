@@ -92,7 +92,7 @@ def test_global_shell_moves_request_values_into_portal_header_and_removes_summar
     assert "의뢰 제목 (자동 생성)" not in HTML_TEMPLATE
     assert ">의뢰 번호<" not in HTML_TEMPLATE
     assert '.workspace-shell .screen-map-item[aria-current="page"]{background:transparent;color:var(--ui-text-primary)}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-map-item[aria-current="page"] .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}' in HTML_TEMPLATE
+    assert '.workspace-shell .screen-map-item[aria-current="page"]:not([data-completed="true"]) .screen-map-number{background:var(--ui-active);color:#fff;font-size:13px}' in HTML_TEMPLATE
     assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
 
 
