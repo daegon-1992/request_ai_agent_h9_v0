@@ -21,7 +21,8 @@ def test_step_navigation_stays_in_the_main_workspace_and_keeps_all_six_labels():
 
 
 def test_step_navigation_uses_v3_inline_circles_without_chevrons_or_connectors():
-    assert 'grid-template-columns:repeat(6,max-content);justify-content:space-between' in HTML_TEMPLATE
+    assert 'grid-template-columns:repeat(6,minmax(0,1fr));gap:0' in HTML_TEMPLATE
+    assert 'align-items:center;justify-content:center;gap:8px;min-width:0' in HTML_TEMPLATE
     assert '.step-navigation{background:transparent}' in HTML_TEMPLATE
     assert 'scrollbar-width:thin;background:transparent;box-shadow:none' in HTML_TEMPLATE
     assert 'border:0;border-radius:0' in HTML_TEMPLATE
