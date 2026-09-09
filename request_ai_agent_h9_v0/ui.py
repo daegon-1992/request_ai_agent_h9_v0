@@ -419,8 +419,9 @@ HTML_TEMPLATE = r"""<!doctype html>
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
     .grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
     .request-basic-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
-    .request-type-field{grid-column:span 2}
+    .request-type-field{grid-column:span 1}
     .request-project-field{grid-column:span 2}
+    .request-basic-row2-start{grid-column-start:1}
     .request-basic-grid select[data-dropdown-path]{
       appearance:none;padding-right:42px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23687480' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='m7 9 5 5 5-5'/%3E%3C/svg%3E");
       background-repeat:no-repeat;background-position:right 10px center;background-size:16px 16px
@@ -1288,7 +1289,7 @@ HTML_TEMPLATE = r"""<!doctype html>
                     </div>
                   </div>
                 </div>
-                <label>개발 등급<select data-dropdown-path="analysis_overview.development_grade"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.development_grade" hidden><input class="custom-input" data-path="analysis_overview.development_grade" aria-label="개발 등급 직접 입력" /><button type="button" data-dropdown-restore-path="analysis_overview.development_grade" title="개발 등급 드롭다운으로 돌아가기" aria-label="개발 등급 드롭다운으로 돌아가기">↩</button></span></label>
+                <label class="request-basic-row2-start">개발 등급<select data-dropdown-path="analysis_overview.development_grade"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.development_grade" hidden><input class="custom-input" data-path="analysis_overview.development_grade" aria-label="개발 등급 직접 입력" /><button type="button" data-dropdown-restore-path="analysis_overview.development_grade" title="개발 등급 드롭다운으로 돌아가기" aria-label="개발 등급 드롭다운으로 돌아가기">↩</button></span></label>
                 <label>NPI 단계<select data-dropdown-path="analysis_overview.npi_stage"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.npi_stage" hidden><input class="custom-input" data-path="analysis_overview.npi_stage" aria-label="NPI 단계 직접 입력" /><button type="button" data-dropdown-restore-path="analysis_overview.npi_stage" title="NPI 단계 드롭다운으로 돌아가기" aria-label="NPI 단계 드롭다운으로 돌아가기">↩</button></span></label>
                 <div class="undecided-field">
                   <label for="modelSuffixInput">모델명(Model Suffix)</label>

@@ -257,7 +257,10 @@ def test_screen_two_uses_divider_sections_and_request_type_two_column_project_la
     assert '.workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
     assert 'class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"' in screen
     assert 'class="undecided-field request-project-field"' in screen
+    assert '.request-type-field{grid-column:span 1}' in HTML_TEMPLATE
     assert '.request-project-field{grid-column:span 2}' in HTML_TEMPLATE
+    assert '.request-basic-row2-start{grid-column-start:1}' in HTML_TEMPLATE
+    assert 'class="request-basic-row2-start">개발 등급<select data-dropdown-path="analysis_overview.development_grade"' in screen
     assert '의뢰 요청일' not in screen
     assert 'data-path="analysis_overview.request_date"' not in screen
 
