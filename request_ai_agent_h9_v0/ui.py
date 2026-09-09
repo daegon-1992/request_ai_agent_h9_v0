@@ -1064,7 +1064,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-map-item[aria-current="page"] .screen-map-label{color:var(--ui-text-primary);font-weight:600}
     .workspace-shell .panel.main{
       border:1px solid var(--ui-border-subtle);border-radius:var(--ui-radius-panel);
-      background:var(--ui-page);box-shadow:none;outline:0;
+      background:var(--ui-surface);box-shadow:none;outline:0;
     }
     .workspace-shell .workspace{
       padding:16px 18px;border:0;border-radius:0;

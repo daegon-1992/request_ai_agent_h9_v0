@@ -99,7 +99,7 @@ def test_global_shell_moves_request_values_into_portal_header_and_removes_summar
 def test_workspace_and_agent_follow_v3_surface_hierarchy_without_shell_shadow():
     assert ".workspace-shell .panel.main{" in HTML_TEMPLATE
     assert "border:1px solid var(--ui-border-subtle);border-radius:var(--ui-radius-panel);" in HTML_TEMPLATE
-    assert "background:var(--ui-page);box-shadow:none;outline:0" in HTML_TEMPLATE
+    assert "background:var(--ui-surface);box-shadow:none;outline:0" in HTML_TEMPLATE
     assert "background:var(--ui-surface-subtle);" in HTML_TEMPLATE
     assert ".step-navigation{background:transparent}" in HTML_TEMPLATE
     assert "scrollbar-width:thin;background:transparent;box-shadow:none" in HTML_TEMPLATE
