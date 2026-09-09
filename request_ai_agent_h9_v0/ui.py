@@ -127,7 +127,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     textarea{min-height:70px;resize:vertical;line-height:1.45}
     label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--ink)}
-    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
+    button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
     .topbar{
       height:48px;
       padding:6px 16px;
@@ -195,7 +195,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       font-size:13px;font-weight:500;line-height:1.25;text-align:left;cursor:pointer;
     }
     .screen-map-item:hover:not([aria-disabled="true"]){background:transparent;color:var(--ui-text-primary)}
-    .screen-map-item:focus-visible{z-index:1;outline:2px solid rgba(95,143,234,.24);outline-offset:2px}
+    .screen-map-item:focus-visible{z-index:1;outline:2px solid rgba(52,55,62,.18);outline-offset:2px}
     .screen-map-item[aria-current="page"]{background:transparent;color:var(--ui-text-primary)}
     .screen-map-number{
       width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:50%;
@@ -436,7 +436,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       position:relative;min-width:0;height:36px;display:grid;grid-template-columns:minmax(0,1fr) 36px;
       border:1px solid var(--line);border-radius:7px;background:var(--paper)
     }
-    .undecided-combobox:focus-within{outline:2px solid rgba(95,143,234,.24);outline-offset:2px}
+    .undecided-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}
     .undecided-combobox input{height:34px;min-height:34px;border:0;border-radius:6px 0 0 6px;padding:8px 9px;background:transparent}
     .undecided-combobox input:focus-visible,
     .undecided-combobox-toggle:focus-visible{outline:0}
@@ -593,7 +593,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-validation-status.ok{color:#3E6B48}
     .case-matrix-toolbar>[data-action="add-case"]{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap}
     .case-select-field{width:100%;min-width:0;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);overflow:hidden}
-    .case-select-field:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
+    .case-select-field:focus-within{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
     .case-select-field select{display:block;width:100%;min-width:0;min-height:38px;padding:8px 11px 5px;border:0;border-radius:7px 7px 0 0;background-color:var(--paper);color:var(--ink);font-size:14px;font-weight:600;line-height:1.35;box-shadow:none}
     .case-select-field select:focus-visible{border:0;outline:0;outline-offset:0;box-shadow:none}
     .case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;font-weight:400;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
@@ -644,7 +644,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .issue code{display:block;margin-top:3px;color:var(--muted);font-size:11px;white-space:normal}
     .inline-issue{display:none;margin-top:4px;font-size:11px;line-height:1.35}
     .field-touched .inline-issue{display:block}
-    .field-highlight{outline:2px solid rgba(95,143,234,.24);outline-offset:3px;border-radius:var(--ui-radius-panel)}
+    .field-highlight{outline:2px solid rgba(52,55,62,.18);outline-offset:3px;border-radius:var(--ui-radius-panel)}
     .draft-output{margin-top:10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:10px;white-space:pre-wrap;font-size:12px;line-height:1.5}
     .preview-doc{display:grid;gap:10px}
     .preview-section{border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:10px}
@@ -826,7 +826,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;font-style:normal;font-weight:500;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;font-weight:400;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
     .workspace-shell .workspace-form :is(input,textarea,select):disabled{border-color:var(--ui-disabled-border);background:var(--ui-disabled-bg);color:#9A9EA5;opacity:1}
-    .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
+    .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
     .workspace-shell .workspace-form button{font-family:var(--request-workspace-font);font-weight:500;border-color:var(--request-workspace-border);background-color:var(--request-workspace-surface);color:var(--request-workspace-ink);box-shadow:none}
     .workspace-shell .workspace-form button.primary{border-color:var(--ui-primary);background-color:var(--ui-primary);color:#fff}
     .workspace-shell .workspace-form button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}
@@ -847,7 +847,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-map-item{background:transparent;color:var(--ui-text-secondary)}
     .workspace-shell .screen-map-item:hover:not([aria-disabled="true"]){background:transparent;color:var(--request-workspace-ink)}
     .workspace-shell .screen-map-item[aria-current="page"]{background:transparent;color:var(--request-workspace-ink)}
-    .workspace-shell .screen-map-item:focus-visible{outline-color:rgba(95,143,234,.24)}
+    .workspace-shell .screen-map-item:focus-visible{outline-color:rgba(52,55,62,.18)}
     .topbar .subtitle{display:none}
     .workspace-shell .screen-map{min-height:56px}
     .workspace-shell .screen-map-item{padding-top:2px;padding-bottom:2px}
@@ -897,7 +897,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-group-head-actions button{min-height:24px;height:24px;padding:2px 7px}
     .workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{min-height:46px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background-color:var(--paper);color:var(--ink)}
     .workspace-shell .request-content-screen .undecided-combobox{height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
-    .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
+    .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
     .workspace-shell .request-content-screen .undecided-combobox input{height:44px;min-height:44px;padding:10px 12px;border:0;border-radius:7px 0 0 7px;background:transparent}
     .workspace-shell .request-content-screen .undecided-combobox input:focus-visible,
     .workspace-shell .request-content-screen .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}
@@ -910,7 +910,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:46px;padding:10px 12px;font-size:14px;font-weight:400;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
     .workspace-shell .condition-input-screen .condition-spec-name{min-height:46px;padding-block:10px;font-size:14px;font-weight:400;line-height:1.45}
     .workspace-shell .condition-input-screen .condition-temperature-combobox{height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}
-    .workspace-shell .condition-input-screen .condition-temperature-combobox:focus-within{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}
+    .workspace-shell .condition-input-screen .condition-temperature-combobox:focus-within{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
     .workspace-shell .condition-input-screen .condition-temperature-combobox input{height:44px;min-height:44px;padding:10px 12px;border:0;border-radius:7px 0 0 7px;background:transparent}
     .workspace-shell .condition-input-screen .condition-temperature-combobox input:focus-visible,
     .workspace-shell .condition-input-screen .condition-temperature-combobox .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}

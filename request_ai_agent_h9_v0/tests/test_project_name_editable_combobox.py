@@ -51,7 +51,7 @@ def test_custom_listbox_uses_a_native_select_like_square_flat_menu():
     assert 'appearance:none;padding-right:42px;background-image:url(' in HTML_TEMPLATE
     assert "d='m7 9 5 5 5-5'" in HTML_TEMPLATE
     assert 'border:1px solid var(--line);border-radius:7px;background:var(--paper)' in HTML_TEMPLATE
-    assert '.undecided-combobox:focus-within{outline:2px solid rgba(95,143,234,.24);outline-offset:2px}' in HTML_TEMPLATE
+    assert '.undecided-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}' in HTML_TEMPLATE
     assert 'display:grid;place-items:center;border:0;border-radius:0 6px 6px 0;' in HTML_TEMPLATE
     assert '<path d="m7 9 5 5 5-5"></path>' in HTML_TEMPLATE
     assert 'top:calc(100% + 4px);left:-1px;right:-1px;padding:0;' in HTML_TEMPLATE

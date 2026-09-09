@@ -68,7 +68,7 @@ def test_common_controls_use_v3_radius_primary_and_soft_blue_focus():
     assert 'button.primary{border-color:var(--ui-primary);background:var(--ui-primary);color:#fff}' in HTML_TEMPLATE
     assert 'button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}' in HTML_TEMPLATE
     assert 'button.danger{border-color:var(--ui-error);background:var(--ui-surface);color:var(--ui-error)}' in HTML_TEMPLATE
-    assert 'button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-agent-blue);outline:2px solid rgba(95,143,234,.24);outline-offset:1px}' in HTML_TEMPLATE
+    assert 'button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-description{margin:0 0 8px;color:var(--request-workspace-muted);font-size:14px;font-weight:400;line-height:1.45}' in HTML_TEMPLATE
 
 
