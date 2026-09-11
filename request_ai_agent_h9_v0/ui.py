@@ -536,9 +536,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .condition-card-type-operating .condition-card-row{grid-template-columns:64px 100px minmax(260px,1fr) max-content;align-items:end}
     .condition-card-type-operating .condition-row-actions{grid-column:4;grid-row:1}
     .condition-card-type-operating .condition-spec-name{padding-inline:3px;white-space:nowrap}
-    .fan-rpm-editor{display:grid;grid-template-columns:minmax(150px,190px) max-content;gap:8px;align-items:end;min-width:0}
-    .fan-rpm-editor.single{grid-template-columns:minmax(100px,140px)}
-    .fan-rpm-editor.mode-pending{grid-template-columns:minmax(150px,190px)}
+    .fan-rpm-editor{display:flex;gap:8px;align-items:end;min-width:0}
+    .fan-rpm-editor.single{display:flex}
+    .fan-rpm-editor.mode-pending{display:flex}
+    .fan-rpm-control{display:flex;align-items:center;gap:8px;min-width:0}
+    .fan-rpm-control input{width:min(140px,100%)}
+    .fan-rpm-unit{flex:0 0 auto;font-size:13px;font-weight:500;color:var(--muted)}
     .fan-detail-toggle{white-space:nowrap}
     .fan-detail{grid-column:1/-1;grid-row:2}
     .fan-detail[hidden]{display:none}
@@ -3057,24 +3060,25 @@ HTML_TEMPLATE = r"""<!doctype html>
       };
       const fanConfigurationInputsHtml = (cardId, card, fans, showLabel) => {
         const multiple = fans.length >= 2;
+        const label = showLabel ? `<span>팬 회전 설정</span>` : "";
         if (!multiple) {
           const rpm = contextText(asObj(asObj(fans[0]).values).fan_rpm);
-          return `<span class="fan-rpm-editor single"><label class="fan-input-column">${showLabel ? `<span>${esc(fieldLabels.fan_rpm)}</span>` : ""}<input data-card-id="${esc(cardId)}" data-fan-index="0" data-card-field="fan_rpm" value="${esc(rpm)}" aria-label="${esc(fieldLabels.fan_rpm)}" /></label></span>`;
+          return `<label class="fan-input-column">${label}<span class="fan-rpm-editor single"><span class="fan-rpm-control"><input data-card-id="${esc(cardId)}" data-fan-index="0" data-card-field="fan_rpm" value="${esc(rpm)}" aria-label="${esc(fieldLabels.fan_rpm)}" /><span class="fan-rpm-unit">RPM</span></span></span></label>`;
         }
         const mode = ["common", "individual"].includes(contextText(card.fan_rpm_mode)) ? contextText(card.fan_rpm_mode) : "";
         const modeOptions = `<option value="" ${mode ? "" : "selected"}>입력 방식 선택</option><option value="common" ${mode === "common" ? "selected" : ""}>모든 팬 동일</option><option value="individual" ${mode === "individual" ? "selected" : ""}>팬별 입력</option>`;
-        const modeSelect = `<label class="fan-input-column">${showLabel ? `<span>팬 회전수 설정</span>` : ""}<select data-card-id="${esc(cardId)}" data-fan-rpm-mode aria-label="팬 회전수 입력방식">${modeOptions}</select></label>`;
+        const modeSelect = `<select data-card-id="${esc(cardId)}" data-fan-rpm-mode aria-label="팬 회전수 입력방식">${modeOptions}</select>`;
         if (mode === "common") {
           const rpm = commonFanRpm(fans);
-          return `<span class="fan-rpm-editor"><label class="fan-input-column">${showLabel ? `<span>RPM</span>` : ""}<input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /></label>${modeSelect}</span>`;
+          return `<label class="fan-input-column">${label}<span class="fan-rpm-editor">${modeSelect}<span class="fan-rpm-control"><input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /><span class="fan-rpm-unit">RPM</span></span></span></label>`;
         }
-        if (mode !== "individual") return `<span class="fan-rpm-editor mode-pending">${modeSelect}</span>`;
+        if (mode !== "individual") return `<label class="fan-input-column">${label}<span class="fan-rpm-editor mode-pending">${modeSelect}</span></label>`;
         const expanded = expandedFanCardId === cardId;
         const detailInputs = fans.map((rawFan, fanIndex) => {
           const fan = asObj(rawFan);
           return `<div class="fan-input-set" data-fan-set="${fanIndex + 1}"><span class="fan-input-order" aria-hidden="true">${fanIndex + 1}</span><label class="fan-input-column"><span>${esc(fieldLabels.fan_location)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_location" value="${esc(fan.location)}" placeholder="예 : 상/중/하" aria-label="${esc(fieldLabels.fan_location)} ${fanIndex + 1}" /></label><label class="fan-input-column"><span>${esc(fieldLabels.fan_rpm)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_rpm" value="${esc(asObj(fan.values).fan_rpm)}" aria-label="${esc(fieldLabels.fan_rpm)} ${fanIndex + 1}" /></label></div>`;
         }).join("");
-        return `<span class="fan-rpm-editor"><button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button>${modeSelect}</span><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
+        return `<label class="fan-input-column">${label}<span class="fan-rpm-editor">${modeSelect}<button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button></span></label><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
       };
       const rowHtml = (card, isFirst, rowIndex) => {
         const row = asObj(card), cardId = contextText(row.id), type = contextText(row.type), fields = asObj(row.fields);

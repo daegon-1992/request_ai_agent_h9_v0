@@ -130,9 +130,11 @@ def test_screen04_renders_the_three_fan_input_structures_and_one_inline_detail()
     assert 'expandedFanCardId === cardId' in renderer
     assert 'fan-summary' not in renderer
     assert 'fanCompactText' not in renderer
-    assert 'data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /></label>${modeSelect}</span>' in renderer
+    assert '<span>팬 회전 설정</span>' in renderer
+    assert '<span class="fan-rpm-unit">RPM</span>' in renderer
+    assert '${modeSelect}<span class="fan-rpm-control"><input' in renderer
     assert '<button class="ghost fan-detail-toggle"' in renderer
-    assert '</svg></button>${modeSelect}</span>' in renderer
+    assert '${modeSelect}<button class="ghost fan-detail-toggle"' in renderer
     assert 'aria-controls="fan-detail-${esc(cardId)}"' in renderer
     assert '<span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true">' in renderer
     assert 'id="fan-detail-${esc(cardId)}"' in renderer
