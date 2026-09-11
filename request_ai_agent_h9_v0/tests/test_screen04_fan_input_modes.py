@@ -131,6 +131,9 @@ def test_screen04_renders_the_three_fan_input_structures_and_one_inline_detail()
     assert 'fan-summary' not in renderer
     assert 'fanCompactText' not in renderer
     assert '<span>팬 회전 설정</span>' in renderer
+    assert '.fan-rpm-editor{--fan-rotation-control-width:186px;' in HTML_TEMPLATE
+    assert '.fan-rpm-editor>select[data-fan-rpm-mode]{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}' in HTML_TEMPLATE
+    assert '.fan-rpm-control{display:flex;flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;' in HTML_TEMPLATE
     assert '<span class="fan-rpm-unit">RPM</span>' in renderer
     assert '${modeSelect}<span class="fan-rpm-control"><input' in renderer
     assert '<button class="ghost fan-detail-toggle"' in renderer

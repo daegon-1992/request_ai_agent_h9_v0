@@ -536,11 +536,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .condition-card-type-operating .condition-card-row{grid-template-columns:64px 100px minmax(260px,1fr) max-content;align-items:end}
     .condition-card-type-operating .condition-row-actions{grid-column:4;grid-row:1}
     .condition-card-type-operating .condition-spec-name{padding-inline:3px;white-space:nowrap}
-    .fan-rpm-editor{display:flex;gap:8px;align-items:end;min-width:0}
+    .fan-rpm-editor{--fan-rotation-control-width:186px;display:flex;gap:8px;align-items:end;min-width:0}
     .fan-rpm-editor.single{display:flex}
     .fan-rpm-editor.mode-pending{display:flex}
-    .fan-rpm-control{display:flex;align-items:center;gap:8px;min-width:0}
-    .fan-rpm-control input{width:min(140px,100%)}
+    .fan-rpm-editor>select[data-fan-rpm-mode]{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}
+    .fan-rpm-control{display:flex;flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;align-items:center;gap:8px;min-width:0}
+    .fan-rpm-control input{width:100%;box-sizing:border-box}
     .fan-rpm-unit{flex:0 0 auto;font-size:13px;font-weight:500;color:var(--muted)}
     .fan-detail-toggle{white-space:nowrap}
     .fan-detail{grid-column:1/-1;grid-row:2}
