@@ -212,8 +212,7 @@ def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts(
         'padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] '
-        '> .screen-action-bar button{min-height:44px;padding:0 18px;border-radius:8px}'
+        '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '

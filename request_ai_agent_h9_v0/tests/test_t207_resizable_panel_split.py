@@ -2,7 +2,7 @@ from request_ai_agent_h9_v0.ui import HTML_TEMPLATE
 
 
 def test_desktop_panels_default_to_reference_image_ratio_without_changing_total_layout_width():
-    assert "grid-template-columns:minmax(0,2.285fr) 16px minmax(0,1fr)" in HTML_TEMPLATE
+    assert "grid-template-columns:minmax(0,1fr) var(--ui-panel-split) var(--ui-agent-width)" in HTML_TEMPLATE
     assert 'grid-template-areas:"workspace-content panel-resizer agent"' in HTML_TEMPLATE
     assert 'grid-template-rows:minmax(0,1fr)' in HTML_TEMPLATE
 
@@ -13,11 +13,11 @@ def test_panel_separator_supports_pointer_drag_between_one_to_one_and_three_to_o
     assert "function initPanelResizer()" in HTML_TEMPLATE
     assert "Math.min(drag.totalWidth * .75, Math.max(drag.totalWidth * .5" in HTML_TEMPLATE
     assert "setPanelRatio(nextLeft / (drag.totalWidth - nextLeft))" in HTML_TEMPLATE
-    assert "layout.style.gridTemplateColumns = `minmax(0,${clamped}fr) 16px minmax(0,1fr)`" in HTML_TEMPLATE
+    assert "layout.style.gridTemplateColumns = `minmax(0,${clamped}fr) 14px minmax(0,1fr)`" in HTML_TEMPLATE
 
 
 def test_resizer_hit_area_overlaps_both_panel_edges():
-    assert "justify-self:center;width:20px;min-width:20px;height:100%;margin:0 -4px" in HTML_TEMPLATE
+    assert "justify-self:center;width:14px;min-width:14px;height:100%;margin:0" in HTML_TEMPLATE
     assert "cursor:col-resize;touch-action:none;user-select:none" in HTML_TEMPLATE
 
 

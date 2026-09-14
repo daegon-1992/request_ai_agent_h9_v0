@@ -232,42 +232,29 @@ def test_condition_boxes_use_screen_four_h8_control_density():
         'font-size:16px;font-weight:600;color:var(--ink)}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-card-row :is(input,select){'
-        'min-height:46px;padding:10px 12px;font-size:14px;font-weight:400;'
-        'border:1px solid var(--line-strong);border-radius:8px;background:var(--paper)}'
+        '.workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background-color:var(--paper)}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-spec-name{min-height:46px;'
-        'padding-block:10px;font-size:14px;font-weight:400;line-height:1.45}'
+        '.workspace-shell .condition-input-screen .condition-spec-name{min-height:40px;padding-block:0;font-size:14px;font-weight:400;line-height:1.45}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-temperature-combobox{'
-        'height:46px;min-height:46px;grid-template-columns:minmax(0,1fr) 42px;'
-        'border:1px solid var(--line-strong);'
-        'border-radius:8px;background:var(--paper)}'
+        '.workspace-shell .condition-input-screen .condition-temperature-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-temperature-combobox input{'
-        'height:44px;min-height:44px;padding:10px 12px;border:0;'
-        'border-radius:7px 0 0 7px;background:transparent}'
+        '.workspace-shell .condition-input-screen .condition-temperature-combobox input{height:38px;min-height:38px;padding:0 10px;border:0;border-radius:6px 0 0 6px;background:transparent;box-shadow:none}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-temperature-combobox '
-        '.undecided-combobox-toggle{width:42px;height:44px;min-height:44px;'
-        'border:0;border-radius:0 7px 7px 0;background:transparent}'
+        '.workspace-shell .condition-input-screen .condition-temperature-combobox .undecided-combobox-toggle{width:38px;height:38px;min-height:38px;border:0;border-radius:0 6px 6px 0;background:transparent;color:#525252}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-temperature-guidance{'
         'margin:-10px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .heat-exchanger-custom-control{'
-        'grid-template-columns:minmax(0,1fr) 42px}'
+        '.workspace-shell .condition-input-screen .heat-exchanger-custom-control{grid-template-columns:minmax(0,1fr) 38px}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen '
-        ':is(.heat-exchanger-custom-control,.fan-count-custom-control) > button{'
-        'width:42px;min-width:42px;height:46px;min-height:46px}'
+        '.workspace-shell .condition-input-screen :is(.heat-exchanger-custom-control,.fan-count-custom-control) > button{width:38px;min-width:38px;height:40px;min-height:40px}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .fan-count-custom-control input{padding-inline:6px}'

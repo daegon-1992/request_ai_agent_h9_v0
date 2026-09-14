@@ -55,10 +55,11 @@ def test_agent_open_hide_restores_agent_focus_without_touching_orchestrator_stat
     assert 'orchestratorPanelState' in HTML_TEMPLATE
 
 
-def test_agent_dock_switches_between_340_320_dock_and_sub_1040_overlay_with_escape():
-    assert 'grid-template-columns:minmax(0,1fr) 340px' in HTML_TEMPLATE
-    assert '@media (max-width:1280px) and (min-width:1040px)' in HTML_TEMPLATE
-    assert 'grid-template-columns:minmax(0,1fr) 320px' in HTML_TEMPLATE
+def test_agent_dock_switches_between_390_360_dock_and_sub_1040_overlay_with_escape():
+    assert '--ui-agent-width:390px' in HTML_TEMPLATE
+    assert '--ui-agent-width-compact:360px' in HTML_TEMPLATE
+    assert '@media (min-width:1040px) and (max-width:1450px)' in HTML_TEMPLATE
+    assert 'grid-template-columns:minmax(0,1fr) var(--ui-panel-split) var(--ui-agent-width-compact)' in HTML_TEMPLATE
     assert '@media (max-width:1039px)' in HTML_TEMPLATE
     assert 'position:fixed' in HTML_TEMPLATE
     assert 'function isAgentOverlay()' in HTML_TEMPLATE

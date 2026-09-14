@@ -46,19 +46,14 @@ def test_shared_combobox_switches_modes_in_the_same_input():
     assert 'setUndecidedComboboxOpen(combobox, false);' in HTML_TEMPLATE
 
 
-def test_custom_listbox_uses_a_native_select_like_square_flat_menu():
-    assert '.request-basic-grid select[data-dropdown-path]{' in HTML_TEMPLATE
-    assert 'appearance:none;padding-right:42px;background-image:url(' in HTML_TEMPLATE
-    assert "d='m7 9 5 5 5-5'" in HTML_TEMPLATE
-    assert 'border:1px solid var(--line);border-radius:7px;background:var(--paper)' in HTML_TEMPLATE
-    assert '.undecided-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}' in HTML_TEMPLATE
-    assert 'display:grid;place-items:center;border:0;border-radius:0 6px 6px 0;' in HTML_TEMPLATE
+def test_custom_listbox_and_visible_selects_share_the_same_compact_chevron_language():
+    assert '.undecided-combobox-toggle svg{width:16px;height:16px;' in HTML_TEMPLATE
     assert '<path d="m7 9 5 5 5-5"></path>' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace-form select{' in HTML_TEMPLATE
+    assert 'background-position:right 11px center;background-size:16px 16px;' in HTML_TEMPLATE
+    assert '.undecided-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}' in HTML_TEMPLATE
     assert 'top:calc(100% + 4px);left:-1px;right:-1px;padding:0;' in HTML_TEMPLATE
-    assert 'border:1px solid var(--line);border-radius:0;background:var(--paper);box-shadow:none' in HTML_TEMPLATE
-    assert 'border:0;border-radius:0;background:transparent;padding:5px 8px;text-align:left;cursor:default' in HTML_TEMPLATE
     assert 'undecided-combobox-check' not in HTML_TEMPLATE
-
 
 def test_mouse_hover_and_keyboard_focus_share_the_native_highlight():
     assert (

@@ -109,11 +109,11 @@ def test_canonical_request_content_ui_has_only_the_two_requested_fields():
     assert 'navigateScreen("SCREEN-02");' in HTML_TEMPLATE
     assert 'id="nextRequestContentBtn"' in HTML_TEMPLATE
     assert 'overflow-x:hidden;overflow-y:auto;' in HTML_TEMPLATE
-    assert '.workspace{min-height:0;overflow:visible;padding:12px}' in HTML_TEMPLATE
-    assert '.workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px;overflow:visible}' in HTML_TEMPLATE
-    assert '.workspace-shell .main{overflow:visible}' in HTML_TEMPLATE
-    assert '.chat-log{min-height:0;overflow:auto;padding:12px;background:var(--soft)}' in HTML_TEMPLATE
-    assert 'max-width:1120px;' in HTML_TEMPLATE
+    assert '.workspace{min-height:0;overflow:visible;padding:var(--ui-workspace-padding);' in HTML_TEMPLATE
+    assert '.workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;align-content:start;gap:0;overflow:visible}' in HTML_TEMPLATE
+    assert '.workspace-shell .main{min-height:0;overflow:hidden}' in HTML_TEMPLATE
+    assert '.chat-log{min-height:0;overflow:auto;padding:18px 16px 20px 12px;background:var(--ui-agent-surface)}' in HTML_TEMPLATE
+    assert '--ui-content-max:1400px' in HTML_TEMPLATE
 
 
 def test_screen_two_required_policy_matches_the_two_request_detail_fields():

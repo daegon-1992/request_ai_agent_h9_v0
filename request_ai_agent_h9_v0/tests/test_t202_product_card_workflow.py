@@ -130,16 +130,14 @@ def test_screen_three_column_headers_and_shared_modal_use_canonical_surface_spac
 def test_product_field_names_and_values_use_screen_three_style_levels():
     assert '.workspace-shell .geometry-screen :is(label,.field-label)' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .geometry-screen input{min-height:46px;padding:10px 12px;'
-        'font-size:14px;font-weight:400;border:1px solid var(--line-strong);'
-        'border-radius:8px;background:var(--paper);color:var(--ink)}'
+        '.workspace-shell .geometry-screen input{min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background:var(--paper);color:var(--ui-field-value)}'
     ) in HTML_TEMPLATE
     assert '.product-geometry-name,.base-product-description{display:flex;align-items:center;min-height:34px;padding:8px 9px;color:var(--ink);font-size:13px;font-weight:400;line-height:1.45}' in HTML_TEMPLATE
     assert (
         '.workspace-shell .geometry-screen :is(.product-geometry-name,.base-product-description){'
-        'min-height:46px;padding:10px 12px;font-size:14px;font-weight:400}'
+        'min-height:40px;padding:0 10px;font-size:14px;font-weight:400}'
     ) in HTML_TEMPLATE
-    assert '.workspace-shell .geometry-screen .condition-row-actions{min-height:46px;align-items:center}' in HTML_TEMPLATE
+    assert '.workspace-shell .geometry-screen .condition-row-actions{min-height:40px;align-items:center}' in HTML_TEMPLATE
 
 
 def test_add_and_remove_collect_current_values_before_mutating_only_selected_row():
