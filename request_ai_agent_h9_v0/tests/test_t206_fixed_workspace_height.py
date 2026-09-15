@@ -8,9 +8,10 @@ def test_desktop_workspace_fills_available_canvas_without_legacy_reference_heigh
 
 
 def test_form_and_agent_keep_equal_height_with_independent_scroll_regions():
-    assert '.workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:hidden}' in HTML_TEMPLATE
+    assert '.workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:visible}' in HTML_TEMPLATE
     assert '.workspace-shell .main{min-height:0;overflow:hidden}' in HTML_TEMPLATE
-    assert '.workspace-shell .workspace{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace{height:100%;min-height:0;padding:0;overflow:hidden}' in HTML_TEMPLATE
+    assert '.workspace-form > .screen-group:not([hidden]) > .screen-scroll-content{min-height:0;padding:var(--ui-workspace-padding) var(--ui-workspace-padding) 0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
     assert '.agent-dock{grid-area:agent;height:100%;min-width:0;' in HTML_TEMPLATE
     assert '.chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
     assert '.chat-input{position:relative;z-index:1}' in HTML_TEMPLATE

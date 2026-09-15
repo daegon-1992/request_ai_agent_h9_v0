@@ -81,7 +81,7 @@ def test_condition_cards_remove_airflow_and_use_requested_hex_field_order():
     assert "heat-exchanger-grid" in HTML_TEMPLATE
     assert '["name", "tube_diameter", "fin_type", "row_count", "fpi"]' in HTML_TEMPLATE
     assert "<h3>해석 조건 입력</h3>" not in HTML_TEMPLATE
-    assert '.condition-input-screen > #section-conditions' in HTML_TEMPLATE
+    assert '.condition-input-screen > .screen-scroll-content > #section-conditions' in HTML_TEMPLATE
 
 
 def test_supply_and_space_condition_fields_use_the_requested_temperature_first_order():

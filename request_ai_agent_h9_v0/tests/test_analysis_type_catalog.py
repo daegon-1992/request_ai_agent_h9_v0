@@ -144,11 +144,11 @@ def test_temperature_inputs_offer_direct_entry_or_none_and_store_none_as_provide
     guidance_css = HTML_TEMPLATE.split(
         ".workspace-shell .condition-input-screen .condition-temperature-guidance{", 1
     )[1].split("}", 1)[0]
-    assert "margin:-10px 0 0" in guidance_css
-    assert "color:#55585B" in guidance_css
-    assert "font-size:13px" in guidance_css
+    assert "margin:12px 0 0" in guidance_css
+    assert "color:#70747A" in guidance_css
+    assert "font-size:12px" in guidance_css
     assert "font-weight:400" in guidance_css
-    assert "line-height:1.55" in guidance_css
+    assert "line-height:1.5" in guidance_css
     render_order = HTML_TEMPLATE.rsplit('$("conditionFields").innerHTML = ', 1)[1].split(";", 1)[0]
     assert render_order.index("condition-primary-grid") < render_order.index("condition-environment-grid")
     assert render_order.index("condition-environment-grid") < render_order.index("temperatureGuidance")
@@ -180,9 +180,9 @@ def test_temperature_none_menu_is_not_clipped_by_environment_cards():
         '.condition-card-type-supply_air:focus-within{position:relative;z-index:45}'
         in HTML_TEMPLATE
     )
-    assert '.workspace-shell .condition-input-screen > #section-conditions{' in HTML_TEMPLATE
+    assert '.workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions{' in HTML_TEMPLATE
     section_style = HTML_TEMPLATE.split(
-        '.workspace-shell .condition-input-screen > #section-conditions{', 1
+        '.workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions{', 1
     )[1].split('}', 1)[0]
     assert 'overflow:visible' in section_style
 

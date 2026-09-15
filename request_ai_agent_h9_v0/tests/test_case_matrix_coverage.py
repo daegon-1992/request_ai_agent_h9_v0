@@ -185,29 +185,33 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
 
 def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts():
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] .screen-heading{'
-        'margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;'
-        'letter-spacing:-.02em;color:var(--ink)}'
+        '.screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;'
+        'line-height:1.35;letter-spacing:normal;color:var(--muted)}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case{'
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case{'
         'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
         'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
         '> .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
         '> .section-body{padding:16px;border-top:0}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
-        '> .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}'
+        '.workspace-shell .screen-group > .section > .section-head h3,\n'
+        '    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{'
+        'color:var(--request-workspace-ink);font-size:16px;font-weight:600}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case '
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
+        '> .section-head h3{color:var(--ink)}'
+    ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
         '.case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;'
         'padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}'
     ) in HTML_TEMPLATE

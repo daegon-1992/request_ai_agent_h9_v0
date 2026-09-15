@@ -1,4 +1,4 @@
-﻿"""Single page UI for the request assistant."""
+"""Single page UI for the request assistant."""
 
 from __future__ import annotations
 
@@ -171,7 +171,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       width:100%;
       margin:0 auto;
       justify-content:center;
-      border:0;border-radius:0;background:var(--ui-page);box-shadow:none;
+      border:0;border-radius:0;background:transparent;box-shadow:none;
     }
     .panel{
       min-height:0;
@@ -214,7 +214,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .screen-map-item[aria-disabled="true"] .screen-map-lock{display:grid;opacity:.65}
     .legacy-stage-rail{display:none}
     .screen-group{min-width:0}
-    .screen-heading{margin:0 0 8px;font-size:13px;color:var(--muted)}
+    .screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;line-height:1.35;letter-spacing:normal;color:var(--muted)}
     .screen-heading span{color:var(--ink)}
     .title-with-icon{display:flex;align-items:center;gap:7px}
     .title-icon{width:29px;height:29px;display:inline-grid;flex:0 0 29px;place-items:center;border:0;border-radius:var(--ui-radius-panel);background:var(--ui-user-bubble);color:var(--ui-agent-blue)}
@@ -403,7 +403,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     .section-title{display:flex;align-items:center;gap:8px;min-width:0}
     .chev{width:20px;color:var(--muted);font-weight:500}
-    .section h3{margin:0;font-size:14px;color:var(--ink);letter-spacing:0}
+    .section h3{margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:0}
     .section-body{display:none;border-top:1px solid var(--line);padding:11px 13px}
     .section.open .section-body{display:block}
     .section.open .chev{transform:rotate(90deg)}
@@ -473,19 +473,26 @@ HTML_TEMPLATE = r"""<!doctype html>
     .product-card + .product-card{margin-top:8px}
     .product-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
     .product-card-head h4{margin:0;color:var(--ink);font-size:13px;font-weight:600}
-    .product-table{display:flex;flex-direction:column;gap:6px}
-    .product-table-row{display:grid;grid-template-columns:92px minmax(156px,1.15fr) minmax(300px,2.3fr) 34px;gap:9px;align-items:end}
-    .product-table-head{align-items:center}
-    .product-table-head .product-action-heading{width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+    .product-table{display:flex;flex-direction:column;border:1px solid var(--ui-border);border-radius:7px;overflow:hidden;background:var(--ui-surface)}
+    .product-table .row-list{display:flex;flex-direction:column;gap:0}
+    .product-table-row{display:grid;grid-template-columns:100px minmax(230px,.9fr) minmax(270px,1.1fr) 56px;align-items:stretch;border-bottom:1px solid var(--ui-border-subtle)}
+    .product-table .row-list .product-table-row:last-child{border-bottom:0}
+    .product-table-row>*{min-width:0;padding:8px 10px;display:flex;align-items:center}
+    .product-table-row>*:not(:last-child){border-right:1px solid #EEF0F2}
+    .product-table-head{align-items:stretch;background:#F7F8FA;color:#45484D;font-size:13px;font-weight:500}
+    .product-table-head>*{min-height:40px}
+    .product-table-head .product-action-heading{justify-content:center}
+    .product-table .row-list .product-table-row>*{min-height:56px}
+    .product-table-row label{margin:0}
+    .product-table-row label>input{width:100%}
     .product-geometry-name,.base-product-description{display:flex;align-items:center;min-height:34px;padding:8px 9px;color:var(--ink);font-size:13px;font-weight:400;line-height:1.45}
     .product-card-actions{display:flex;justify-content:flex-end;margin-top:9px}
     .product-card-actions .icon{width:34px;min-width:34px}
-    .geometry-inline-guidance{margin:0 0 0 auto;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
-    .geometry-policy-guidance{display:flex;gap:12px;align-items:flex-start;min-height:86px;margin:0 0 10px;padding:16px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface-subtle);color:var(--request-workspace-ink)}
+    .geometry-policy-guidance{display:flex;gap:12px;align-items:flex-start;margin:0 0 14px;padding:14px 15px;border:1px solid #D9DCE1;border-radius:8px;background:#F8F9FA;color:var(--request-workspace-ink)}
+    .geometry-policy-guidance .prep-info-icon{width:19px;height:19px;flex:0 0 19px;color:#62676E}
     .geometry-policy-copy{min-width:0}
-    .geometry-policy-heading{display:block;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
-    .geometry-policy-body{margin:4px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
-    .geometry-list-guidance{margin:8px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
+    .geometry-policy-heading{display:block;color:#34373E;font-size:13px;font-weight:600;line-height:1.45}
+    .geometry-policy-body{margin:4px 0 0;color:#62666D;font-size:12px;font-weight:400;line-height:1.5}
     .changed-part-area{margin-top:10px}
     .part-input-area{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--paper)}
     .part-input-area .subhead{margin-top:0}
@@ -495,11 +502,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     .product-empty{margin:0;color:var(--muted);font-size:12px}
     .toggle-line{display:flex;flex-direction:row;align-items:center;gap:8px;font-size:13px;font-weight:500;margin:8px 0}
     .toggle-line input{width:auto}
-    .condition-group{overflow:hidden;border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:var(--paper)}
+    .condition-input-screen .condition-group{overflow:visible;border:0;border-radius:0;margin:0;background:transparent}
     .condition-parent-label{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:999px;background:var(--soft);color:var(--ink);font-size:11px;font-weight:500}
     .condition-group h4{margin:0;padding:9px 10px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink)}
-    .condition-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:9px 10px}
-    .condition-group-head h3{margin:0;color:var(--ink);font-size:13px;font-weight:600}
+    .condition-input-screen .condition-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}
+    .condition-input-screen .condition-group-head h3{margin:0;color:var(--ink);font-family:var(--request-workspace-font);font-size:16px;font-weight:600}
     .condition-group-head-actions{display:flex;align-items:center;gap:6px}
     .condition-group-head-actions button{min-height:30px;padding:5px 9px}
     .condition-group-head-actions select{min-height:30px;width:156px;padding:5px 28px 5px 9px}
@@ -511,19 +518,22 @@ HTML_TEMPLATE = r"""<!doctype html>
     .operation-mode-control select{width:auto;min-width:116px;padding:6px 8px}
     .condition-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px}
     .heat-exchanger-grid{grid-template-columns:repeat(5,minmax(120px,1fr));overflow:auto}
-    .condition-card-layout{display:grid;gap:10px}
-    .condition-primary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .condition-primary-grid .condition-card-type-heat_exchanger{grid-column:1/-1}
+    .condition-card-layout{display:grid;gap:0}
+    .condition-primary-grid{display:grid;grid-template-columns:1fr;gap:0}
+    .condition-primary-grid .condition-card-type-heat_exchanger{grid-column:auto}
     .condition-primary-grid .condition-card-type-operating{
       grid-column:1/-1;width:100%
     }
-    .condition-environment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .workspace-shell .condition-input-screen .condition-temperature-guidance{margin:-10px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
+    .condition-primary-grid .condition-group + .condition-group{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .condition-environment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .condition-environment-grid > .condition-group + .condition-group{padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
+    .workspace-shell .condition-input-screen .condition-temperature-guidance{margin:12px 0 0;color:#70747A;font-size:12px;font-weight:400;line-height:1.5}
     .condition-card-type-space_environment,.condition-card-type-supply_air{overflow:visible}
     .condition-card-type-space_environment:focus-within,.condition-card-type-supply_air:focus-within{position:relative;z-index:45}
-    .condition-card-type-space_environment .condition-group-head,.condition-card-type-supply_air .condition-group-head{border-radius:7px 7px 0 0}
-    .condition-card-rows{display:grid;gap:8px;padding:16px}
-    .condition-card-row{display:grid;grid-template-columns:repeat(var(--field-count),minmax(0,1fr)) max-content;gap:9px;align-items:end}
+    .condition-card-type-space_environment .condition-group-head,.condition-card-type-supply_air .condition-group-head{border-radius:0}
+    .condition-card-rows{display:grid;gap:0;padding:0}
+    .condition-card-row{display:grid;grid-template-columns:repeat(var(--field-count),minmax(0,1fr)) max-content;gap:9px;align-items:end;padding:10px 0;border-bottom:1px solid #EEF0F2}
+    .condition-card-row:last-child{border-bottom:0}
     .condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(5,minmax(0,1fr)) max-content;gap:9px}
     .condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:nowrap}
     .condition-card-type-heat_exchanger .condition-spec-name{padding-inline:4px;white-space:nowrap}
@@ -534,8 +544,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .fan-rpm-editor.single{display:flex}
     .fan-rpm-editor.mode-pending{display:flex}
     .fan-rpm-editor>select[data-fan-rpm-mode]{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}
-    .fan-rpm-control{display:flex;flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;align-items:center;gap:8px;min-width:0}
-    .fan-rpm-control input{width:100%;box-sizing:border-box}
+    .fan-rpm-control{display:flex;flex:0 1 auto;width:auto;max-width:100%;align-items:center;gap:8px;min-width:0}
+    .fan-rpm-control input{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}
     .fan-rpm-unit{flex:0 0 auto;font-size:13px;font-weight:500;color:var(--muted)}
     .fan-detail-toggle{white-space:nowrap}
     .fan-detail{grid-column:1/-1;grid-row:2}
@@ -550,8 +560,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .fan-count-custom-control input{min-width:0}
     .condition-card-row input,.condition-card-row select{width:100%}
     .condition-row-actions{display:flex;gap:4px;align-items:center}
-    .condition-row-action{width:34px;min-width:34px;height:34px;padding:0;display:grid;place-items:center;font-size:18px;line-height:1}
-    .condition-row-action.remove{border-color:#bdbdbd;background:#f3f3f3;color:var(--danger)}
+    .condition-row-action{width:34px;min-width:34px;height:34px;min-height:34px;padding:0;display:grid;place-items:center;border-radius:6px;font-size:17px;line-height:1}
+    .condition-row-action.primary{border-color:#34373E;background:#34373E;color:#fff}
+    .condition-row-action.remove{border-color:#C9CDD3;background:#fff;color:#444}
+    .row-identity{font-size:13px;font-weight:600;line-height:1.45;color:var(--ink)}
     .condition-field{border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--paper)}
     .condition-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
     .condition-title strong{display:block;font-size:13px;color:var(--ink);overflow-wrap:anywhere}
@@ -737,6 +749,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       .prep-analysis-grid{grid-template-columns:1fr}
       .analysis-type-detail{padding-left:0;padding-top:20px;border-left:0;border-top:1px solid var(--ui-border-subtle)}
       .condition-primary-grid .condition-card-type-operating{width:100%}
+      .condition-environment-grid > .condition-group + .condition-group{padding-left:0;border-left:0;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
       .grid,.grid.compact,.grid.two,.request-basic-grid,.request-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .prep-actions{justify-content:flex-start}
     }
@@ -767,7 +780,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .chip{border-color:var(--line);background:var(--soft);color:var(--muted)}
     .chip.info{border-color:var(--line);background:var(--soft);color:var(--brand)}
     .chip.required{border-color:#c6c6c6;background:#f7f7f7;color:var(--warning)}
-    .screen-heading{margin:0 0 16px;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--muted)}
     .screen-heading-code{font-size:12px;font-weight:500;color:var(--muted)!important}
     .screen-action-bar{display:flex;flex:0 0 auto;justify-content:space-between;gap:10px;margin-top:auto;padding:10px 0 0;border-top:1px solid var(--ui-border-subtle);background:var(--ui-surface)}
     /* SCREEN-01~06 workspace-only visual surface; Agent Dock is a sibling of .workspace-shell. */
@@ -799,7 +811,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form.screen-group > .section > .section-head{background:var(--request-workspace-surface);border-color:var(--request-workspace-border)}
     .workspace-shell .screen-group > .section > .section-body,
     .workspace-shell .workspace-form.screen-group > .section > .section-body{border-color:var(--request-workspace-border)}
-    .workspace-shell .condition-input-screen > #section-conditions{
+    .workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions{
       margin-bottom:0;
       border:0;
       border-radius:0;
@@ -807,19 +819,18 @@ HTML_TEMPLATE = r"""<!doctype html>
       box-shadow:none;
       overflow:visible;
     }
-    .workspace-shell .condition-input-screen > #section-conditions > .section-body{padding:0;border:0}
+    .workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions > .section-body{padding:0;border:0}
     .workspace-shell .screen-group > .section > .section-head h3,
-    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{color:var(--request-workspace-ink);font-weight:600}
+    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{color:var(--request-workspace-ink);font-size:16px;font-weight:600}
     .workspace-shell .section-title-icon{width:20px;height:20px;display:inline-grid;flex:0 0 20px;place-items:center;color:var(--request-workspace-accent)}
     .workspace-shell .section-title-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
-    .workspace-shell .workspace-form label{gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}
-    .workspace-shell .workspace-form input,.workspace-shell .workspace-form select,.workspace-shell .workspace-form textarea{font-family:var(--request-workspace-font);color:var(--ui-field-value);background-color:var(--request-workspace-surface);border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);box-shadow:var(--ui-shadow-control)}
-    .workspace-shell .request-content-screen :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;font-style:normal;font-weight:500;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink);gap:6px}
+    .workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .workspace-form :is(input,select){font-family:var(--request-workspace-font);font-size:14px;font-weight:500;color:var(--ui-field-value);background-color:var(--request-workspace-surface);border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);box-shadow:var(--ui-shadow-control)}
+    .workspace-shell .workspace-form textarea{font-family:var(--request-workspace-font);font-size:14px;font-weight:400;color:var(--ui-field-value);background-color:var(--request-workspace-surface);border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);box-shadow:var(--ui-shadow-control)}
+    .workspace-shell .workspace-form :is(input,textarea)::placeholder{color:#8A8A8A;font-weight:400;opacity:1}
     .workspace-shell .request-content-screen :is(input,select,textarea){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;line-height:1.45;letter-spacing:normal;color:var(--ui-field-value)}
-    .workspace-shell .geometry-screen :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;font-style:normal;font-weight:500;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
-    .workspace-shell .geometry-screen :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;font-weight:400;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;font-style:normal;font-weight:500;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;font-weight:400;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
+    .workspace-shell .geometry-screen :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(input,select,textarea,.analysis-result-guidance){font-family:var(--request-workspace-font);font-size:14px;font-style:normal;line-height:1.45;letter-spacing:normal;color:var(--request-workspace-ink)}
     .workspace-shell .workspace-form :is(input,textarea,select):hover:not(:disabled){border-color:var(--ui-control-hover);box-shadow:0 1px 3px rgba(17,24,39,.05)}
     .workspace-shell .workspace-form :is(input,textarea,select):disabled{border-color:var(--ui-disabled-border);background-color:var(--ui-disabled-bg);color:#9A9EA5;opacity:1}
     .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:var(--ui-control-focus);outline:0;box-shadow:0 0 0 2px rgba(52,55,62,.10),0 1px 3px rgba(17,24,39,.05)}
@@ -839,8 +850,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}
     .workspace-shell .workspace-form button:disabled{border-color:var(--line);background:var(--disabled-bg);color:var(--disabled-text)}
     .workspace-shell .workspace-form table{color:var(--request-workspace-ink);border-color:var(--request-workspace-border)}
-    .workspace-shell .request-content-screen > #section-overview{background:var(--request-workspace-surface)}
-    .workspace-shell .request-content-screen > #section-overview .analysis-result-guidance{border-color:var(--request-workspace-border);background:var(--soft)}
+    .workspace-shell .request-content-screen > .screen-scroll-content > #section-overview{background:var(--request-workspace-surface)}
+    .workspace-shell .request-content-screen > .screen-scroll-content > #section-overview .analysis-result-guidance{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .screen-action-bar{border-color:var(--ui-border-subtle);background:var(--ui-surface)}
     .workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}
     .workspace-shell .screen-action-bar button.primary{border-color:#2F3033;background:#2F3033;color:#fff}
@@ -849,14 +860,9 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .prep-start-actions #prepStartBtn{background:#2F3033;color:#fff}
     .workspace-shell .screen-map-item:focus-visible{outline-color:rgba(52,55,62,.18)}
     .topbar .subtitle{display:none}
-    .workspace-shell .workspace-form > .screen-group[data-screen="SCREEN-01"] > .screen-heading,
-    .workspace-shell .request-content-screen .screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;line-height:1.35;letter-spacing:normal;color:var(--ink)}
     .workspace-shell .screen-heading-code{display:none}
     .workspace-shell .screen-description{margin:0 0 26px;color:#525252;font-size:14px;font-weight:400;line-height:1.55}
-    .workspace-shell .geometry-screen .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-04"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-ink);font-size:17px;font-weight:600}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-ink)}
     .workspace-shell .geometry-screen .chev,
     .workspace-shell .stage-static-screen .chev,
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .chev{display:none}
@@ -865,33 +871,24 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-meta{display:none}
     .workspace-shell .product-panel{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .product-panel-head strong,
-    .workspace-shell .product-card-head h4,
-    .workspace-shell .condition-group-head h3{color:var(--request-workspace-accent)}
+    .workspace-shell .product-card-head h4{color:var(--request-workspace-accent)}
     .workspace-shell .product-panel-copy{color:var(--request-workspace-muted)}
     .workspace-shell .product-card{border-color:var(--request-workspace-border);box-shadow:none}
-    .workspace-shell .condition-group{border-color:var(--request-workspace-border);background:var(--request-workspace-surface);box-shadow:none}
-    .workspace-shell .condition-group-head{border-bottom-color:var(--request-workspace-border);background:var(--soft)}
-    .workspace-shell .condition-input-screen .condition-group{border-radius:var(--ui-radius-panel)}
-    .workspace-shell .condition-input-screen .condition-group-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
-    .workspace-shell .condition-input-screen .condition-group-head h3{font-size:16px;font-weight:600;color:var(--ink)}
-    .workspace-shell .condition-input-screen :is(.condition-card-type-space_environment,.condition-card-type-supply_air) .condition-group-head{border-radius:7px 7px 0 0}
+    .workspace-shell .condition-input-screen .condition-group{border-radius:0;box-shadow:none}
     .workspace-shell .case-toolbar{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .preview-actions{display:flex;align-items:center;gap:9px;border-top:1px solid var(--request-workspace-border);padding-top:10px}
     .workspace-shell .word-export-required-warning{color:var(--ui-error);font-size:12px;font-weight:600!important}
-    .workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
-    .workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
-    .workspace-shell .request-content-screen > #analysisGate + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
-    .workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}
-    .workspace-shell .request-content-screen > .section > .section-body{padding:13px 0 0;border-top:0}
-    .workspace-shell .request-content-screen > .section > .section-head h3{margin:0;font-size:16px;font-weight:600;line-height:1.45;color:var(--ink)}
-    .workspace-shell .geometry-screen > #section-geometry{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
-    .workspace-shell .geometry-screen > #section-geometry > .section-head{min-height:0;padding:16px 16px 0;background:transparent;border-bottom:0}
-    .workspace-shell .geometry-screen > #section-geometry > .section-body{padding:16px;border-top:0}
-    .workspace-shell .geometry-screen > #section-geometry > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
-    /* Field-group headings use the requester-info type scale and the condition-card emphasis. */
-    .workspace-shell .condition-group-head{background:var(--soft)}
-    .workspace-shell .condition-group-head{min-height:36px;padding:6px 11px}
-    .workspace-shell .condition-group-head h3{font-family:var(--request-workspace-font);font-size:15px;font-weight:600;color:var(--request-workspace-accent)}
+    .workspace-shell .request-content-screen > .screen-scroll-content > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+    .workspace-shell .request-content-screen > .screen-scroll-content > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .request-content-screen > .screen-scroll-content > #analysisGate + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .request-content-screen > .screen-scroll-content > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}
+    .workspace-shell .request-content-screen > .screen-scroll-content > .section > .section-body{padding:13px 0 0;border-top:0}
+    .workspace-shell .request-content-screen > .screen-scroll-content > .section > .section-head h3{margin:0;line-height:1.45;color:var(--ink)}
+    .workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+    .workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}
+    .workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry > .section-body{padding:0;border-top:0}
+    .workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry > .section-head h3{margin:0 0 13px;color:var(--ink)}
+    /* SCREEN-04 group heading typography and spacing are owned by the base condition-input-screen component. */
     .workspace-shell .condition-group-head-actions button{min-height:24px;height:24px;padding:2px 7px}
     .workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{height:40px;min-height:40px;padding:0 10px;background-color:var(--paper);color:var(--ui-field-value);font-weight:500}
     .workspace-shell .request-content-screen .undecided-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}
@@ -909,11 +906,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .request-content-screen .request-model-field .undecided-combobox:focus-within .undecided-combobox-toggle{opacity:1;pointer-events:auto}
     .workspace-shell .request-content-screen .dropdown-custom-control{grid-template-columns:minmax(0,1fr) 38px}
     .workspace-shell .request-content-screen .dropdown-custom-control > button{width:38px;min-width:38px;height:40px;min-height:40px}
-    .workspace-shell .geometry-screen input{min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background:var(--paper);color:var(--ui-field-value)}
-    .workspace-shell .geometry-screen :is(.product-geometry-name,.base-product-description){min-height:40px;padding:0 10px;font-size:14px;font-weight:400}
-    .workspace-shell .geometry-screen .condition-row-actions{min-height:40px;align-items:center}
-    .workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background-color:var(--paper)}
-    .workspace-shell .condition-input-screen .condition-spec-name{min-height:40px;padding-block:0;font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .geometry-screen input{min-height:40px;padding:0 10px;background:var(--paper);color:var(--ui-field-value)}
+    .workspace-shell .geometry-screen .product-geometry-name{min-height:40px;padding:8px 10px}
+    .workspace-shell .geometry-screen .base-product-description{min-height:40px;padding:8px 10px;font-size:14px;font-weight:400}
+    .workspace-shell .geometry-screen .condition-row-actions{min-height:40px;align-items:center;justify-content:center}
+    .workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:40px;padding:0 10px;background-color:var(--paper)}
+    .workspace-shell .condition-input-screen .condition-spec-name{min-height:40px;padding-block:0}
     .workspace-shell .condition-input-screen .condition-temperature-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}
     .workspace-shell .condition-input-screen .condition-temperature-combobox:hover{border-color:var(--ui-control-hover);box-shadow:0 1px 3px rgba(17,24,39,.05)}
     .workspace-shell .condition-input-screen .condition-temperature-combobox:focus-within{border-color:var(--ui-control-focus);outline:0;box-shadow:0 0 0 2px rgba(52,55,62,.10),0 1px 3px rgba(17,24,39,.05)}
@@ -934,19 +932,18 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .fan-input-set{padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
     .workspace-shell .condition-input-screen .fan-input-order{width:24px;height:24px;align-self:center;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:#55585B;font-size:11px;font-weight:500;line-height:1.2}
     .workspace-shell .condition-input-screen .condition-row-actions{min-height:40px;align-items:center}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] .screen-heading{margin-bottom:8px;padding:3px 0;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-body{padding:16px;border-top:0}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > #section-case .case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-body{padding:16px;border-top:0}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head h3{color:var(--ink)}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case .case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td{height:80px;padding:8px;vertical-align:middle}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-body{padding:16px;border-top:0}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}
+    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head h3{color:var(--ink)}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-doc{gap:12px}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section{padding:16px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section h4{margin:0 0 8px;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
@@ -970,8 +967,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-copy{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
-    .workspace-shell :is(.request-content-screen,.geometry-screen,.stage-static-screen,.workspace-form[data-screen="SCREEN-06"]) > .section > .section-head h3,
-    .workspace-shell .condition-input-screen .condition-group-head h3{font-size:17px;font-weight:600;color:var(--ui-text-primary)}
+    .workspace-shell :is(.request-content-screen,.geometry-screen,.stage-static-screen,.workspace-form[data-screen="SCREEN-06"]) > .section > .section-head h3{color:var(--ui-text-primary)}
     .workspace-shell .request-content-screen textarea{min-height:96px;padding:10px 11px;background:var(--paper);font-size:14px;font-weight:400;line-height:1.55;resize:vertical}
     .workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;align-content:start;gap:0;overflow:visible}
     .workspace-shell .main{overflow:visible}
@@ -1001,15 +997,19 @@ HTML_TEMPLATE = r"""<!doctype html>
       .panel-resizer:hover::before,.panel-resizer.is-dragging::before{width:3px;height:72px;background:var(--brand)}
       body.panel-resizing{cursor:col-resize;user-select:none}
       .layout.agent-hidden .panel-resizer{display:none}
-      .workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:hidden}
+      .workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:visible}
       .step-navigation{grid-row:1}
       .workspace-shell .panel.main{grid-row:3}
       .workspace-shell .main{min-height:0;overflow:hidden}
-      .workspace-shell .workspace{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+      .workspace-shell .workspace{height:100%;min-height:0;padding:0;overflow:hidden}
       .workspace-tab.active{height:100%;min-height:0}
+      .workspace-tab#tab-preview.active{padding:var(--ui-workspace-padding)}
       .workspace-form{height:100%;min-height:0;display:flex;flex-direction:column}
       .workspace-form > .screen-group:not([hidden]){min-height:100%;display:flex;flex-direction:column}
-      .workspace-form > .screen-group:not([hidden]) > .screen-action-bar{flex:0 0 auto}
+      .workspace-form > .screen-group[data-screen="SCREEN-01"]:not([hidden]){padding:var(--ui-workspace-padding)}
+      .workspace-form > .screen-group[data-screen="SCREEN-02"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-03"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-04"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-05"]:not([hidden]){height:100%;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto}
+      .workspace-form > .screen-group:not([hidden]) > .screen-scroll-content{min-height:0;padding:var(--ui-workspace-padding) var(--ui-workspace-padding) 0;overflow-y:auto;overscroll-behavior:contain}
+      .workspace-form > .screen-group:not([hidden]) > .screen-action-bar{flex:0 0 auto;margin:0 var(--ui-workspace-padding) var(--ui-workspace-padding)}
       .chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}
       .chat-input{position:relative;z-index:1}
     }
@@ -1185,6 +1185,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           </section>
 
           <section class="screen-group request-content-screen" data-screen="SCREEN-02" aria-labelledby="screen02Heading">
+          <div class="screen-scroll-content">
           <h2 class="screen-heading" id="screen02Heading"><span class="screen-heading-code">02</span> <span>요청 내용</span></h2>
           <p class="screen-description">의뢰 정보와 해석 요청 내용을 입력합니다.</p>
           <section class="section open" id="section-basic" data-section="basic_info">
@@ -1255,6 +1256,7 @@ HTML_TEMPLATE = r"""<!doctype html>
               </div>
             </div>
           </section>
+          </div>
           <div class="screen-action-bar" aria-label="요청 내용 단계 이동">
             <button class="ghost" type="button" data-screen-action="SCREEN-01">이전: 의뢰 대상·시작</button>
             <button class="primary" type="button" data-screen-action="SCREEN-03">다음: 해석 제품</button>
@@ -1262,24 +1264,24 @@ HTML_TEMPLATE = r"""<!doctype html>
           </section>
 
           <section class="screen-group geometry-screen" data-screen="SCREEN-03" aria-labelledby="screen03Heading">
+          <div class="screen-scroll-content">
           <h2 class="screen-heading" id="screen03Heading"><span>해석 제품</span></h2>
           <p class="screen-description">해석 대상 제품의 도면번호와 비교 제품의 Base 대비 차이를 입력합니다.</p>
           <section class="section open" id="section-geometry" data-section="geometry">
             <div class="section-head">
               <div class="section-title"><h3>총 조립 형상</h3></div>
-              <p class="geometry-inline-guidance">첫 번째 형상은 Base 제품이며, 추가한 형상은 비교 제품으로 사용됩니다.</p>
               <div class="section-meta" id="meta-geometry"></div>
             </div>
             <div class="section-body">
-              <div class="geometry-policy-guidance"><span class="prep-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span><div class="geometry-policy-copy"><strong class="geometry-policy-heading">도면번호 입력 기준</strong><p class="geometry-policy-body">부품 도면번호가 아닌 총조립도 도면번호를 입력하세요. · 임시번호 가능</p></div></div>
+              <div class="geometry-policy-guidance"><span class="prep-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span><div class="geometry-policy-copy"><strong class="geometry-policy-heading">해석은 입력된 총 조립도 CAD 형상을 기준으로 진행합니다.</strong><p class="geometry-policy-body">형상 변경·조립 변경 등은 CAD에 먼저 반영한 뒤, 변경된 도면번호로 의뢰해 주세요.</p></div></div>
               <div class="product-table" aria-label="해석 대상 제품 입력">
-                <div class="product-table-row product-table-head" aria-hidden="true"><span class="field-label" aria-hidden="true"></span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span><span class="product-action-heading">행 작업</span></div>
+                <div class="product-table-row product-table-head" aria-hidden="true"><span class="field-label" aria-hidden="true"></span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span><span class="product-action-heading" aria-hidden="true"></span></div>
                 <div class="row-list" id="productRows"></div>
               </div>
-              <p class="geometry-list-guidance">각도·위치·부품 구성이 다르면 +로 비교 형상을 추가하세요.</p>
               <div class="geometry-drawing-warning case-review-message error" id="geometryDrawingDuplicateWarning" aria-live="polite"></div>
             </div>
           </section>
+          </div>
           <div class="screen-action-bar" aria-label="해석 제품 단계 이동">
             <button class="ghost" type="button" data-screen-action="SCREEN-02">이전: 요청 내용</button>
             <button class="primary" type="button" data-screen-action="SCREEN-04">다음: 해석 조건</button>
@@ -1287,11 +1289,13 @@ HTML_TEMPLATE = r"""<!doctype html>
           </section>
 
           <section class="screen-group stage-static-screen condition-input-screen" data-screen="SCREEN-04" aria-labelledby="screen04Heading">
+          <div class="screen-scroll-content">
           <h2 class="screen-heading" id="screen04Heading"><span>해석 조건</span></h2>
           <p class="screen-description">각 해석 조건의 첫 번째 조건은 <strong>Base 조건</strong>이며, 우측의 <strong>추가(+)</strong> 버튼으로 추가한 조건은 <strong>비교 조건</strong>으로 사용됩니다.</p>
           <section class="section open" id="section-conditions" data-section="conditions">
             <div class="section-body" id="conditionFields"></div>
           </section>
+          </div>
           <div class="screen-action-bar" aria-label="해석 조건 단계 이동">
             <button class="ghost" type="button" data-screen-action="SCREEN-03">이전: 해석 제품</button>
             <button class="primary" type="button" data-screen-action="SCREEN-05">다음: Case Matrix</button>
@@ -1299,6 +1303,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           </section>
 
           <section class="screen-group stage-static-screen" data-screen="SCREEN-05" aria-labelledby="screen05Heading">
+          <div class="screen-scroll-content">
           <h2 class="screen-heading" id="screen05Heading"><span>Case Matrix</span></h2>
           <p class="screen-description">해석 제품과 해석 조건의 조합을 Case별로 확인하고 구성합니다.</p>
           <section class="section open" id="section-case" data-section="case_matrix">
@@ -1312,6 +1317,7 @@ HTML_TEMPLATE = r"""<!doctype html>
               <div class="case-coverage-status case-review-message warning" id="caseCoverageStatus" aria-live="polite"></div>
             </div>
           </section>
+          </div>
           <div class="screen-action-bar" aria-label="Case Matrix 단계 이동">
             <button class="ghost" type="button" data-screen-action="SCREEN-04">이전: 해석 조건</button>
             <button class="primary" id="caseConfirmNextBtn" type="button" data-action="confirm-case-configuration">다음: 전체 확인</button>
@@ -2523,13 +2529,13 @@ HTML_TEMPLATE = r"""<!doctype html>
       const description = productDescription(product, comparison);
       const drawingPlaceholder = comparison ? "변경사항이 반영된 총조립도 도면번호" : "총조립도 도면번호";
       const descriptionField = comparison
-        ? `<label><input aria-label="${geometryLabel} 설명" data-product-field="description" value="${esc(description)}" placeholder="이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)" /></label>`
+        ? `<label><input aria-label="${geometryLabel} 설명" data-product-field="description" value="${esc(description)}" placeholder="CAD에 반영된 변경사항" /></label>`
         : `<div class="base-product-description" aria-label="Base 설명" aria-readonly="true">기존 형상</div>`;
       const action = comparison
         ? `<button class="condition-row-action remove" type="button" data-action="remove-comparison" data-index="${index}" title="해석 대상 제품 행 삭제" aria-label="${geometryLabel} 행 삭제">−</button>`
         : `<button class="primary condition-row-action" type="button" data-action="add-comparison" title="해석 대상 제품 행 추가" aria-label="해석 대상 제품 행 추가">+</button>`;
       return `<div class="product-table-row" data-product-id="${id}" data-product-index="${index}" data-product-role="${comparison ? "comparison" : "base"}">
-        <div class="product-geometry-name" data-geometry-name>${geometryLabel}</div>
+        <div class="product-geometry-name row-identity" data-geometry-name>${geometryLabel}</div>
         <label><input aria-label="${geometryLabel} 도면번호 (NPDM MCAD)" data-product-field="drawing_no" value="${esc(productText(product, "drawing_no"))}" placeholder="${drawingPlaceholder}" pattern="[A-Za-z0-9-]+" title="영문, 숫자, 하이픈(-)만 입력" /></label>
         ${descriptionField}
         <div class="condition-row-actions">${action}</div>
@@ -2658,6 +2664,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     const heatExchangerTypes = ["Fin&Tube", "Micro-Channel"];
     const heatExchangerCascadeKeys = ["tube_diameter", "fin_type", "row_count", "fpi"];
+    const heatExchangerScreenFieldLabels = {tube_diameter:"관 직경(Pi) / 채널 폭(Width)", fin_type:"Fin type", row_count:"열 수", fpi:"FPI / FPDM"};
 
     function heatExchangerType(cards){
       const explicit = contextText(asObj(asArray(cards)[0]).heat_exchanger_type);
@@ -2808,7 +2815,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const selected = heatExchangerType([card]);
       const options = heatExchangerTypes.map(value => `<option value="${esc(value)}" ${value === selected ? "selected" : ""}>${esc(value)}</option>`).join("");
       const select = `<select data-card-id="${esc(cardId)}" data-heat-exchanger-type aria-label="HEX type">${options}</select>`;
-      return showLabel ? `<label>HEX type${select}</label>` : select;
+      return showLabel ? `<label>HEX Type${select}</label>` : select;
     }
 
     function resizeFanRpmInputs(cardId, rawCount){
@@ -2954,7 +2961,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         return showLabel ? `<label>${esc(fieldLabels[key] || key)}${input}</label>` : input;
       };
       const fixedTextHtml = (key, value, showLabel) => {
-        const text = `<div class="product-geometry-name condition-spec-name" data-spec-name aria-label="${esc(fieldLabels[key] || key)}" aria-readonly="true">${esc(value)}</div>`;
+        const text = `<div class="product-geometry-name condition-spec-name row-identity" data-spec-name aria-label="${esc(fieldLabels[key] || key)}" aria-readonly="true">${esc(value)}</div>`;
         return showLabel ? `<label>${esc(fieldLabels[key] || key)}${text}</label>` : text;
       };
       const fanCountControlHtml = (cardId, fans, showLabel) => {
@@ -2986,7 +2993,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         const modeSelect = `<select data-card-id="${esc(cardId)}" data-fan-rpm-mode aria-label="팬 회전수 입력방식">${modeOptions}</select>`;
         if (mode === "common") {
           const rpm = commonFanRpm(fans);
-          return `<label class="fan-input-column">${label}<span class="fan-rpm-editor">${modeSelect}<span class="fan-rpm-control"><input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /><span class="fan-rpm-unit">RPM</span></span></span></label>`;
+          return `<label class="fan-input-column">${label}<span class="fan-rpm-editor"><span class="fan-rpm-control"><input data-card-id="${esc(cardId)}" data-card-field="fan_rpm" data-fan-common-rpm value="${esc(rpm)}" aria-label="공통 팬 회전수(RPM)" /><span class="fan-rpm-unit">RPM</span></span>${modeSelect}</span></label>`;
         }
         if (mode !== "individual") return `<label class="fan-input-column">${label}<span class="fan-rpm-editor mode-pending">${modeSelect}</span></label>`;
         const expanded = expandedFanCardId === cardId;
@@ -2994,18 +3001,18 @@ HTML_TEMPLATE = r"""<!doctype html>
           const fan = asObj(rawFan);
           return `<div class="fan-input-set" data-fan-set="${fanIndex + 1}"><span class="fan-input-order" aria-hidden="true">${fanIndex + 1}</span><label class="fan-input-column"><span>${esc(fieldLabels.fan_location)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_location" value="${esc(fan.location)}" placeholder="예 : 상/중/하" aria-label="${esc(fieldLabels.fan_location)} ${fanIndex + 1}" /></label><label class="fan-input-column"><span>${esc(fieldLabels.fan_rpm)}</span><input data-card-id="${esc(cardId)}" data-fan-index="${fanIndex}" data-card-field="fan_rpm" value="${esc(asObj(fan.values).fan_rpm)}" aria-label="${esc(fieldLabels.fan_rpm)} ${fanIndex + 1}" /></label></div>`;
         }).join("");
-        return `<label class="fan-input-column">${label}<span class="fan-rpm-editor">${modeSelect}<button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button></span></label><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
+        return `<label class="fan-input-column">${label}<span class="fan-rpm-editor"><button class="ghost fan-detail-toggle" type="button" data-card-id="${esc(cardId)}" data-fan-detail-toggle aria-controls="fan-detail-${esc(cardId)}" aria-expanded="${String(expanded)}"><span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button>${modeSelect}</span></label><div class="fan-detail" id="fan-detail-${esc(cardId)}" data-fan-detail-card="${esc(cardId)}" ${expanded ? "" : "hidden"}><h4 class="fan-detail-title">팬별 회전수 설정</h4><div class="fan-detail-grid">${detailInputs}</div></div>`;
       };
       const rowHtml = (card, isFirst, rowIndex) => {
         const row = asObj(card), cardId = contextText(row.id), type = contextText(row.type), fields = asObj(row.fields);
         const fieldKeys = fieldKeysFor(type, fields);
         const exchangerType = type === "heat_exchanger" ? heatExchangerType([row]) : "";
-        const rowFieldLabels = type === "heat_exchanger" ? {...fieldLabels, ...heatExchangerFieldLabels(exchangerType)} : fieldLabels;
+        const rowFieldLabels = type === "heat_exchanger" ? {...fieldLabels, ...heatExchangerScreenFieldLabels} : fieldLabels;
         const fans = type === "operating" ? (asArray(row.fans).length ? asArray(row.fans) : [{id:"fan_1",name:"",location:"",running:true,values:{fan_rpm:""}}]) : [];
         const inputs = type === "operating"
-          ? `${fixedTextHtml("fan", `운전 ${rowIndex}`, isFirst)}${fanCountControlHtml(cardId, fans, isFirst)}${fanConfigurationInputsHtml(cardId, row, fans, isFirst)}`
+          ? `${fixedTextHtml("fan", `운전 ${rowIndex}`, false)}${fanCountControlHtml(cardId, fans, isFirst)}${fanConfigurationInputsHtml(cardId, row, fans, isFirst)}`
           : fieldKeys.map(key => type === "heat_exchanger" && key === "name"
-            ? `${fixedTextHtml(key, `사양 ${rowIndex}`, isFirst)}${heatExchangerTypeSelectHtml(cardId, row, isFirst)}`
+            ? `${fixedTextHtml(key, `사양 ${rowIndex}`, false)}${heatExchangerTypeSelectHtml(cardId, row, isFirst)}`
             : (type === "heat_exchanger" && heatExchangerCascadeKeys.includes(key)
               ? heatExchangerSelectHtml(cardId, key, fields, isFirst, rowFieldLabels, exchangerType)
               : inputHtml(cardId, key, fieldDisplayValue(fields[key]), isFirst))).join("");

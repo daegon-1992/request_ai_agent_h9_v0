@@ -80,7 +80,8 @@ def test_workspace_and_agent_follow_v3_surface_hierarchy_without_shell_shadow():
     assert ".step-navigation{background:transparent}" in HTML_TEMPLATE
     assert "scrollbar-width:thin;background:transparent;box-shadow:none" in HTML_TEMPLATE
     assert ".workspace-shell .workspace{" in HTML_TEMPLATE
-    assert ".workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:hidden}" in HTML_TEMPLATE
+    assert ".workspace-content{height:100%;grid-template-rows:56px 10px minmax(0,1fr);row-gap:0;overflow:visible}" in HTML_TEMPLATE
+    assert "border:0;border-radius:0;background:transparent;box-shadow:none;" in HTML_TEMPLATE
     assert "padding:var(--ui-workspace-padding)" in HTML_TEMPLATE
     assert "background:transparent" in HTML_TEMPLATE
     assert ".agent-dock{" in HTML_TEMPLATE

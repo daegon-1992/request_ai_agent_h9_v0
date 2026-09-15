@@ -133,11 +133,12 @@ def test_screen04_renders_the_three_fan_input_structures_and_one_inline_detail()
     assert '<span>팬 회전 설정</span>' in renderer
     assert '.fan-rpm-editor{--fan-rotation-control-width:186px;' in HTML_TEMPLATE
     assert '.fan-rpm-editor>select[data-fan-rpm-mode]{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}' in HTML_TEMPLATE
-    assert '.fan-rpm-control{display:flex;flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;' in HTML_TEMPLATE
+    assert '.fan-rpm-control{display:flex;flex:0 1 auto;width:auto;max-width:100%;align-items:center;gap:8px;min-width:0}' in HTML_TEMPLATE
+    assert '.fan-rpm-control input{flex:0 0 var(--fan-rotation-control-width);width:var(--fan-rotation-control-width);max-width:100%;box-sizing:border-box}' in HTML_TEMPLATE
     assert '<span class="fan-rpm-unit">RPM</span>' in renderer
-    assert '${modeSelect}<span class="fan-rpm-control"><input' in renderer
+    assert '<span class="fan-rpm-control"><input' in renderer and '</span>${modeSelect}' in renderer
     assert '<button class="ghost fan-detail-toggle"' in renderer
-    assert '${modeSelect}<button class="ghost fan-detail-toggle"' in renderer
+    assert '</button>${modeSelect}' in renderer
     assert 'aria-controls="fan-detail-${esc(cardId)}"' in renderer
     assert '<span>팬별 설정</span><svg viewBox="0 0 24 24" aria-hidden="true">' in renderer
     assert 'id="fan-detail-${esc(cardId)}"' in renderer

@@ -40,14 +40,18 @@ def test_request_content_layout_uses_three_columns_at_wide_widths():
 
 def test_request_content_sections_use_dividers_instead_of_cards():
     assert '.workspace-shell .request-content-screen{background:transparent}' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen > .section > .section-body{padding:13px 0 0;border-top:0}' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section > .section-body{padding:13px 0 0;border-top:0}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section > .section-head{min-height:0;padding:0;background:transparent;border-bottom:0}' in HTML_TEMPLATE
 
 
 def test_request_content_uses_canonical_heading_and_control_density():
-    assert '.workspace-shell .request-content-screen .screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;line-height:1.35;letter-spacing:normal;color:var(--ink)}' in HTML_TEMPLATE
+    assert (
+        '.screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;'
+        'line-height:1.35;letter-spacing:normal;color:var(--muted)}'
+    ) in HTML_TEMPLATE
+    assert '.screen-heading span{color:var(--ink)}' in HTML_TEMPLATE
     assert '.workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{height:40px;min-height:40px;padding:0 10px;background-color:var(--paper);color:var(--ui-field-value);font-weight:500}' in HTML_TEMPLATE
     assert '.workspace-shell .request-content-screen textarea{min-height:96px;padding:10px 11px;' in HTML_TEMPLATE
 
@@ -73,12 +77,12 @@ def test_screen_one_fixed_taxonomy_selects_do_not_render_a_restore_action():
 
 
 def test_screen_three_uses_canonical_typography_and_navigation_density():
-    assert '.workspace-shell .geometry-screen :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
 
 
 def test_screen_four_uses_canonical_typography_and_navigation_density():
-    assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-04"] :is(label,.field-label){font-family:var(--request-workspace-font);font-size:13px;' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
 
 
@@ -140,8 +144,8 @@ def test_screen_two_uses_divider_sections_and_request_type_two_column_project_la
     screen_end = HTML_TEMPLATE.index('data-screen="SCREEN-03"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
 
-    assert '.workspace-shell .request-content-screen > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen > .screen-scroll-content > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
     assert 'class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"' in screen
     assert 'class="undecided-field request-project-field"' in screen
     assert '.request-type-field{grid-column:span 1}' in HTML_TEMPLATE

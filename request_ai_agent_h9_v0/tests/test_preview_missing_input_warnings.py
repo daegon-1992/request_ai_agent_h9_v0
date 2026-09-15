@@ -52,8 +52,13 @@ def test_screen_six_uses_canonical_preview_card_read_only_and_action_contracts()
         '> .section-body{padding:16px;border-top:0}'
     ) in HTML_TEMPLATE
     assert (
+        '.workspace-shell .screen-group > .section > .section-head h3,\n'
+        '    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{'
+        'color:var(--request-workspace-ink);font-size:16px;font-weight:600}'
+    ) in HTML_TEMPLATE
+    assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview '
-        '> .section-head h3{font-size:16px;font-weight:600;color:var(--ink)}'
+        '> .section-head h3{color:var(--ink)}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table th{'

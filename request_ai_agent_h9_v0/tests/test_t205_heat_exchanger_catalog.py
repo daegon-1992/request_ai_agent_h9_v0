@@ -97,7 +97,7 @@ def test_heat_exchanger_type_is_persisted_and_micro_channel_forces_flat_fin():
 def test_heat_exchanger_type_selector_switches_labels_and_catalog_partitions():
     assert 'const heatExchangerTypes = ["Fin&Tube", "Micro-Channel"]' in HTML_TEMPLATE
     assert 'select data-card-id="${esc(cardId)}" data-heat-exchanger-type aria-label="HEX type"' in HTML_TEMPLATE
-    assert 'return showLabel ? `<label>HEX type${select}</label>` : select;' in HTML_TEMPLATE
+    assert 'return showLabel ? `<label>HEX Type${select}</label>` : select;' in HTML_TEMPLATE
     assert 'const card = cards.find(item => contextText(asObj(item).id) === select.dataset.cardId);' in HTML_TEMPLATE
     assert 'cards.filter(card => contextText(asObj(card).type) === "heat_exchanger").forEach' not in HTML_TEMPLATE
     assert 'tube_diameter:"관 직경(Pi)"' in HTML_TEMPLATE

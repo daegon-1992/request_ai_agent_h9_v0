@@ -24,7 +24,8 @@ def test_desktop_shell_uses_canonical_navigation_panel_and_agent_geometry():
     assert 'grid-template-columns:minmax(0,1fr) var(--ui-panel-split) var(--ui-agent-width)' in HTML_TEMPLATE
     assert 'grid-template-rows:56px 10px minmax(0,1fr);row-gap:0' in HTML_TEMPLATE
     assert '.workspace-shell .panel.main{grid-row:3}' in HTML_TEMPLATE
-    assert '.workspace-shell .workspace{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace{height:100%;min-height:0;padding:0;overflow:hidden}' in HTML_TEMPLATE
+    assert '.workspace-form > .screen-group:not([hidden]) > .screen-scroll-content{min-height:0;padding:var(--ui-workspace-padding) var(--ui-workspace-padding) 0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
     assert '.chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
 
 

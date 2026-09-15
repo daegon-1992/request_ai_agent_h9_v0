@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from hashlib import sha256
 import json
@@ -29,7 +29,7 @@ def test_product_rows_have_geometry_drawing_description_and_row_actions():
     assert '<span class="field-label" aria-hidden="true"></span><span class="field-label">총조립도 도면번호 (NPDM MCAD)</span><span class="field-label">Base 대비 변경점</span>' in HTML_TEMPLATE
     assert 'aria-readonly="true">기존 형상</div>' in HTML_TEMPLATE
     assert 'data-product-field="description"' in HTML_TEMPLATE
-    assert 'placeholder="이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)"' in HTML_TEMPLATE
+    assert 'placeholder="CAD에 반영된 변경사항"' in HTML_TEMPLATE
     assert 'title="해석 대상 제품 행 추가"' in HTML_TEMPLATE
     assert 'title="해석 대상 제품 행 삭제"' in HTML_TEMPLATE
     assert 'class="primary condition-row-action"' in HTML_TEMPLATE
@@ -45,99 +45,65 @@ def test_total_assembly_drawing_guidance_is_shown_without_changing_product_struc
     screen_start = HTML_TEMPLATE.index('class="screen-group geometry-screen" data-screen="SCREEN-03"')
     screen_end = HTML_TEMPLATE.index('class="screen-group stage-static-screen condition-input-screen" data-screen="SCREEN-04"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
-    description_start = screen.index('<p class="screen-description">')
-    description_end = screen.index("</p>", description_start)
-    description = screen[description_start:description_end]
 
     assert '<p class="screen-description">해석 대상 제품의 도면번호와 비교 제품의 Base 대비 차이를 입력합니다.</p>' in screen
-    assert "geometry-policy-note" not in screen
-    assert "geometry-policy-badge" not in HTML_TEMPLATE
-    assert (
-        '.geometry-policy-guidance{display:flex;gap:12px;align-items:flex-start;'
-        'min-height:86px;margin:0 0 10px;padding:16px;border:1px solid var(--ui-border);'
-        'border-radius:var(--ui-radius-panel);background:var(--ui-surface-subtle);color:var(--request-workspace-ink)}'
-    ) in HTML_TEMPLATE
-    assert '.geometry-policy-copy{min-width:0}' in HTML_TEMPLATE
-    assert (
-        '.geometry-policy-heading{display:block;color:var(--ink);font-size:15px;'
-        'font-weight:600;line-height:1.55}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.geometry-policy-body{margin:4px 0 0;color:#55585B;font-size:13px;'
-        'font-weight:400;line-height:1.55}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.geometry-list-guidance{margin:8px 0 0;color:#55585B;font-size:13px;'
-        'font-weight:400;line-height:1.55}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.geometry-inline-guidance{margin:0 0 0 auto;color:#55585B;font-size:13px;'
-        'font-weight:400;line-height:1.55}'
-    ) in HTML_TEMPLATE
-    assert "geometry-policy-secondary" not in HTML_TEMPLATE
-    assert '@media (max-width:720px)' in HTML_TEMPLATE
-    assert "geometry-policy-grid" not in HTML_TEMPLATE
-    assert screen.index('class="geometry-policy-guidance"') < screen.index('class="product-table"')
-    assert '<span class="prep-info-icon" aria-hidden="true">' in screen
-    assert '<div class="geometry-policy-copy"><strong class="geometry-policy-heading">' in screen
-    assert '<strong class="geometry-policy-heading">도면번호 입력 기준</strong>' in screen
-    assert (
-        '<p class="geometry-policy-body">부품 도면번호가 아닌 '
-        '총조립도 도면번호를 입력하세요. · 임시번호 가능</p>'
-    ) in screen
-    assert "③ Base 대비 차이에는" not in screen
-    assert "이미 반영된 내용만 작성" not in screen
-    assert "해석 담당자는 형상이나 조립 상태를 수정해 비교안을 만들지 않습니다." not in screen
-    assert "비교 제품은 변경 사항이 반영된 형상으로 준비해 주세요." not in description
-    assert "첫 번째 형상은 Base 제품이며, 추가한 형상은 비교 제품으로 사용됩니다." in screen
-    assert "총조립 CAD 1개 = 1행" not in screen
-    assert screen.count("각도·위치·부품 구성이 다르면 +로 비교 형상을 추가하세요.") == 1
-    assert screen.index('class="geometry-list-guidance"') > screen.index('class="product-table"')
-    assert "이 CAD에 반영된 변경점 (예: 베인 30°, Fan 20 mm 상향)" in HTML_TEMPLATE
+    assert '<strong class="geometry-policy-heading">해석은 입력된 총 조립도 CAD 형상을 기준으로 진행합니다.</strong>' in screen
+    assert '<p class="geometry-policy-body">형상 변경·조립 변경 등은 CAD에 먼저 반영한 뒤, 변경된 도면번호로 의뢰해 주세요.</p>' in screen
+    assert '첫 번째 형상은 Base 제품이며, 추가한 형상은 비교 제품으로 사용됩니다.' not in screen
+    assert '각도·위치·부품 구성이 다르면 +로 비교 형상을 추가하세요.' not in screen
+    assert 'placeholder="CAD에 반영된 변경사항"' in HTML_TEMPLATE
     assert 'id="geometryDrawingDuplicateWarning"' in screen
+    assert screen.index('class="geometry-policy-guidance"') < screen.index('class="product-table"')
 
 
-def test_target_product_box_grows_with_the_shared_row_gap():
+def test_target_product_table_uses_v17_case_matrix_visual_language():
     assert (
-        '.workspace-shell .geometry-screen > #section-geometry{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
-        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
+        '.workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry{margin:0;border:0;border-radius:0;'
+        'background:transparent;box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .geometry-screen > #section-geometry > .section-head{'
-        'min-height:0;padding:16px 16px 0;background:transparent;border-bottom:0}'
+        '.workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry > .section-head{'
+        'min-height:0;padding:0;background:transparent;border-bottom:0}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .geometry-screen > #section-geometry > .section-body{'
-        'padding:16px;border-top:0}'
+        '.workspace-shell .geometry-screen > .screen-scroll-content > #section-geometry > .section-body{padding:0;border-top:0}'
     ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .geometry-screen > #section-geometry > .section-head h3{'
-        'font-size:16px;font-weight:600;color:var(--ink)}'
-    ) in HTML_TEMPLATE
-    assert '.product-table{display:flex;flex-direction:column;gap:6px}' in HTML_TEMPLATE
-    assert '.product-table-row{display:grid;' in HTML_TEMPLATE
-    assert 'grid-template-columns:92px minmax(156px,1.15fr) minmax(300px,2.3fr) 34px' in HTML_TEMPLATE
-    assert 'grid-template-columns:92px minmax(126px,1fr) minmax(220px,1.8fr) 34px' in HTML_TEMPLATE
+    assert '.product-table{display:flex;flex-direction:column;border:1px solid var(--ui-border);border-radius:7px;' in HTML_TEMPLATE
+    assert '.product-table .row-list{display:flex;flex-direction:column;gap:0}' in HTML_TEMPLATE
+    assert 'grid-template-columns:100px minmax(230px,.9fr) minmax(270px,1.1fr) 56px' in HTML_TEMPLATE
+    assert '.product-table-row>*:not(:last-child){border-right:1px solid #EEF0F2}' in HTML_TEMPLATE
+    assert '.product-table-head{align-items:stretch;background:#F7F8FA;color:#45484D;font-size:13px;font-weight:500}' in HTML_TEMPLATE
     assert 'product-comparison-card' not in HTML_TEMPLATE
 
 
 def test_screen_three_column_headers_and_shared_modal_use_canonical_surface_spacing():
-    assert '.product-table{display:flex;flex-direction:column;gap:6px}' in HTML_TEMPLATE
+    screen_start = HTML_TEMPLATE.index('class="screen-group geometry-screen" data-screen="SCREEN-03"')
+    screen_end = HTML_TEMPLATE.index('class="screen-group stage-static-screen condition-input-screen" data-screen="SCREEN-04"', screen_start)
+    screen = HTML_TEMPLATE[screen_start:screen_end]
+    assert '<span class="field-label">총조립도 도면번호 (NPDM MCAD)</span>' in screen
+    assert '<span class="field-label">Base 대비 변경점</span>' in screen
+    assert '<span class="product-action-heading" aria-hidden="true"></span>' in screen
+    assert '행 작업' not in screen
+    assert '.product-table-head .product-action-heading{justify-content:center}' in HTML_TEMPLATE
     assert 'width:min(420px,100%);border:1px solid var(--line);border-radius:10px;' in HTML_TEMPLATE
 
 
 def test_product_field_names_and_values_use_screen_three_style_levels():
-    assert '.workspace-shell .geometry-screen :is(label,.field-label)' in HTML_TEMPLATE
+    assert '.screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;line-height:1.35;letter-spacing:normal;color:var(--muted)}' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .geometry-screen input{min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background:var(--paper);color:var(--ui-field-value)}'
+        '.workspace-shell .geometry-screen input{min-height:40px;padding:0 10px;background:var(--paper);color:var(--ui-field-value)}'
     ) in HTML_TEMPLATE
-    assert '.product-geometry-name,.base-product-description{display:flex;align-items:center;min-height:34px;padding:8px 9px;color:var(--ink);font-size:13px;font-weight:400;line-height:1.45}' in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .geometry-screen :is(.product-geometry-name,.base-product-description){'
-        'min-height:40px;padding:0 10px;font-size:14px;font-weight:400}'
-    ) in HTML_TEMPLATE
-    assert '.workspace-shell .geometry-screen .condition-row-actions{min-height:40px;align-items:center}' in HTML_TEMPLATE
+    assert '.workspace-shell .geometry-screen .product-geometry-name{min-height:40px;padding:8px 10px}' in HTML_TEMPLATE
+    assert '.row-identity{font-size:13px;font-weight:600;line-height:1.45;color:var(--ink)}' in HTML_TEMPLATE
+    assert '.workspace-shell .geometry-screen .base-product-description{min-height:40px;padding:8px 10px;font-size:14px;font-weight:400}' in HTML_TEMPLATE
+    assert '.workspace-shell .geometry-screen .condition-row-actions{min-height:40px;align-items:center;justify-content:center}' in HTML_TEMPLATE
+    assert '.condition-row-action.primary{border-color:#34373E;background:#34373E;color:#fff}' in HTML_TEMPLATE
+    assert '.condition-row-action.remove{border-color:#C9CDD3;background:#fff;color:#444}' in HTML_TEMPLATE
+    assert 'border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);box-shadow:var(--ui-shadow-control)' in HTML_TEMPLATE
+    assert '.product-table-head{align-items:stretch;background:#F7F8FA;color:#45484D;font-size:13px;font-weight:500}' in HTML_TEMPLATE
+    assert '.product-table-row{display:grid;grid-template-columns:100px minmax(230px,.9fr) minmax(270px,1.1fr) 56px;' in HTML_TEMPLATE
+    assert '.product-table-row>*{min-width:0;padding:8px 10px;display:flex;align-items:center}' in HTML_TEMPLATE
 
 
 def test_add_and_remove_collect_current_values_before_mutating_only_selected_row():

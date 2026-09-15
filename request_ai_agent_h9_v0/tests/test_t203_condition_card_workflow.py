@@ -63,9 +63,11 @@ def test_condition_card_ui_adds_and_removes_rows_inside_each_condition_box():
     assert 'const environment = ["space_environment", "supply_air"]' in HTML_TEMPLATE
     assert 'condition-primary-grid' in HTML_TEMPLATE
     assert 'condition-environment-grid' in HTML_TEMPLATE
-    assert '.condition-primary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}' in HTML_TEMPLATE
-    assert '.condition-primary-grid .condition-card-type-heat_exchanger{grid-column:1/-1}' in HTML_TEMPLATE
-    assert '.condition-environment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}' in HTML_TEMPLATE
+    assert '.condition-primary-grid{display:grid;grid-template-columns:1fr;gap:0}' in HTML_TEMPLATE
+    assert '.condition-primary-grid .condition-card-type-heat_exchanger{grid-column:auto}' in HTML_TEMPLATE
+    assert '.condition-primary-grid .condition-group + .condition-group{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert '.condition-environment-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
+    assert '.condition-environment-grid > .condition-group + .condition-group{padding-left:24px;border-left:1px solid var(--ui-border-subtle)}' in HTML_TEMPLATE
     assert 'const cards = collectConditionSets();' in HTML_TEMPLATE
     assert 'const card = JSON.parse(JSON.stringify(base));' in HTML_TEMPLATE
     assert 'card.is_default = false;' in HTML_TEMPLATE
@@ -214,29 +216,31 @@ if (productText(saved, "drawing_no") !== "DRAW-SAVED") throw new Error("saved dr
     assert 'function productField(product, key){ return asObj(product)[key]; }' in HTML_TEMPLATE
 
 
-def test_condition_boxes_share_the_requester_info_shadow():
-    assert (
-        '.workspace-shell .condition-group{border-color:var(--request-workspace-border);'
-        'background:var(--request-workspace-surface);box-shadow:none}'
-    ) in HTML_TEMPLATE
+def test_condition_sections_use_the_flat_screen_four_surface_without_global_condition_group_override():
+    assert '.condition-input-screen .condition-group{overflow:visible;border:0;border-radius:0;margin:0;background:transparent}' in HTML_TEMPLATE
+    assert '\n    .condition-group{overflow:visible;border:0;border-radius:0;margin:0;background:transparent}' not in HTML_TEMPLATE
+    assert '.workspace-shell .condition-input-screen .condition-group{border-radius:0;box-shadow:none}' in HTML_TEMPLATE
 
 
 def test_condition_boxes_use_screen_four_h8_control_density():
-    assert '.workspace-shell .condition-input-screen .condition-group{border-radius:var(--ui-radius-panel)}' in HTML_TEMPLATE
+    assert '.workspace-shell .condition-input-screen .condition-group{border-radius:0;box-shadow:none}' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-group-head{min-height:0;'
-        'padding:16px 16px 0;border-bottom:0;background:transparent}'
+        '.condition-input-screen .condition-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;'
+        'min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-group-head h3{'
-        'font-size:16px;font-weight:600;color:var(--ink)}'
+        '.condition-input-screen .condition-group-head h3{margin:0;color:var(--ink);'
+        'font-family:var(--request-workspace-font);font-size:16px;font-weight:600}'
+    ) in HTML_TEMPLATE
+    assert '.workspace-shell .condition-input-screen .condition-group-head{min-height:0;' not in HTML_TEMPLATE
+    assert '.workspace-shell .condition-group-head h3{font-family:var(--request-workspace-font);color:var(--request-workspace-accent)}' not in HTML_TEMPLATE
+    assert (
+        '.workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:40px;padding:0 10px;background-color:var(--paper)}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .condition-input-screen .condition-card-row :is(input,select){min-height:40px;padding:0 10px;font-size:14px;font-weight:400;background-color:var(--paper)}'
+        '.workspace-shell .condition-input-screen .condition-spec-name{min-height:40px;padding-block:0}'
     ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .condition-input-screen .condition-spec-name{min-height:40px;padding-block:0;font-size:14px;font-weight:400;line-height:1.45}'
-    ) in HTML_TEMPLATE
+    assert '.row-identity{font-size:13px;font-weight:600;line-height:1.45;color:var(--ink)}' in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-temperature-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}'
     ) in HTML_TEMPLATE
@@ -248,7 +252,7 @@ def test_condition_boxes_use_screen_four_h8_control_density():
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .condition-temperature-guidance{'
-        'margin:-10px 0 0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}'
+        'margin:12px 0 0;color:#70747A;font-size:12px;font-weight:400;line-height:1.5}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .condition-input-screen .heat-exchanger-custom-control{grid-template-columns:minmax(0,1fr) 38px}'
@@ -260,10 +264,14 @@ def test_condition_boxes_use_screen_four_h8_control_density():
         '.workspace-shell .condition-input-screen .fan-count-custom-control input{padding-inline:6px}'
     ) in HTML_TEMPLATE
     assert '.condition-row-action{width:34px;min-width:34px;height:34px;' in HTML_TEMPLATE
+    assert 'const heatExchangerScreenFieldLabels = {tube_diameter:"관 직경(Pi) / 채널 폭(Width)", fin_type:"Fin type", row_count:"열 수", fpi:"FPI / FPDM"};' in HTML_TEMPLATE
+    assert 'const rowFieldLabels = type === "heat_exchanger" ? {...fieldLabels, ...heatExchangerScreenFieldLabels} : fieldLabels;' in HTML_TEMPLATE
 
 
-def test_all_condition_boxes_use_the_shared_content_spacing():
-    assert '.condition-card-rows{display:grid;gap:8px;padding:16px}' in HTML_TEMPLATE
+def test_all_condition_sections_use_the_flat_row_spacing():
+    assert '.condition-card-rows{display:grid;gap:0;padding:0}' in HTML_TEMPLATE
+    assert '.condition-card-row{display:grid;grid-template-columns:repeat(var(--field-count),minmax(0,1fr)) max-content;gap:9px;align-items:end;padding:10px 0;border-bottom:1px solid #EEF0F2}' in HTML_TEMPLATE
+    assert '.condition-card-row:last-child{border-bottom:0}' in HTML_TEMPLATE
     assert '.fan-input-column{display:flex;flex-direction:column;gap:6px;min-width:0}' in HTML_TEMPLATE
     assert 'const primary = types.filter(type => type !== "supply_air" && type !== "space_environment").map(groupHtml).join("");' in HTML_TEMPLATE
     assert '${primary ? `<div class="condition-primary-grid">${primary}</div>` : ""}' in HTML_TEMPLATE
@@ -319,9 +327,9 @@ def test_fan_count_controls_replace_the_legacy_multiple_fan_mode():
 
 def test_condition_rows_render_only_inputs_after_the_first_row():
     rows = HTML_TEMPLATE.split('const rowHtml =', 1)[1].split('const groupHtml =', 1)[0]
-    assert 'fixedTextHtml(key, `사양 ${rowIndex}`, isFirst)}${heatExchangerTypeSelectHtml(cardId, row, isFirst)' in rows
-    assert 'fixedTextHtml("fan", `운전 ${rowIndex}`, isFirst)' in rows
-    assert 'class="product-geometry-name condition-spec-name"' in HTML_TEMPLATE
+    assert 'fixedTextHtml(key, `사양 ${rowIndex}`, false)}${heatExchangerTypeSelectHtml(cardId, row, isFirst)' in rows
+    assert 'fixedTextHtml("fan", `운전 ${rowIndex}`, false)' in rows
+    assert 'class="product-geometry-name condition-spec-name row-identity"' in HTML_TEMPLATE
     assert 'data-spec-name' in HTML_TEMPLATE
     assert '.condition-fixed-value' not in HTML_TEMPLATE
     assert 'aria-readonly="true"' in HTML_TEMPLATE
