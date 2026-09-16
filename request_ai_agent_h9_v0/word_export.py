@@ -15,7 +15,7 @@ from typing import Any, Mapping, Sequence
 
 try:
     from docx import Document
-    from docx.enum.section import WD_ORIENT, WD_SECTION
+    from docx.enum.section import WD_ORIENT
     from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml import OxmlElement
@@ -41,7 +41,6 @@ _LABEL_FILL = "F4F5F6"
 _ALT_ROW_FILL = "FAFBFC"
 _SECTION_RULE_COLOR = "AEB5BC"
 _PORTRAIT_CONTENT_WIDTH_CM = 17.0
-_LANDSCAPE_CONTENT_WIDTH_CM = 25.7
 _LEADING_TABLE_BULLET_RE = re.compile(r"(?m)^[ \t]*[•●▪◦][ \t]*")
 _SPACED_MIDDLE_DOT_RE = re.compile(r"[ \t]+·[ \t]+")
 
@@ -288,6 +287,7 @@ def _set_cell_text(
 
 def _configure_document(document: Any) -> None:
     section = document.sections[0]
+    section.orientation = WD_ORIENT.PORTRAIT
     section.page_width = Cm(21.0)
     section.page_height = Cm(29.7)
     section.top_margin = Cm(1.7)
@@ -672,24 +672,89 @@ def _render_blocks(
     flush_fields()
 
 
-def _configure_landscape_section(section: Any) -> None:
-    section.orientation = WD_ORIENT.LANDSCAPE
-    section.page_width = Cm(29.7)
-    section.page_height = Cm(21.0)
-    section.top_margin = Cm(1.6)
-    section.bottom_margin = Cm(1.5)
-    section.left_margin = Cm(2.0)
-    section.right_margin = Cm(2.0)
-    section.header_distance = Cm(0.7)
-    section.footer_distance = Cm(0.8)
-
-
 def _add_case_summary(document: Any, row_count: int) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=0, after=7, line=1.05)
     paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run(f"총 {row_count}개 Case로 구성됩니다.")
     _set_run_style(run, size_pt=9.5, color=_MUTED_COLOR)
+
+
+def _condition_detail_lookup(table_block: Mapping[str, Any] | None) -> dict[str, str]:
+    if table_block is None:
+        return {}
+
+    headers = [_text(item) for item in _items(table_block.get("headers"))]
+    lookup: dict[str, str] = {}
+    for raw_row in _items(table_block.get("rows")):
+        row = [_text(item) for item in _items(raw_row)]
+        if not row or not row[0]:
+            continue
+        details = [
+            f"{headers[index]}: {value}"
+            for index, value in enumerate(row[1:], start=1)
+            if value and index < len(headers) and headers[index]
+        ]
+        lookup[row[0]] = "\n".join(details) or "-"
+    return lookup
+
+
+def _add_case_detail_table(document: Any, fields: Sequence[tuple[str, str]]) -> None:
+    table = document.add_table(rows=0, cols=2)
+    table.alignment = WD_TABLE_ALIGNMENT.LEFT
+    table.autofit = False
+    _set_table_fixed_width(table, _PORTRAIT_CONTENT_WIDTH_CM)
+    _set_table_borders(table, color=_BORDER_COLOR, size="5")
+    widths = (Cm(4.0), Cm(13.0))
+
+    for label, value in fields:
+        row = table.add_row()
+        _prevent_row_split(row)
+        for cell, width in zip(row.cells, widths):
+            cell.width = width
+        _set_cell_shading(row.cells[0], _LABEL_FILL)
+        _set_cell_text(row.cells[0], label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
+        _set_cell_text(row.cells[1], value, size_pt=9.5)
+        row.cells[0].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
+        row.cells[1].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
+
+    _keep_table_together_when_possible(table)
+
+
+def _render_case_details(
+    document: Any,
+    case_table: Mapping[str, Any],
+    conditions_section: Mapping[str, Any] | None,
+) -> None:
+    headers = [_text(item) or "항목" for item in _items(case_table.get("headers"))]
+    rows = [[_text(item) or "-" for item in _items(row)] for row in _items(case_table.get("rows"))]
+    operating_lookup: dict[str, str] = {}
+    specification_lookup: dict[str, str] = {}
+    if conditions_section is not None:
+        operating_lookup = _condition_detail_lookup(_find_table(conditions_section, "operating_conditions"))
+        specification_lookup = _condition_detail_lookup(_find_table(conditions_section, "heat_exchanger_conditions"))
+
+    caption = _text(case_table.get("caption"))
+    if caption:
+        _add_group_heading(document, caption)
+
+    for row_index, values in enumerate(rows, start=1):
+        normalized = values + ["-"] * max(0, len(headers) - len(values))
+        case_no = normalized[0] if normalized and headers and headers[0] in {"No.", "No", "Case", "Case No."} else str(row_index)
+        _add_group_heading(document, f"Case {case_no}")
+
+        fields: list[tuple[str, str]] = []
+        for column_index, header in enumerate(headers):
+            if column_index == 0 and header in {"No.", "No", "Case", "Case No."}:
+                continue
+            value = normalized[column_index] if column_index < len(normalized) else "-"
+            if header == "운전 조건":
+                value = operating_lookup.get(value, "-" if re.fullmatch(r"운전\s*\d+", value) else value)
+            elif header == "열교환기 사양":
+                value = specification_lookup.get(value, "-" if re.fullmatch(r"사양\s*\d+", value) else value)
+            fields.append((header, value))
+
+        _add_case_detail_table(document, fields)
 
 
 def _render_semantic_document(document: Any, sections: Sequence[Mapping[str, Any]]) -> None:
@@ -760,23 +825,21 @@ def _render_semantic_document(document: Any, sections: Sequence[Mapping[str, Any
     case_section = sections[case_index]
     case_table = _find_table(case_section, "case_matrix")
     case_blocks = _section_blocks(case_section)
-    headers = _items(case_table.get("headers")) if case_table is not None else []
-    page_width_cm = _PORTRAIT_CONTENT_WIDTH_CM
-    if len(headers) >= 5:
-        landscape = document.add_section(WD_SECTION.NEW_PAGE)
-        _configure_landscape_section(landscape)
-        page_width_cm = _LANDSCAPE_CONTENT_WIDTH_CM
 
     section_number += 1
     _add_section_heading(document, "Case 구성", section_number)
     if case_table is not None:
         _add_case_summary(document, len(_items(case_table.get("rows"))))
-    _render_blocks(
-        document,
-        case_blocks,
-        section_title="Case Matrix",
-        page_width_cm=page_width_cm,
-    )
+        conditions_section = sections[conditions_index] if conditions_index is not None else None
+        _render_case_details(document, case_table, conditions_section)
+
+    remaining_case_blocks = [
+        block
+        for block in case_blocks
+        if not (_text(block.get("type")) == "table" and _text(block.get("key")) == "case_matrix")
+    ]
+    if remaining_case_blocks:
+        _render_blocks(document, remaining_case_blocks, section_title="Case Matrix")
 
 
 
