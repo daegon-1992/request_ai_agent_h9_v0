@@ -80,7 +80,14 @@ def _preview_payload():
                         "type": "table",
                         "key": "case_matrix",
                         "headers": ["No.", "형상", "운전 조건", "열교환기 사양", "공간 환경 조건", "취출 공기 조건"],
-                        "rows": [["1", "Base", "운전 1", "사양 1", "25 °C / 50 %", "10 °C / 70 %"]],
+                        "rows": [[
+                            "1",
+                            "DRAW-A",
+                            "운전 1팬 2개 · 900 RPM",
+                            "사양 1 · F&T5Pi · Louver · 2열 · FPI 18",
+                            "25 °C / 50 %",
+                            "10 °C / 70 %",
+                        ]],
                     }
                 ],
             },
@@ -123,7 +130,6 @@ def test_word_recomposes_screen_six_as_a_reader_focused_engineering_request():
         "취출 공기 조건",
         "05  Case 구성",
         "총 1개 Case로 구성됩니다.",
-        "Case 1",
     ]
 
     all_text = _all_table_text(document) + "\n" + "\n".join(paragraphs)
@@ -177,7 +183,7 @@ def test_word_uses_neutral_business_tables_and_keeps_screen_six_column_ratios():
     ]
 
 
-def test_case_matrix_stays_portrait_and_uses_vertical_case_details():
+def test_case_matrix_stays_portrait_and_matches_the_screen_table_layout():
     document = Document(BytesIO(build_word_docx(_preview_payload())))
 
     assert len(document.sections) == 1
@@ -186,25 +192,31 @@ def test_case_matrix_stays_portrait_and_uses_vertical_case_details():
     assert document.sections[0].page_height.cm == pytest.approx(29.7, abs=0.02)
 
     case_table = document.tables[-1]
-    assert [row.cells[0].text for row in case_table.rows] == [
+    assert [cell.text for cell in case_table.rows[0].cells] == [
+        "No.",
         "형상",
         "운전 조건",
         "열교환기 사양",
         "공간 환경 조건",
         "취출 공기 조건",
     ]
-    assert case_table.rows[0].cells[1].text == "Base"
-    assert case_table.rows[1].cells[1].text == "팬 개수: 2\n팬 회전 설정: 모든 팬 동일 900 RPM"
-    assert case_table.rows[2].cells[1].text == (
-        "HEX Type: Fin-tube\n"
-        "관 직경(Pi) / 채널 폭(Width): 7 mm\n"
-        "Fin type: Louver\n"
-        "열 수: 2\n"
-        "FPI / FPDM: 18"
-    )
-    assert "운전 1" not in case_table.rows[1].cells[1].text
-    assert "사양 1" not in case_table.rows[2].cells[1].text
+    assert [cell.text for cell in case_table.rows[1].cells] == [
+        "1",
+        "DRAW-A",
+        "팬 2개 900 RPM",
+        "F&T\n5Pi Louver 2열 FPI 18",
+        "25 °C / 50 %",
+        "10 °C / 70 %",
+    ]
+    assert "운전 1" not in case_table.rows[1].cells[2].text
+    assert "사양 1" not in case_table.rows[1].cells[3].text
     assert sum(cell.width.cm for cell in case_table.rows[0].cells) == pytest.approx(17.0, abs=0.1)
+    assert [cell.width.cm for cell in case_table.rows[0].cells] == pytest.approx(
+        [0.90, 3.07, 2.89, 4.34, 2.89, 2.89],
+        abs=0.03,
+    )
+    assert case_table.rows[0].cells[0].paragraphs[0].runs[0].font.size.pt == pytest.approx(7.5)
+    assert case_table.rows[1].cells[0].paragraphs[0].runs[0].font.size.pt == pytest.approx(7.0)
 
 
 def test_table_cells_remove_bullet_glyphs_and_list_numbering():
@@ -228,7 +240,7 @@ def test_table_cells_remove_bullet_glyphs_and_list_numbering():
     )
 
 
-def test_each_case_replaces_operating_and_specification_names_with_details():
+def test_case_table_keeps_each_screen_row_and_removes_only_generic_names():
     payload = _preview_payload()
     conditions = payload["sections"][3]["blocks"]
     conditions[1]["rows"].append(["운전 2", "1", "1200 RPM"])
@@ -241,21 +253,26 @@ def test_each_case_replaces_operating_and_specification_names_with_details():
             "2",
             "비교 1",
             "운전 2팬 1개 · 1200 RPM",
-            "사양 2 · MCMC · W16 · Flat · 1열 · FPDM 14",
+            "사양 2 · MCW16 · Flat · 1열 · FPDM 14",
             "25 °C / 50 %",
             "10 °C / 70 %",
         ]
     )
 
     document = Document(BytesIO(build_word_docx(payload)))
-    case_tables = document.tables[-2:]
+    case_table = document.tables[-1]
 
-    assert case_tables[0].rows[1].cells[1].text == "팬 개수: 2\n팬 회전 설정: 모든 팬 동일 900 RPM"
-    assert case_tables[0].rows[2].cells[1].text.startswith("HEX Type: Fin-tube")
-    assert case_tables[1].rows[1].cells[1].text == "팬 개수: 1\n팬 회전 설정: 1200 RPM"
-    assert case_tables[1].rows[2].cells[1].text.startswith("HEX Type: Micro-Channel")
+    assert len(case_table.rows) == 3
+    assert case_table.rows[1].cells[2].text == "팬 2개 900 RPM"
+    assert case_table.rows[1].cells[3].text == "F&T\n5Pi Louver 2열 FPI 18"
+    assert case_table.rows[2].cells[2].text == "팬 1개 1200 RPM"
+    assert case_table.rows[2].cells[3].text == "MC\nW16 Flat 1열 FPDM 14"
     assert all(
-        generic_name not in table.rows[column].cells[1].text
-        for table in case_tables
-        for column, generic_name in ((1, "운전 1"), (1, "운전 2"), (2, "사양 1"), (2, "사양 2"))
+        generic_name not in case_table.rows[row_index].cells[column_index].text
+        for row_index, column_index, generic_name in (
+            (1, 2, "운전 1"),
+            (2, 2, "운전 2"),
+            (1, 3, "사양 1"),
+            (2, 3, "사양 2"),
+        )
     )

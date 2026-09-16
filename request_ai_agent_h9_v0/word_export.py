@@ -271,7 +271,7 @@ def _set_cell_text(
     if num_pr is not None:
         p_pr.remove(num_pr)
     paragraph.alignment = align
-    _set_paragraph_spacing(paragraph, before=0, after=0, line=1.0 if compact else 1.05)
+    _set_paragraph_spacing(paragraph, before=0, after=0, line=0.95 if compact else 1.05)
     run = paragraph.add_run(text)
     _set_run_style(
         run,
@@ -282,7 +282,7 @@ def _set_cell_text(
     )
     cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
     if compact:
-        _set_cell_margins(cell, top=55, start=45, bottom=55, end=45)
+        _set_cell_margins(cell, top=45, start=35, bottom=45, end=35)
     else:
         _set_cell_margins(cell)
 
@@ -513,8 +513,23 @@ def _column_widths_cm(
     return [width * scale for width in clamped]
 
 
-def _preview_column_widths_cm(table_key: str, column_count: int, total_width_cm: float) -> list[float]:
+def _preview_column_widths_cm(table_key: str, headers: Sequence[str], total_width_cm: float) -> list[float]:
     """Mirror fixed SCREEN-06 preview column ratios where the DOM defines them."""
+
+    column_count = len(headers)
+    if table_key == "case_matrix":
+        case_ratios = {
+            "No.": 5,
+            "No": 5,
+            "형상": 17,
+            "운전 조건": 16,
+            "열교환기 사양": 24,
+            "공간 환경 조건": 16,
+            "취출 공기 조건": 16,
+        }
+        ratios = tuple(case_ratios.get(header, 16) for header in headers)
+        ratio_total = sum(ratios)
+        return [total_width_cm * ratio / ratio_total for ratio in ratios]
 
     ratios = {
         "geometry": (14, 26, 60),
@@ -570,7 +585,7 @@ def _add_data_table(
 
     normalized_headers = headers + ["-"] * (column_count - len(headers))
     normalized_rows = [row + ["-"] * (column_count - len(row)) for row in rows]
-    widths = _preview_column_widths_cm(table_key, column_count, page_width_cm)
+    widths = _preview_column_widths_cm(table_key, normalized_headers, page_width_cm)
     if not widths:
         widths = _column_widths_cm(normalized_headers, normalized_rows, page_width_cm, compact=is_case_matrix)
 
@@ -588,9 +603,9 @@ def _add_data_table(
                 value,
                 bold=True,
                 color=_TEXT_COLOR,
-                size_pt=8.8 if is_case_matrix else 9.0,
+                size_pt=7.5 if is_case_matrix else 9.0,
                 compact=is_case_matrix,
-                character_spacing_twips=-2 if is_case_matrix else None,
+                character_spacing_twips=-3 if is_case_matrix else None,
             )
 
     for row_index, values in enumerate(normalized_rows):
@@ -605,10 +620,13 @@ def _add_data_table(
             _set_cell_text(
                 cell,
                 value,
-                size_pt=8.6 if is_case_matrix else 9.0,
+                size_pt=7.0 if is_case_matrix else 9.0,
+                align=WD_ALIGN_PARAGRAPH.CENTER if is_case_matrix and index == 0 else None,
                 compact=is_case_matrix,
-                character_spacing_twips=-2 if is_case_matrix else None,
+                character_spacing_twips=-3 if is_case_matrix else None,
             )
+            if is_case_matrix:
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
 
     if not is_case_matrix:
         _keep_table_together_when_possible(table)
@@ -682,98 +700,33 @@ def _add_case_summary(document: Any, row_count: int) -> None:
     _set_run_style(run, size_pt=9.5, color=_MUTED_COLOR)
 
 
-def _condition_detail_lookup(table_block: Mapping[str, Any] | None) -> dict[str, str]:
-    if table_block is None:
-        return {}
+def _case_table_for_word(case_table: Mapping[str, Any]) -> dict[str, Any]:
+    """Keep the SCREEN-06 matrix shape while removing requested generic names."""
 
-    headers = [_text(item) for item in _items(table_block.get("headers"))]
-    lookup: dict[str, str] = {}
-    for raw_row in _items(table_block.get("rows")):
-        row = [_text(item) for item in _items(raw_row)]
-        if not row or not row[0]:
+    headers = [_text(item) for item in _items(case_table.get("headers"))]
+    rows = [[_text(item) for item in _items(row)] for row in _items(case_table.get("rows"))]
+    generic_prefixes = {"운전 조건": "운전", "열교환기 사양": "사양"}
+
+    for header, prefix in generic_prefixes.items():
+        if header not in headers:
             continue
-        details = [
-            f"{headers[index]}: {value}"
-            for index, value in enumerate(row[1:], start=1)
-            if value and index < len(headers) and headers[index]
-        ]
-        lookup[row[0]] = "\n".join(details) or "-"
-    return lookup
-
-
-def _add_case_detail_table(document: Any, fields: Sequence[tuple[str, str]]) -> None:
-    table = document.add_table(rows=0, cols=2)
-    table.alignment = WD_TABLE_ALIGNMENT.LEFT
-    table.autofit = False
-    _set_table_fixed_width(table, _PORTRAIT_CONTENT_WIDTH_CM)
-    _set_table_borders(table, color=_BORDER_COLOR, size="5")
-    widths = (Cm(4.0), Cm(13.0))
-
-    for label, value in fields:
-        row = table.add_row()
-        _prevent_row_split(row)
-        for cell, width in zip(row.cells, widths):
-            cell.width = width
-        _set_cell_shading(row.cells[0], _LABEL_FILL)
-        _set_cell_text(row.cells[0], label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
-        _set_cell_text(row.cells[1], value, size_pt=9.5)
-        row.cells[0].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-        row.cells[1].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-
-    _keep_table_together_when_possible(table)
-
-
-def _resolve_case_condition_detail(value: str, lookup: Mapping[str, str], prefix: str) -> str:
-    exact = lookup.get(value)
-    if exact is not None:
-        return exact
-
-    # SCREEN-06 serializes the visible label and summary from adjacent DIVs as
-    # one text value, for example "운전 1팬 2개 · 900 RPM". Match the longest
-    # known label first so "운전 1" never captures "운전 10".
-    for label in sorted(lookup, key=len, reverse=True):
-        if value.startswith(label):
-            return lookup[label]
-
-    generic_name = re.compile(rf"^{re.escape(prefix)}\s*\d+\s*(?:[{_TABLE_BULLET_GLYPHS}]+\s*)?")
-    without_name = generic_name.sub("", value).strip()
-    return without_name or "-"
-
-
-def _render_case_details(
-    document: Any,
-    case_table: Mapping[str, Any],
-    conditions_section: Mapping[str, Any] | None,
-) -> None:
-    headers = [_text(item) or "항목" for item in _items(case_table.get("headers"))]
-    rows = [[_text(item) or "-" for item in _items(row)] for row in _items(case_table.get("rows"))]
-    operating_lookup: dict[str, str] = {}
-    specification_lookup: dict[str, str] = {}
-    if conditions_section is not None:
-        operating_lookup = _condition_detail_lookup(_find_table(conditions_section, "operating_conditions"))
-        specification_lookup = _condition_detail_lookup(_find_table(conditions_section, "heat_exchanger_conditions"))
-
-    caption = _text(case_table.get("caption"))
-    if caption:
-        _add_group_heading(document, caption)
-
-    for row_index, values in enumerate(rows, start=1):
-        normalized = values + ["-"] * max(0, len(headers) - len(values))
-        case_no = normalized[0] if normalized and headers and headers[0] in {"No.", "No", "Case", "Case No."} else str(row_index)
-        _add_group_heading(document, f"Case {case_no}")
-
-        fields: list[tuple[str, str]] = []
-        for column_index, header in enumerate(headers):
-            if column_index == 0 and header in {"No.", "No", "Case", "Case No."}:
+        column_index = headers.index(header)
+        pattern = re.compile(rf"^{re.escape(prefix)}\s*\d+\s*(?:[{_TABLE_BULLET_GLYPHS}]+\s*)?")
+        for row in rows:
+            if column_index >= len(row):
                 continue
-            value = normalized[column_index] if column_index < len(normalized) else "-"
-            if header == "운전 조건":
-                value = _resolve_case_condition_detail(value, operating_lookup, "운전")
-            elif header == "열교환기 사양":
-                value = _resolve_case_condition_detail(value, specification_lookup, "사양")
-            fields.append((header, value))
+            without_name = pattern.sub("", row[column_index]).strip()
+            if header == "열교환기 사양":
+                without_name = re.sub(r"^(F&T|MC)(?=\S)", r"\1\n", without_name)
+            row[column_index] = without_name or "-"
 
-        _add_case_detail_table(document, fields)
+    return {
+        "type": "table",
+        "key": "case_matrix",
+        "caption": _text(case_table.get("caption")),
+        "headers": headers,
+        "rows": rows,
+    }
 
 
 def _render_semantic_document(document: Any, sections: Sequence[Mapping[str, Any]]) -> None:
@@ -849,8 +802,12 @@ def _render_semantic_document(document: Any, sections: Sequence[Mapping[str, Any
     _add_section_heading(document, "Case 구성", section_number)
     if case_table is not None:
         _add_case_summary(document, len(_items(case_table.get("rows"))))
-        conditions_section = sections[conditions_index] if conditions_index is not None else None
-        _render_case_details(document, case_table, conditions_section)
+        _add_data_table(
+            document,
+            _case_table_for_word(case_table),
+            page_width_cm=_PORTRAIT_CONTENT_WIDTH_CM,
+            section_title="Case Matrix",
+        )
 
     remaining_case_blocks = [
         block
