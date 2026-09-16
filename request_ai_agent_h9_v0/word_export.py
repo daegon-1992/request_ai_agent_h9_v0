@@ -41,8 +41,9 @@ _LABEL_FILL = "F4F5F6"
 _ALT_ROW_FILL = "FAFBFC"
 _SECTION_RULE_COLOR = "AEB5BC"
 _PORTRAIT_CONTENT_WIDTH_CM = 17.0
-_LEADING_TABLE_BULLET_RE = re.compile(r"(?m)^[ \t]*[•●▪◦][ \t]*")
-_SPACED_MIDDLE_DOT_RE = re.compile(r"[ \t]+·[ \t]+")
+_TABLE_BULLET_GLYPHS = "•●▪◦∙‣⁃◉○◎◆◇▶►▸‧・·"
+_LEADING_TABLE_BULLET_RE = re.compile(rf"(?m)^[ \t]*[{_TABLE_BULLET_GLYPHS}]+[ \t]*")
+_SPACED_TABLE_BULLET_RE = re.compile(rf"[ \t]+[{_TABLE_BULLET_GLYPHS}]+[ \t]+")
 
 # Long/free-text fields read better as a full-width row than as a 2-up key/value grid.
 _NARRATIVE_LABELS = {
@@ -78,7 +79,7 @@ def _table_text(value: Any) -> str:
     """Remove presentation-only bullet glyphs without changing stored values."""
 
     text = _LEADING_TABLE_BULLET_RE.sub("", _text(value))
-    return _SPACED_MIDDLE_DOT_RE.sub(" ", text)
+    return _SPACED_TABLE_BULLET_RE.sub(" ", text)
 
 
 def _items(value: Any) -> list[Any]:
@@ -264,6 +265,7 @@ def _set_cell_text(
         text = "-"
     paragraph = cell.paragraphs[0]
     paragraph.clear()
+    paragraph.style = "Normal"
     p_pr = paragraph._p.get_or_add_pPr()
     num_pr = p_pr.find(qn("w:numPr"))
     if num_pr is not None:
@@ -721,6 +723,23 @@ def _add_case_detail_table(document: Any, fields: Sequence[tuple[str, str]]) -> 
     _keep_table_together_when_possible(table)
 
 
+def _resolve_case_condition_detail(value: str, lookup: Mapping[str, str], prefix: str) -> str:
+    exact = lookup.get(value)
+    if exact is not None:
+        return exact
+
+    # SCREEN-06 serializes the visible label and summary from adjacent DIVs as
+    # one text value, for example "운전 1팬 2개 · 900 RPM". Match the longest
+    # known label first so "운전 1" never captures "운전 10".
+    for label in sorted(lookup, key=len, reverse=True):
+        if value.startswith(label):
+            return lookup[label]
+
+    generic_name = re.compile(rf"^{re.escape(prefix)}\s*\d+\s*(?:[{_TABLE_BULLET_GLYPHS}]+\s*)?")
+    without_name = generic_name.sub("", value).strip()
+    return without_name or "-"
+
+
 def _render_case_details(
     document: Any,
     case_table: Mapping[str, Any],
@@ -749,9 +768,9 @@ def _render_case_details(
                 continue
             value = normalized[column_index] if column_index < len(normalized) else "-"
             if header == "운전 조건":
-                value = operating_lookup.get(value, "-" if re.fullmatch(r"운전\s*\d+", value) else value)
+                value = _resolve_case_condition_detail(value, operating_lookup, "운전")
             elif header == "열교환기 사양":
-                value = specification_lookup.get(value, "-" if re.fullmatch(r"사양\s*\d+", value) else value)
+                value = _resolve_case_condition_detail(value, specification_lookup, "사양")
             fields.append((header, value))
 
         _add_case_detail_table(document, fields)

@@ -210,7 +210,8 @@ def test_case_matrix_stays_portrait_and_uses_vertical_case_details():
 def test_table_cells_remove_bullet_glyphs_and_list_numbering():
     payload = _preview_payload()
     operating_table = payload["sections"][3]["blocks"][1]
-    operating_table["rows"][0][0] = "• 운전 1"
+    operating_table["rows"][0][0] = "◉ 운전 1"
+    operating_table["rows"][0][2] = "모든 팬 동일 ∙ 900 RPM"
 
     document = Document(BytesIO(build_word_docx(payload)))
     table = next(table for table in document.tables if table.cell(0, 1).text == "팬 개수")
@@ -218,7 +219,8 @@ def test_table_cells_remove_bullet_glyphs_and_list_numbering():
     assert table.rows[1].cells[0].text == "운전 1"
     assert table.rows[1].cells[2].text == "모든 팬 동일 900 RPM"
     assert all(
-        paragraph._p.pPr is None or paragraph._p.pPr.find(qn("w:numPr")) is None
+        paragraph.style.name == "Normal"
+        and (paragraph._p.pPr is None or paragraph._p.pPr.find(qn("w:numPr")) is None)
         for table in document.tables
         for row in table.rows
         for cell in row.cells
@@ -231,8 +233,18 @@ def test_each_case_replaces_operating_and_specification_names_with_details():
     conditions = payload["sections"][3]["blocks"]
     conditions[1]["rows"].append(["운전 2", "1", "1200 RPM"])
     conditions[3]["rows"].append(["사양 2", "Micro-Channel", "W16", "Flat", "1", "14"])
+    first_case = payload["sections"][4]["blocks"][0]["rows"][0]
+    first_case[2] = "운전 1팬 2개 · 900 RPM"
+    first_case[3] = "사양 1 · F&T5Pi · Louver · 2열 · FPI 18"
     payload["sections"][4]["blocks"][0]["rows"].append(
-        ["2", "비교 1", "운전 2", "사양 2", "25 °C / 50 %", "10 °C / 70 %"]
+        [
+            "2",
+            "비교 1",
+            "운전 2팬 1개 · 1200 RPM",
+            "사양 2 · MCMC · W16 · Flat · 1열 · FPDM 14",
+            "25 °C / 50 %",
+            "10 °C / 70 %",
+        ]
     )
 
     document = Document(BytesIO(build_word_docx(payload)))
