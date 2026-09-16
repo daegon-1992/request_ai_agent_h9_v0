@@ -14,6 +14,7 @@ from typing import Any, Mapping, Sequence
 
 try:
     from docx import Document
+    from docx.enum.section import WD_ORIENT, WD_SECTION
     from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml import OxmlElement
@@ -31,10 +32,15 @@ DEFAULT_WORD_FILENAME = "analysis_request.docx"
 
 _FONT_NAME = "Malgun Gothic"
 _TEXT_COLOR = "202124"
-_MUTED_COLOR = "45484B"
-_BORDER_COLOR = "E0E1E2"
-_HEADER_FILL = "F7F8FA"
-_SECTION_RULE_COLOR = "E0E1E2"
+_MUTED_COLOR = "5F6368"
+_ACCENT_COLOR = "3F4B59"
+_BORDER_COLOR = "D7DBDF"
+_HEADER_FILL = "E9EDF1"
+_LABEL_FILL = "F4F5F6"
+_ALT_ROW_FILL = "FAFBFC"
+_SECTION_RULE_COLOR = "AEB5BC"
+_PORTRAIT_CONTENT_WIDTH_CM = 17.0
+_LANDSCAPE_CONTENT_WIDTH_CM = 25.7
 
 # Long/free-text fields read better as a full-width row than as a 2-up key/value grid.
 _NARRATIVE_LABELS = {
@@ -144,40 +150,6 @@ def _set_cell_margins(cell: Any, *, top: int = 90, start: int = 110, bottom: int
         node.set(qn("w:type"), "dxa")
 
 
-def _set_cell_border(cell: Any, *, color: str = _BORDER_COLOR, size: str = "5") -> None:
-    tc_pr = cell._tc.get_or_add_tcPr()
-    borders = tc_pr.first_child_found_in("w:tcBorders")
-    if borders is None:
-        borders = OxmlElement("w:tcBorders")
-        tc_pr.append(borders)
-    for edge in ("top", "start", "bottom", "end", "insideH", "insideV"):
-        tag = f"w:{edge}"
-        border = borders.find(qn(tag))
-        if border is None:
-            border = OxmlElement(tag)
-            borders.append(border)
-        border.set(qn("w:val"), "single")
-        border.set(qn("w:sz"), size)
-        border.set(qn("w:space"), "0")
-        border.set(qn("w:color"), color)
-
-
-def _set_cell_top_border(cell: Any, *, color: str = _BORDER_COLOR, size: str = "5") -> None:
-    tc_pr = cell._tc.get_or_add_tcPr()
-    borders = tc_pr.first_child_found_in("w:tcBorders")
-    if borders is None:
-        borders = OxmlElement("w:tcBorders")
-        tc_pr.append(borders)
-    top = borders.find(qn("w:top"))
-    if top is None:
-        top = OxmlElement("w:top")
-        borders.append(top)
-    top.set(qn("w:val"), "single")
-    top.set(qn("w:sz"), size)
-    top.set(qn("w:space"), "0")
-    top.set(qn("w:color"), color)
-
-
 def _set_table_fixed_width(table: Any, total_width_cm: float) -> None:
     """Keep tables inside the portrait content width instead of expanding the page."""
 
@@ -213,21 +185,6 @@ def _set_table_borders(table: Any, *, color: str = _BORDER_COLOR, size: str = "5
         border.set(qn("w:sz"), size)
         border.set(qn("w:space"), "0")
         border.set(qn("w:color"), color)
-
-
-def _remove_table_borders(table: Any) -> None:
-    tbl_pr = table._tbl.tblPr
-    borders = tbl_pr.first_child_found_in("w:tblBorders")
-    if borders is None:
-        borders = OxmlElement("w:tblBorders")
-        tbl_pr.append(borders)
-    for edge in ("top", "start", "bottom", "end", "insideH", "insideV"):
-        tag = f"w:{edge}"
-        border = borders.find(qn(tag))
-        if border is None:
-            border = OxmlElement(tag)
-            borders.append(border)
-        border.set(qn("w:val"), "nil")
 
 
 def _set_repeat_table_header(row: Any) -> None:
@@ -280,22 +237,6 @@ def _set_paragraph_bottom_border(paragraph: Any, *, color: str = _SECTION_RULE_C
     bottom.set(qn("w:color"), color)
 
 
-def _set_paragraph_top_border(paragraph: Any, *, color: str = _SECTION_RULE_COLOR, size: str = "6") -> None:
-    p_pr = paragraph._p.get_or_add_pPr()
-    p_bdr = p_pr.find(qn("w:pBdr"))
-    if p_bdr is None:
-        p_bdr = OxmlElement("w:pBdr")
-        p_pr.append(p_bdr)
-    top = p_bdr.find(qn("w:top"))
-    if top is None:
-        top = OxmlElement("w:top")
-        p_bdr.append(top)
-    top.set(qn("w:val"), "single")
-    top.set(qn("w:sz"), size)
-    top.set(qn("w:space"), "12")
-    top.set(qn("w:color"), color)
-
-
 def _set_cell_text(
     cell: Any,
     value: Any,
@@ -304,14 +245,13 @@ def _set_cell_text(
     color: str = _TEXT_COLOR,
     size_pt: float = 9.0,
     align: Any = None,
-    allow_blank: bool = False,
     compact: bool = False,
     character_spacing_twips: int | None = None,
 ) -> None:
     if align is None:
         align = WD_ALIGN_PARAGRAPH.LEFT
     text = _text(value)
-    if not text and not allow_blank:
+    if not text:
         text = "-"
     paragraph = cell.paragraphs[0]
     paragraph.clear()
@@ -334,8 +274,10 @@ def _set_cell_text(
 
 def _configure_document(document: Any) -> None:
     section = document.sections[0]
-    section.top_margin = Cm(1.8)
-    section.bottom_margin = Cm(1.7)
+    section.page_width = Cm(21.0)
+    section.page_height = Cm(29.7)
+    section.top_margin = Cm(1.7)
+    section.bottom_margin = Cm(1.6)
     section.left_margin = Cm(2.0)
     section.right_margin = Cm(2.0)
     section.header_distance = Cm(0.7)
@@ -343,18 +285,19 @@ def _configure_document(document: Any) -> None:
 
     normal = document.styles["Normal"]
     normal.font.name = _FONT_NAME
-    normal.font.size = Pt(9.5)
+    normal.font.size = Pt(10.0)
     normal._element.rPr.rFonts.set(qn("w:eastAsia"), _FONT_NAME)
     normal.paragraph_format.space_after = Pt(0)
     normal.paragraph_format.line_spacing = 1.08
 
-    # A restrained footer keeps the output document-like without adding data not
-    # present in the request state.
+    document.core_properties.title = "해석 의뢰서"
+
+    # A restrained footer gives multi-page requests a stable document cue.
     footer = section.footer
     paragraph = footer.paragraphs[0]
     paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     _set_paragraph_spacing(paragraph)
-    run = paragraph.add_run("해석 의뢰서  ·  ")
+    run = paragraph.add_run("해석 의뢰서  |  ")
     _set_run_style(run, size_pt=8.0, color=_MUTED_COLOR)
     fld_simple = OxmlElement("w:fldSimple")
     fld_simple.set(qn("w:instr"), "PAGE")
@@ -363,11 +306,11 @@ def _configure_document(document: Any) -> None:
 
 def _add_document_title(document: Any) -> None:
     paragraph = document.add_paragraph()
-    _set_paragraph_spacing(paragraph, before=0, after=16, line=1.0)
+    _set_paragraph_spacing(paragraph, before=0, after=13, line=1.0)
     paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run("해석 의뢰서")
-    _set_run_style(run, size_pt=20.0, bold=True, color=_TEXT_COLOR)
-    _set_paragraph_bottom_border(paragraph, color="8A8A8A", size="10")
+    _set_run_style(run, size_pt=21.0, bold=True, color=_TEXT_COLOR)
+    _set_paragraph_bottom_border(paragraph, color=_ACCENT_COLOR, size="12")
 
 
 def _request_identity_value(value: Any, *, request_no: bool = False) -> str:
@@ -386,40 +329,42 @@ def _add_request_identity(document: Any, request_title: Any, request_no: Any) ->
     table = document.add_table(rows=2, cols=2)
     table.alignment = WD_TABLE_ALIGNMENT.LEFT
     table.autofit = False
-    _set_table_fixed_width(table, 17.0)
-    _remove_table_borders(table)
-    widths = (Cm(3.2), Cm(13.8))
+    _set_table_fixed_width(table, _PORTRAIT_CONTENT_WIDTH_CM)
+    _set_table_borders(table, color=_BORDER_COLOR, size="5")
+    widths = (Cm(3.1), Cm(13.9))
     rows = (
         ("의뢰 제목", _request_identity_value(request_title)),
-        ("해석 의뢰 번호", _request_identity_value(request_no, request_no=True)),
+        ("의뢰 번호", _request_identity_value(request_no, request_no=True)),
     )
     for row, values in zip(table.rows, rows):
         _prevent_row_split(row)
         for cell, width in zip(row.cells, widths):
             cell.width = width
+        _set_cell_shading(row.cells[0], _LABEL_FILL)
         _set_cell_text(row.cells[0], values[0], bold=True, color=_MUTED_COLOR, size_pt=9.5)
-        _set_cell_text(row.cells[1], values[1], size_pt=10.5)
+        _set_cell_text(row.cells[1], values[1], size_pt=10.0)
 
     spacer = document.add_paragraph()
-    _set_paragraph_spacing(spacer, before=0, after=5, line=1.0)
+    _set_paragraph_spacing(spacer, before=0, after=7, line=1.0)
 
 
 def _add_section_heading(document: Any, title: str, index: int) -> None:
     paragraph = document.add_paragraph()
-    _set_paragraph_spacing(paragraph, before=15 if index > 1 else 0, after=9, line=1.0)
+    _set_paragraph_spacing(paragraph, before=17 if index > 1 else 2, after=9, line=1.0)
     paragraph.paragraph_format.keep_with_next = True
+    number_run = paragraph.add_run(f"{index:02d}  ")
+    _set_run_style(number_run, size_pt=10.0, bold=True, color=_ACCENT_COLOR)
     title_run = paragraph.add_run(title or "구분")
-    _set_run_style(title_run, size_pt=12.0, bold=True, color=_TEXT_COLOR)
-    if index > 1:
-        _set_paragraph_top_border(paragraph)
+    _set_run_style(title_run, size_pt=13.0, bold=True, color=_TEXT_COLOR)
+    _set_paragraph_bottom_border(paragraph, color=_SECTION_RULE_COLOR, size="6")
 
 
 def _add_group_heading(document: Any, title: Any) -> None:
     paragraph = document.add_paragraph()
-    _set_paragraph_spacing(paragraph, before=9, after=6, line=1.0)
+    _set_paragraph_spacing(paragraph, before=9, after=5, line=1.0)
     paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run(_text(title) or "구분")
-    _set_run_style(run, size_pt=9.75, bold=True, color=_MUTED_COLOR)
+    _set_run_style(run, size_pt=10.5, bold=True, color=_ACCENT_COLOR)
 
 
 def _add_stale_notice(document: Any, text: Any) -> None:
@@ -432,102 +377,84 @@ def _add_stale_notice(document: Any, text: Any) -> None:
     _set_cell_text(cell, text, bold=True, color=_MUTED_COLOR, size_pt=9.0)
 
 
-def _is_narrative_field(label: str, value: str) -> bool:
-    return label in _NARRATIVE_LABELS or "\n" in value or len(value) >= 70
+def _add_key_value_table(
+    document: Any,
+    fields: Sequence[tuple[str, str]],
+    *,
+    page_width_cm: float = _PORTRAIT_CONTENT_WIDTH_CM,
+) -> None:
+    """Render concise business data as two label/value pairs per row."""
 
-
-def _add_field_grid(document: Any, fields: Sequence[tuple[str, str]]) -> None:
     if not fields:
         return
 
     table = document.add_table(rows=0, cols=4)
     table.alignment = WD_TABLE_ALIGNMENT.LEFT
     table.autofit = False
-    _remove_table_borders(table)
+    _set_table_fixed_width(table, page_width_cm)
+    _set_table_borders(table, color=_BORDER_COLOR, size="5")
 
-    compact_pending: tuple[str, str] | None = None
-    narrative_pending: tuple[str, str] | None = None
+    label_width = 3.1
+    value_width = max(1.0, (page_width_cm - label_width * 2) / 2)
+    widths = (Cm(label_width), Cm(value_width), Cm(label_width), Cm(value_width))
 
-    def add_compact_row(left: tuple[str, str], right: tuple[str, str] | None = None) -> None:
+    for offset in range(0, len(fields), 2):
         row = table.add_row()
         _prevent_row_split(row)
-        left_label, left_value = left
-        right_label, right_value = right if right is not None else ("", "")
-
-        cells = row.cells
-        widths = (Cm(2.8), Cm(5.7), Cm(2.8), Cm(5.7))
-        for cell, width in zip(cells, widths):
+        for cell, width in zip(row.cells, widths):
             cell.width = width
 
-        _set_cell_text(cells[0], left_label, bold=True, color=_MUTED_COLOR, size_pt=9.5)
-        _set_cell_text(cells[1], left_value, size_pt=10.5)
+        left_label, left_value = fields[offset]
+        _set_cell_shading(row.cells[0], _LABEL_FILL)
+        _set_cell_text(row.cells[0], left_label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
+        _set_cell_text(row.cells[1], left_value, size_pt=9.8)
 
-        if right is None:
-            merged = cells[2].merge(cells[3])
-            _set_cell_text(merged, "", color=_MUTED_COLOR, size_pt=9.0, allow_blank=True)
+        if offset + 1 < len(fields):
+            right_label, right_value = fields[offset + 1]
+            _set_cell_shading(row.cells[2], _LABEL_FILL)
+            _set_cell_text(row.cells[2], right_label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
+            _set_cell_text(row.cells[3], right_value, size_pt=9.8)
         else:
-            _set_cell_text(cells[2], right_label, bold=True, color=_MUTED_COLOR, size_pt=9.5)
-            _set_cell_text(cells[3], right_value, size_pt=10.5)
+            value_cell = row.cells[1].merge(row.cells[2]).merge(row.cells[3])
+            value_cell.width = Cm(page_width_cm - label_width)
+            _set_cell_text(value_cell, left_value, size_pt=9.8)
 
-    def set_narrative_cell(cell: Any, label: str, value: str) -> None:
-        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-        _set_cell_margins(cell, top=120, start=0, bottom=80, end=180)
-        _set_cell_top_border(cell)
-        label_paragraph = cell.paragraphs[0]
-        label_paragraph.clear()
-        _set_paragraph_spacing(label_paragraph, after=4, line=1.0)
-        _set_run_style(label_paragraph.add_run(label), size_pt=9.5, bold=True, color=_MUTED_COLOR)
-        value_paragraph = cell.add_paragraph()
-        _set_paragraph_spacing(value_paragraph, line=1.15)
-        _set_run_style(value_paragraph.add_run(value or "-"), size_pt=10.5)
+    _keep_table_together_when_possible(table)
 
-    def add_narrative_row(left: tuple[str, str], right: tuple[str, str] | None = None) -> None:
-        row = table.add_row()
+
+def _add_narrative_field(document: Any, label: str, value: str) -> None:
+    """Give long request context enough horizontal and vertical reading space."""
+
+    table = document.add_table(rows=2, cols=1)
+    table.alignment = WD_TABLE_ALIGNMENT.LEFT
+    table.autofit = False
+    _set_table_fixed_width(table, _PORTRAIT_CONTENT_WIDTH_CM)
+    _set_table_borders(table, color=_BORDER_COLOR, size="5")
+    for row in table.rows:
         _prevent_row_split(row)
-        cells = row.cells
-        left_cell = cells[0].merge(cells[1])
-        left_cell.width = Cm(8.5 if right is not None else 17.0)
-        if right is None:
-            left_cell = left_cell.merge(cells[2]).merge(cells[3])
-        set_narrative_cell(left_cell, *left)
-        if right is not None:
-            right_cell = cells[2].merge(cells[3])
-            right_cell.width = Cm(8.5)
-            set_narrative_cell(right_cell, *right)
-            _set_cell_margins(left_cell, top=120, start=0, bottom=80, end=180)
-            _set_cell_margins(right_cell, top=120, start=180, bottom=80, end=0)
+        row.cells[0].width = Cm(_PORTRAIT_CONTENT_WIDTH_CM)
 
-    def flush_compact() -> None:
-        nonlocal compact_pending
-        if compact_pending is not None:
-            add_compact_row(compact_pending)
-            compact_pending = None
+    label_cell = table.cell(0, 0)
+    _set_cell_shading(label_cell, _LABEL_FILL)
+    _set_cell_text(label_cell, label, bold=True, color=_ACCENT_COLOR, size_pt=9.5)
 
-    def flush_narrative() -> None:
-        nonlocal narrative_pending
-        if narrative_pending is not None:
-            add_narrative_row(narrative_pending)
-            narrative_pending = None
+    value_cell = table.cell(1, 0)
+    value_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
+    _set_cell_margins(value_cell, top=135, start=145, bottom=150, end=145)
+    paragraph = value_cell.paragraphs[0]
+    paragraph.clear()
+    _set_paragraph_spacing(paragraph, line=1.18)
+    _set_run_style(paragraph.add_run(value or "-"), size_pt=10.2)
 
-    for label, value in fields:
-        if _is_narrative_field(label, value):
-            flush_compact()
-            if narrative_pending is None:
-                narrative_pending = (label, value)
-            else:
-                add_narrative_row(narrative_pending, (label, value))
-                narrative_pending = None
-            continue
+    _keep_table_together_when_possible(table)
 
-        flush_narrative()
-        if compact_pending is None:
-            compact_pending = (label, value)
-        else:
-            add_compact_row(compact_pending, (label, value))
-            compact_pending = None
 
-    flush_compact()
-    flush_narrative()
+def _add_narrative_fields(document: Any, fields: Sequence[tuple[str, str]]) -> None:
+    for index, (label, value) in enumerate(fields):
+        if index:
+            spacer = document.add_paragraph()
+            _set_paragraph_spacing(spacer, after=3, line=1.0)
+        _add_narrative_field(document, label, value)
 
 
 def _table_width_weights(
@@ -593,7 +520,13 @@ def _add_data_table(
 ) -> None:
     caption = _text(table_block.get("caption"))
     table_key = _text(table_block.get("key"))
-    headers = [_text(item) or "-" for item in _items(table_block.get("headers"))]
+    headers = [_text(item) for item in _items(table_block.get("headers"))]
+    if headers and not headers[0]:
+        headers[0] = {
+            "operating_conditions": "운전 구분",
+            "heat_exchanger_conditions": "사양 구분",
+        }.get(table_key, "구분")
+    headers = [item or "-" for item in headers]
     rows = [[_text(item) or "-" for item in _items(row)] for row in _items(table_block.get("rows"))]
 
     if caption:
@@ -607,7 +540,11 @@ def _add_data_table(
     if column_count <= 0:
         return
 
-    is_case_matrix = "case matrix" in caption.lower() or "case matrix" in _text(section_title).lower()
+    is_case_matrix = (
+        table_key == "case_matrix"
+        or "case matrix" in caption.lower()
+        or "case matrix" in _text(section_title).lower()
+    )
 
     table = document.add_table(rows=0, cols=column_count)
     table.alignment = WD_TABLE_ALIGNMENT.LEFT
@@ -635,37 +572,208 @@ def _add_data_table(
                 value,
                 bold=True,
                 color=_TEXT_COLOR,
-                size_pt=7.2 if is_case_matrix else 8.4,
+                size_pt=8.8 if is_case_matrix else 9.0,
                 compact=is_case_matrix,
-                character_spacing_twips=-4 if is_case_matrix else None,
+                character_spacing_twips=-2 if is_case_matrix else None,
             )
 
-    for values in normalized_rows:
+    for row_index, values in enumerate(normalized_rows):
         row = table.add_row()
         _prevent_row_split(row)
         for index, value in enumerate(values):
             cell = row.cells[index]
             if index < len(widths):
                 cell.width = Cm(widths[index])
+            if row_index % 2:
+                _set_cell_shading(cell, _ALT_ROW_FILL)
             _set_cell_text(
                 cell,
                 value,
-                size_pt=7.0 if is_case_matrix else 8.4,
+                size_pt=8.6 if is_case_matrix else 9.0,
                 compact=is_case_matrix,
-                character_spacing_twips=-4 if is_case_matrix else None,
+                character_spacing_twips=-2 if is_case_matrix else None,
             )
 
-    _keep_table_together_when_possible(table)
+    if not is_case_matrix:
+        _keep_table_together_when_possible(table)
+
+
+def _section_blocks(section: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    return [_mapping(block) for block in _items(section.get("blocks"))]
+
+
+def _field_pairs(section: Mapping[str, Any]) -> list[tuple[str, str]]:
+    return [
+        (_text(block.get("label")) or "항목", _text(block.get("value")) or "-")
+        for block in _section_blocks(section)
+        if _text(block.get("type")) == "field"
+    ]
+
+
+def _find_section_index(sections: Sequence[Mapping[str, Any]], title: str) -> int | None:
+    for index, section in enumerate(sections):
+        if _text(section.get("title")) == title:
+            return index
+    return None
+
+
+def _find_table(section: Mapping[str, Any], key: str) -> Mapping[str, Any] | None:
+    for block in _section_blocks(section):
+        if _text(block.get("type")) == "table" and _text(block.get("key")) == key:
+            return block
+    return None
+
+
+def _render_blocks(
+    document: Any,
+    blocks: Sequence[Mapping[str, Any]],
+    *,
+    section_title: str,
+    page_width_cm: float = _PORTRAIT_CONTENT_WIDTH_CM,
+) -> None:
+    """Render a section in source order while keeping fields under their group."""
+
+    field_buffer: list[tuple[str, str]] = []
+
+    def flush_fields() -> None:
+        nonlocal field_buffer
+        if field_buffer:
+            _add_key_value_table(document, field_buffer, page_width_cm=page_width_cm)
+            field_buffer = []
+
+    for block in blocks:
+        kind = _text(block.get("type"))
+        if kind == "field":
+            field_buffer.append((_text(block.get("label")) or "항목", _text(block.get("value")) or "-"))
+            continue
+
+        flush_fields()
+        if kind == "group":
+            _add_group_heading(document, block.get("title"))
+        elif kind == "stale":
+            _add_stale_notice(document, _text(block.get("text")) or "-")
+        elif kind == "table":
+            _add_data_table(document, block, page_width_cm=page_width_cm, section_title=section_title)
+
+    flush_fields()
+
+
+def _configure_landscape_section(section: Any) -> None:
+    section.orientation = WD_ORIENT.LANDSCAPE
+    section.page_width = Cm(29.7)
+    section.page_height = Cm(21.0)
+    section.top_margin = Cm(1.6)
+    section.bottom_margin = Cm(1.5)
+    section.left_margin = Cm(2.0)
+    section.right_margin = Cm(2.0)
+    section.header_distance = Cm(0.7)
+    section.footer_distance = Cm(0.8)
+
+
+def _add_case_summary(document: Any, row_count: int) -> None:
+    paragraph = document.add_paragraph()
+    _set_paragraph_spacing(paragraph, before=0, after=7, line=1.05)
+    paragraph.paragraph_format.keep_with_next = True
+    run = paragraph.add_run(f"총 {row_count}개 Case로 구성됩니다.")
+    _set_run_style(run, size_pt=9.5, color=_MUTED_COLOR)
+
+
+def _render_semantic_document(document: Any, sections: Sequence[Mapping[str, Any]]) -> None:
+    """Recompose SCREEN-06 data into a document-first engineering narrative."""
+
+    requester_index = _find_section_index(sections, "의뢰자 정보")
+    overview_index = _find_section_index(sections, "요청 내용")
+    geometry_index = _find_section_index(sections, "해석 제품")
+    conditions_index = _find_section_index(sections, "해석 조건")
+    case_index = _find_section_index(sections, "Case Matrix")
+    consumed: set[int] = set()
+    section_number = 0
+
+    requester_fields = _field_pairs(sections[requester_index]) if requester_index is not None else []
+    overview_fields = _field_pairs(sections[overview_index]) if overview_index is not None else []
+    narrative_fields = [item for item in overview_fields if item[0] in _NARRATIVE_LABELS]
+    request_fields = [item for item in overview_fields if item[0] not in _NARRATIVE_LABELS]
+
+    if requester_index is not None:
+        consumed.add(requester_index)
+    if overview_index is not None:
+        consumed.add(overview_index)
+
+    if requester_fields or request_fields:
+        section_number += 1
+        _add_section_heading(document, "의뢰 개요", section_number)
+        if requester_fields:
+            _add_group_heading(document, "의뢰자 정보")
+            _add_key_value_table(document, requester_fields)
+        if request_fields:
+            _add_group_heading(document, "의뢰 기본 정보 및 해석유형")
+            _add_key_value_table(document, request_fields)
+
+    if narrative_fields:
+        section_number += 1
+        _add_section_heading(document, "해석 요청사항", section_number)
+        _add_narrative_fields(document, narrative_fields)
+
+    if geometry_index is not None:
+        consumed.add(geometry_index)
+        section_number += 1
+        _add_section_heading(document, "해석 대상", section_number)
+        _render_blocks(document, _section_blocks(sections[geometry_index]), section_title="해석 대상")
+
+    if conditions_index is not None:
+        consumed.add(conditions_index)
+        section_number += 1
+        _add_section_heading(document, "해석 조건", section_number)
+        _render_blocks(document, _section_blocks(sections[conditions_index]), section_title="해석 조건")
+
+    # Preserve additive or future SCREEN-06 sections without forcing them into a
+    # known semantic group. Case Matrix remains last as the request conclusion.
+    for index, section in enumerate(sections):
+        if index in consumed or index == case_index:
+            continue
+        title = _text(section.get("title")) or "추가 정보"
+        blocks = _section_blocks(section)
+        if not blocks:
+            continue
+        section_number += 1
+        _add_section_heading(document, title, section_number)
+        _render_blocks(document, blocks, section_title=title)
+
+    if case_index is None:
+        return
+
+    consumed.add(case_index)
+    case_section = sections[case_index]
+    case_table = _find_table(case_section, "case_matrix")
+    case_blocks = _section_blocks(case_section)
+    headers = _items(case_table.get("headers")) if case_table is not None else []
+    page_width_cm = _PORTRAIT_CONTENT_WIDTH_CM
+    if len(headers) >= 5:
+        landscape = document.add_section(WD_SECTION.NEW_PAGE)
+        _configure_landscape_section(landscape)
+        page_width_cm = _LANDSCAPE_CONTENT_WIDTH_CM
+
+    section_number += 1
+    _add_section_heading(document, "Case 구성", section_number)
+    if case_table is not None:
+        _add_case_summary(document, len(_items(case_table.get("rows"))))
+    _render_blocks(
+        document,
+        case_blocks,
+        section_title="Case Matrix",
+        page_width_cm=page_width_cm,
+    )
 
 
 
 def build_word_docx(preview: Mapping[str, Any]) -> bytes:
-    """Create a styled DOCX from the serialized current preview DOM, in DOM order.
+    """Create a document-first DOCX from the serialized current preview DOM.
 
     Input contract is the browser Preview plus additive request identity:
         {"request_title": str, "request_no": str, "sections": [...]}
 
-    Supported block types remain: field, group, stale, table.
+    The Preview/API contract and supported block types remain unchanged. The
+    presentation is intentionally recomposed for an engineering request reader.
     """
     _require_python_docx()
 
@@ -679,42 +787,12 @@ def build_word_docx(preview: Mapping[str, Any]) -> bytes:
         preview.get("request_no", metadata.get("request_no")),
     )
 
-    section_index = 0
-
-    for section_value in _items(preview.get("sections")):
-        section = _mapping(section_value)
-        title = _text(section.get("title"))
-        blocks = [_mapping(block) for block in _items(section.get("blocks"))]
-        if not title and not blocks:
-            continue
-
-        section_index += 1
-        _add_section_heading(document, title or "구분", section_index)
-
-        field_buffer: list[tuple[str, str]] = []
-
-        def flush_fields() -> None:
-            nonlocal field_buffer
-            if field_buffer:
-                _add_field_grid(document, field_buffer)
-                field_buffer = []
-
-        for block in blocks:
-            kind = _text(block.get("type"))
-            if kind == "field":
-                field_buffer.append((_text(block.get("label")) or "항목", _text(block.get("value")) or "-"))
-                continue
-
-            flush_fields()
-
-            if kind == "group":
-                _add_group_heading(document, block.get("title"))
-            elif kind == "stale":
-                _add_stale_notice(document, _text(block.get("text")) or "-")
-            elif kind == "table":
-                _add_data_table(document, block, page_width_cm=17.0, section_title=title)
-
-        flush_fields()
+    sections = [
+        _mapping(section)
+        for section in _items(preview.get("sections"))
+        if _text(_mapping(section).get("title")) or _items(_mapping(section).get("blocks"))
+    ]
+    _render_semantic_document(document, sections)
 
     buffer = BytesIO()
     document.save(buffer)
