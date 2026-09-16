@@ -41,6 +41,8 @@ _LABEL_FILL = "F4F5F6"
 _ALT_ROW_FILL = "FAFBFC"
 _SECTION_RULE_COLOR = "AEB5BC"
 _PORTRAIT_CONTENT_WIDTH_CM = 17.0
+_TABLE_LABEL_SIZE_PT = 7.5
+_TABLE_VALUE_SIZE_PT = 7.0
 _TABLE_BULLET_GLYPHS = "•●▪◦∙‣⁃◉○◎◆◇▶►▸‧・·"
 _LEADING_TABLE_BULLET_RE = re.compile(rf"(?m)^[ \t]*[{_TABLE_BULLET_GLYPHS}]+[ \t]*")
 _SPACED_TABLE_BULLET_RE = re.compile(rf"[ \t]+[{_TABLE_BULLET_GLYPHS}]+[ \t]+")
@@ -226,7 +228,7 @@ def _set_cell_text(
     *,
     bold: bool = False,
     color: str = _TEXT_COLOR,
-    size_pt: float = 9.0,
+    size_pt: float = _TABLE_VALUE_SIZE_PT,
     align: Any = None,
     compact: bool = False,
     character_spacing_twips: int | None = None,
@@ -328,8 +330,14 @@ def _add_request_identity(document: Any, request_title: Any, request_no: Any) ->
         for cell, width in zip(row.cells, widths):
             cell.width = width
         _set_cell_shading(row.cells[0], _LABEL_FILL)
-        _set_cell_text(row.cells[0], values[0], bold=True, color=_MUTED_COLOR, size_pt=9.0)
-        _set_cell_text(row.cells[1], values[1], size_pt=9.0)
+        _set_cell_text(
+            row.cells[0],
+            values[0],
+            bold=True,
+            color=_MUTED_COLOR,
+            size_pt=_TABLE_LABEL_SIZE_PT,
+        )
+        _set_cell_text(row.cells[1], values[1], size_pt=_TABLE_VALUE_SIZE_PT)
 
     spacer = document.add_paragraph()
     _set_paragraph_spacing(spacer, before=0, after=7, line=1.0)
@@ -359,7 +367,7 @@ def _add_stale_notice(document: Any, text: Any) -> None:
     _set_table_borders(table, color="C6C6C6", size="5")
     cell = table.cell(0, 0)
     _set_cell_shading(cell, "F7F7F7")
-    _set_cell_text(cell, text, bold=True, color=_MUTED_COLOR, size_pt=9.0)
+    _set_cell_text(cell, text, bold=True, color=_MUTED_COLOR, size_pt=_TABLE_LABEL_SIZE_PT)
 
 
 def _add_key_value_table(
@@ -390,18 +398,30 @@ def _add_key_value_table(
 
         left_label, left_value = fields[offset]
         _set_cell_shading(row.cells[0], _LABEL_FILL)
-        _set_cell_text(row.cells[0], left_label, bold=True, color=_MUTED_COLOR, size_pt=9.0)
-        _set_cell_text(row.cells[1], left_value, size_pt=9.0)
+        _set_cell_text(
+            row.cells[0],
+            left_label,
+            bold=True,
+            color=_MUTED_COLOR,
+            size_pt=_TABLE_LABEL_SIZE_PT,
+        )
+        _set_cell_text(row.cells[1], left_value, size_pt=_TABLE_VALUE_SIZE_PT)
 
         if offset + 1 < len(fields):
             right_label, right_value = fields[offset + 1]
             _set_cell_shading(row.cells[2], _LABEL_FILL)
-            _set_cell_text(row.cells[2], right_label, bold=True, color=_MUTED_COLOR, size_pt=9.0)
-            _set_cell_text(row.cells[3], right_value, size_pt=9.0)
+            _set_cell_text(
+                row.cells[2],
+                right_label,
+                bold=True,
+                color=_MUTED_COLOR,
+                size_pt=_TABLE_LABEL_SIZE_PT,
+            )
+            _set_cell_text(row.cells[3], right_value, size_pt=_TABLE_VALUE_SIZE_PT)
         else:
             value_cell = row.cells[1].merge(row.cells[2]).merge(row.cells[3])
             value_cell.width = Cm(page_width_cm - label_width)
-            _set_cell_text(value_cell, left_value, size_pt=9.0)
+            _set_cell_text(value_cell, left_value, size_pt=_TABLE_VALUE_SIZE_PT)
 
 def _add_narrative_field(document: Any, label: str, value: str) -> None:
     """Give long request context enough horizontal and vertical reading space."""
@@ -416,7 +436,13 @@ def _add_narrative_field(document: Any, label: str, value: str) -> None:
 
     label_cell = table.cell(0, 0)
     _set_cell_shading(label_cell, _LABEL_FILL)
-    _set_cell_text(label_cell, label, bold=True, color=_ACCENT_COLOR, size_pt=9.0)
+    _set_cell_text(
+        label_cell,
+        label,
+        bold=True,
+        color=_ACCENT_COLOR,
+        size_pt=_TABLE_LABEL_SIZE_PT,
+    )
 
     value_cell = table.cell(1, 0)
     value_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
@@ -425,7 +451,7 @@ def _add_narrative_field(document: Any, label: str, value: str) -> None:
     paragraph.clear()
     paragraph.style = "Normal"
     _set_paragraph_spacing(paragraph, line=1.05)
-    _set_run_style(paragraph.add_run(value or "-"), size_pt=9.0)
+    _set_run_style(paragraph.add_run(value or "-"), size_pt=_TABLE_VALUE_SIZE_PT)
 
 def _add_narrative_fields(document: Any, fields: Sequence[tuple[str, str]]) -> None:
     for index, (label, value) in enumerate(fields):
@@ -526,7 +552,7 @@ def _add_data_table(
         paragraph = document.add_paragraph()
         _set_paragraph_spacing(paragraph, before=2, after=5, line=1.0)
         run = paragraph.add_run(caption)
-        _set_run_style(run, size_pt=9.5, bold=True, color=_MUTED_COLOR)
+        _set_run_style(run, size_pt=_TABLE_LABEL_SIZE_PT, bold=True, color=_MUTED_COLOR)
 
     column_count = max(len(headers), max((len(row) for row in rows), default=0))
     if column_count <= 0:
@@ -563,7 +589,7 @@ def _add_data_table(
                 value,
                 bold=True,
                 color=_TEXT_COLOR,
-                size_pt=7.5 if is_case_matrix else 9.0,
+                size_pt=_TABLE_LABEL_SIZE_PT,
                 compact=is_case_matrix,
                 character_spacing_twips=-3 if is_case_matrix else None,
             )
@@ -579,7 +605,7 @@ def _add_data_table(
             _set_cell_text(
                 cell,
                 value,
-                size_pt=7.0 if is_case_matrix else 9.0,
+                size_pt=_TABLE_VALUE_SIZE_PT,
                 align=WD_ALIGN_PARAGRAPH.CENTER if is_case_matrix and index == 0 else None,
                 compact=is_case_matrix,
                 character_spacing_twips=-3 if is_case_matrix else None,
@@ -651,7 +677,7 @@ def _add_case_summary(document: Any, row_count: int) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=0, after=7, line=1.05)
     run = paragraph.add_run(f"총 {row_count}개 Case로 구성됩니다.")
-    _set_run_style(run, size_pt=9.0, color=_MUTED_COLOR)
+    _set_run_style(run, size_pt=_TABLE_VALUE_SIZE_PT, color=_MUTED_COLOR)
 
 
 def _case_table_for_word(case_table: Mapping[str, Any]) -> dict[str, Any]:

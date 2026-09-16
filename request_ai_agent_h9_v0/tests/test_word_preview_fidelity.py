@@ -243,7 +243,7 @@ def test_table_cells_remove_bullet_glyphs_and_list_numbering():
         assert pagination_property not in document_xml
 
 
-def test_non_case_table_content_uses_one_typography_rule():
+def test_all_table_content_uses_the_case_matrix_typography_scale():
     document = Document(BytesIO(build_word_docx(_preview_payload())))
 
     for table in document.tables:
@@ -255,15 +255,17 @@ def test_non_case_table_content_uses_one_typography_rule():
                         if run.text:
                             assert run.font.name == "Malgun Gothic"
 
-    for table_index, table in enumerate(document.tables):
-        if table_index == len(document.tables) - 1:
-            continue
+    for table in document.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         if run.text:
-                            assert run.font.size.pt == pytest.approx(9.0)
+                            expected_size = 7.5 if run.bold else 7.0
+                            assert run.font.size.pt == pytest.approx(expected_size)
+
+    case_summary = next(paragraph for paragraph in document.paragraphs if paragraph.text.startswith("총 1개 Case"))
+    assert case_summary.runs[0].font.size.pt == pytest.approx(7.0)
 
 
 def test_case_table_keeps_each_screen_row_and_removes_only_generic_names():
