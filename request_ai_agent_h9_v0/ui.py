@@ -806,16 +806,13 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form{font-family:var(--request-workspace-font)}
     .workspace-shell .workspace-form .screen-heading{color:var(--request-workspace-muted)}
     .workspace-shell .workspace-form .screen-heading span{color:var(--request-workspace-ink)}
-    .workspace-shell .screen-group > .section,
-    .workspace-shell .workspace-form.screen-group > .section{border-color:var(--request-workspace-border);border-radius:var(--request-workspace-radius);background:var(--request-workspace-surface);box-shadow:var(--request-workspace-shadow)}
+    .workspace-shell .screen-group > .section{border-color:var(--request-workspace-border);border-radius:var(--request-workspace-radius);background:var(--request-workspace-surface);box-shadow:var(--request-workspace-shadow)}
     .workspace-shell .screen-group > .request-prep-card{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
     .workspace-shell .request-prep-card .prep-info-icon,.workspace-shell .request-prep-card .prep-head-copy{display:none}
     .workspace-shell .request-prep-card .prep-head{min-height:0;padding:0;border:0;background:transparent}
     .workspace-shell .request-prep-card .prep-actions:has(button:not([hidden])){margin-bottom:13px}
-    .workspace-shell .screen-group > .section > .section-head,
-    .workspace-shell .workspace-form.screen-group > .section > .section-head{background:var(--request-workspace-surface);border-color:var(--request-workspace-border)}
-    .workspace-shell .screen-group > .section > .section-body,
-    .workspace-shell .workspace-form.screen-group > .section > .section-body{border-color:var(--request-workspace-border)}
+    .workspace-shell .screen-group > .section > .section-head{background:var(--request-workspace-surface);border-color:var(--request-workspace-border)}
+    .workspace-shell .screen-group > .section > .section-body{border-color:var(--request-workspace-border)}
     .workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions{
       margin-bottom:0;
       border:0;
@@ -825,8 +822,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       overflow:visible;
     }
     .workspace-shell .condition-input-screen > .screen-scroll-content > #section-conditions > .section-body{padding:0;border:0}
-    .workspace-shell .screen-group > .section > .section-head h3,
-    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{color:var(--request-workspace-ink);font-size:16px;font-weight:600}
+    .workspace-shell .screen-group > .section > .section-head h3{color:var(--request-workspace-ink);font-size:16px;font-weight:600}
     .workspace-shell .section-title-icon{width:20px;height:20px;display:inline-grid;flex:0 0 20px;place-items:center;color:var(--request-workspace-accent)}
     .workspace-shell .section-title-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
     .workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}
@@ -867,13 +863,13 @@ HTML_TEMPLATE = r"""<!doctype html>
     .topbar .subtitle{display:none}
     .workspace-shell .screen-heading-code{display:none}
     .workspace-shell .screen-description{margin:0 0 26px;color:#525252;font-size:14px;font-weight:400;line-height:1.55}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-ink)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .section-head h3{color:var(--request-workspace-ink)}
     .workspace-shell .geometry-screen .chev,
     .workspace-shell .stage-static-screen .chev,
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .chev{display:none}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .chev{display:none}
     .workspace-shell .geometry-screen .section-meta,
     .workspace-shell .stage-static-screen .section-meta,
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .section-meta{display:none}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .section-meta{display:none}
     .workspace-shell .product-panel{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .product-panel-head strong,
     .workspace-shell .product-card-head h4{color:var(--request-workspace-accent)}
@@ -881,7 +877,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .product-card{border-color:var(--request-workspace-border);box-shadow:none}
     .workspace-shell .condition-input-screen .condition-group{border-radius:0;box-shadow:none}
     .workspace-shell .case-toolbar{border-color:var(--request-workspace-border);background:var(--soft)}
-    .workspace-shell .preview-actions{display:flex;align-items:center;gap:9px;border-top:1px solid var(--request-workspace-border);padding-top:10px}
+    .workspace-shell .preview-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-top:24px;border-top:1px solid var(--request-workspace-border);padding-top:16px}
     .workspace-shell .word-export-required-warning{color:var(--ui-error);font-size:12px;font-weight:600!important}
     .workspace-shell .request-content-screen > .screen-scroll-content > .section{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
     .workspace-shell .request-content-screen > .screen-scroll-content > .section + .section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
@@ -941,51 +937,70 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head{min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-body{padding:0;border-top:0}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head h3{color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap{border-radius:7px}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-case_no{width:5%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-geometry_id{width:17%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-fan{width:16%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-heat_exchanger{width:24%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-space_environment{width:16%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-supply_air{width:16%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-remove{width:6%}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th,
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap td{border-right:1px solid var(--line)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th:last-child,
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap td:last-child{border-right:0}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}
+    .workspace-shell .case-matrix-wrap{border-radius:7px}
+    .workspace-shell .case-matrix-grid{min-width:900px;width:100%;table-layout:fixed}
+    .workspace-shell .case-matrix-grid th{font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .case-matrix-grid .case-col-case_no{width:5%}
+    .workspace-shell .case-matrix-grid .case-col-geometry_id{width:17%}
+    .workspace-shell .case-matrix-grid .case-col-fan{width:16%}
+    .workspace-shell .case-matrix-grid .case-col-heat_exchanger{width:24%}
+    .workspace-shell .case-matrix-grid .case-col-space_environment{width:16%}
+    .workspace-shell .case-matrix-grid .case-col-supply_air{width:16%}
+    .workspace-shell .case-matrix-grid .case-col-remove{width:6%}
+    .workspace-shell .case-matrix-grid th,
+    .workspace-shell .case-matrix-grid td{border-right:1px solid var(--line)}
+    .workspace-shell .case-matrix-grid th:last-child,
+    .workspace-shell .case-matrix-grid td:last-child{border-right:0}
+    .workspace-shell .case-matrix-grid tbody td{height:62px;padding:6px 8px;vertical-align:top}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td.case-number,
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td.case-remove-cell{vertical-align:middle}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-body{padding:16px;border-top:0}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head h3{color:var(--ink)}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-doc{gap:12px}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section{padding:16px;border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-section h4{margin:0 0 8px;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv{font-size:14px;font-weight:400;line-height:1.45}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv > span:first-child{color:#45484B;font-size:13px;font-weight:500;line-height:1.45}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-kv > span:last-child{color:var(--ink);font-size:14px;font-weight:400;line-height:1.45}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table th{font-size:13px;font-weight:500;line-height:1.45}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table td{font-size:14px;font-weight:400;line-height:1.45}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] :is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}
-    .workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:var(--ui-error)}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message:empty{display:none}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-head{display:flex;align-items:flex-start;gap:12px}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon{display:inline-grid;flex:0 0 20px;width:20px;height:20px;place-items:center;color:var(--ui-warning);font-size:18px;line-height:1}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .case-review-message.error .coverage-warning-icon{color:var(--ui-error)}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-title{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-warning-copy{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
-    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.workspace-form[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
-    .workspace-shell :is(.request-content-screen,.geometry-screen,.stage-static-screen,.workspace-form[data-screen="SCREEN-06"]) > .section > .section-head h3{color:var(--ui-text-primary)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] > .screen-scroll-content > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] > .screen-scroll-content > #section-preview > .section-head{min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] > .screen-scroll-content > #section-preview > .section-body{padding:0;border-top:0}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] > .screen-scroll-content > #section-preview > .section-head h3{color:var(--ink)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-doc{display:block}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-section{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-section + .preview-section{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-section h4{margin:0 0 13px;color:var(--ink);font-size:16px;font-weight:600;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-kv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 24px}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-kv{grid-template-columns:150px minmax(0,1fr);gap:10px;padding:0;border-top:0;font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-kv > span:first-child{color:#45484B;font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-kv > span:last-child{color:var(--ink);font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-review-narrative{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:18px;padding-top:18px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-review-narrative .preview-kv{display:block}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-review-narrative .preview-kv > span:first-child{display:block}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-review-narrative .preview-kv > span:last-child{display:block;margin-top:6px;line-height:1.55}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table-wrap{border:1px solid var(--ui-border);border-radius:7px;overflow:auto}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table th{padding:8px 9px;background:#F7F8FA;text-align:left;font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table td{padding:8px 9px;font-size:14px;font-weight:400;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-table{table-layout:fixed}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-table :is(th,td){overflow-wrap:anywhere}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-role{width:14%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-drawing{width:26%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-change{width:60%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table-value{display:inline-flex;align-items:center;gap:4px}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block + .preview-condition-block{margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block h5,
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair h5{margin:0 0 10px;color:var(--ink);font-size:13px;font-weight:500;line-height:1.45}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div+div{padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair .preview-kv-grid{grid-template-columns:1fr}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] :is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:var(--ui-error)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message:empty{display:none}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-warning-head{display:flex;align-items:flex-start;gap:12px}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-warning-icon{display:inline-grid;flex:0 0 20px;width:20px;height:20px;place-items:center;color:var(--ui-warning);font-size:18px;line-height:1}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message.error .coverage-warning-icon{color:var(--ui-error)}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-warning-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-warning-title{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-warning-copy{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-unused-list{display:grid;gap:6px}
+    .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .coverage-unused-row{font-size:13px;font-weight:400;line-height:1.55}
+    .workspace-shell :is(.request-content-screen,.geometry-screen,.stage-static-screen) > .section > .section-head h3{color:var(--ui-text-primary)}
     .workspace-shell .request-content-screen textarea{min-height:96px;padding:10px 11px;background:var(--paper);font-size:14px;font-weight:400;line-height:1.55;resize:vertical}
     .workspace-content{grid-area:workspace-content;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto;align-content:start;gap:0;overflow:visible}
     .workspace-shell .main{overflow:visible}
@@ -1021,11 +1036,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       .workspace-shell .main{min-height:0;overflow:hidden}
       .workspace-shell .workspace{height:100%;min-height:0;padding:0;overflow:hidden}
       .workspace-tab.active{height:100%;min-height:0}
-      .workspace-tab#tab-preview.active{padding:var(--ui-workspace-padding)}
       .workspace-form{height:100%;min-height:0;display:flex;flex-direction:column}
       .workspace-form > .screen-group:not([hidden]){min-height:100%;display:flex;flex-direction:column}
       .workspace-form > .screen-group[data-screen="SCREEN-01"]:not([hidden]){padding:var(--ui-workspace-padding)}
-      .workspace-form > .screen-group[data-screen="SCREEN-02"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-03"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-04"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-05"]:not([hidden]){height:100%;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto}
+      .workspace-form > .screen-group[data-screen="SCREEN-02"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-03"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-04"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-05"]:not([hidden]),.workspace-form > .screen-group[data-screen="SCREEN-06"]:not([hidden]){height:100%;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto}
       .workspace-form > .screen-group:not([hidden]) > .screen-scroll-content{min-height:0;padding:var(--ui-workspace-padding) var(--ui-workspace-padding) 0;overflow-y:auto;overscroll-behavior:contain}
       .workspace-form > .screen-group:not([hidden]) > .screen-action-bar{flex:0 0 auto;margin:0 var(--ui-workspace-padding) var(--ui-workspace-padding)}
       .chat-log{min-height:0;overflow-y:auto;overscroll-behavior:contain}
@@ -1057,6 +1071,14 @@ HTML_TEMPLATE = r"""<!doctype html>
     .msg{max-width:100%;margin-bottom:12px;border-radius:9px;padding:11px 12px;font-size:14px;font-weight:400;line-height:1.65}
     .msg.assistant{border-color:var(--ui-border-subtle);background:var(--ui-surface);box-shadow:none}
     .msg.user{border-color:var(--ui-border-subtle);background:var(--ui-user-bubble)}
+    @media (max-width:1180px){
+      .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-review-narrative,
+      .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair{grid-template-columns:1fr}
+      .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div+div{padding-left:0;padding-top:20px;border-left:0;border-top:1px solid var(--ui-border-subtle)}
+    }
+    @media (max-width:720px){
+      .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-kv-grid{grid-template-columns:1fr}
+    }
     @media (max-width:1180px){
       .topbar{
         height:var(--global-header-height);grid-template-columns:auto minmax(220px,1fr);align-items:center;
@@ -1345,23 +1367,27 @@ HTML_TEMPLATE = r"""<!doctype html>
           </div>
         </div>
         <div class="workspace-tab" id="tab-preview" hidden aria-hidden="true">
-          <div class="workspace-form screen-group" data-screen="SCREEN-06" aria-labelledby="screen06Heading">
-            <h2 class="screen-heading" id="screen06Heading"><span>전체 확인</span></h2>
-            <p class="screen-description">입력한 의뢰 내용을 확인한 뒤 Word 의뢰서를 생성합니다.</p>
-            <section class="section open" id="section-preview" data-section="preview">
-              <div class="section-head">
-                <div class="section-title"><h3>의뢰서 미리보기</h3></div>
-                <div class="section-meta" id="meta-preview"></div>
-              </div>
-              <div class="section-body">
-                <div id="documentPreviewPanel"></div>
-                <div id="previewCoverageWarning"></div>
-                <div class="preview-actions">
-                  <button class="primary" id="wordExportSlotBtn" type="button">의뢰서 생성(Word)</button>
-                  <span class="word-export-required-warning" id="wordExportRequiredWarning" role="status" hidden><span class="preview-missing-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><circle cx="12" cy="17" r=".7"></circle></svg></span><span>필수 입력 누락</span></span>
+          <div class="workspace-form">
+            <div class="screen-group" data-screen="SCREEN-06" aria-labelledby="screen06Heading">
+              <div class="screen-scroll-content">
+              <h2 class="screen-heading" id="screen06Heading"><span>전체 확인</span></h2>
+              <p class="screen-description">입력한 의뢰 내용을 확인한 뒤 Word 의뢰서를 생성합니다.</p>
+              <section class="section open" id="section-preview" data-section="preview">
+                <div class="section-head">
+                  <div class="section-title"><h3>의뢰서 미리보기</h3></div>
+                  <div class="section-meta" id="meta-preview"></div>
                 </div>
+                <div class="section-body">
+                  <div id="documentPreviewPanel"></div>
+                  <div id="previewCoverageWarning"></div>
+                  <div class="preview-actions">
+                    <span class="word-export-required-warning" id="wordExportRequiredWarning" role="status" hidden><span class="preview-missing-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><circle cx="12" cy="17" r=".7"></circle></svg></span><span>필수 입력 누락</span></span>
+                    <button class="primary" id="wordExportSlotBtn" type="button">의뢰서 생성(Word)</button>
+                  </div>
+                </div>
+              </section>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       </div>
@@ -3361,21 +3387,32 @@ HTML_TEMPLATE = r"""<!doctype html>
       return notices.join("");
     }
 
-    function caseGroupedConditionLabel(type, fields){
-      const specs = {
+    function conditionUnitFields(type){
+      return {
         space_environment:[["room_temp","°C"],["room_rh","%"]],
         supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]],
       }[type] || [];
+    }
+
+    function conditionFieldDisplayWithUnit(type, key, field){
+      const value = contextText(fieldDisplayValue(field));
+      if (!value) return "";
+      const unit = contextText(asArray(conditionUnitFields(type)).find(item => item[0] === key)?.[1]);
+      if (!unit) return value;
+      const compact = value.replace(/\s+/g, "").toLowerCase();
+      const hasUnit = unit === "°C"
+        ? compact.endsWith("°c") || compact.endsWith("℃")
+        : unit === "%" ? compact.endsWith("%") : true;
+      return hasUnit ? value : `${value}${unit}`;
+    }
+
+    function caseGroupedConditionLabel(type, fields){
       const parts = [];
-      for (const [key, unit] of specs) {
+      for (const [key] of conditionUnitFields(type)) {
         if (!Object.prototype.hasOwnProperty.call(fields, key)) continue;
-        const value = contextText(fieldDisplayValue(fields[key]));
+        const value = conditionFieldDisplayWithUnit(type, key, fields[key]);
         if (!value) return "";
-        const compact = value.replace(/\s+/g, "").toLowerCase();
-        const hasUnit = unit === "°C"
-          ? compact.endsWith("°c") || compact.endsWith("℃")
-          : unit === "%" ? compact.endsWith("%") : true;
-        parts.push(hasUnit ? value : `${value}${unit}`);
+        parts.push(value);
       }
       return parts.join(" / ");
     }
@@ -3579,6 +3616,18 @@ HTML_TEMPLATE = r"""<!doctype html>
       return {text:parts.join(" · "), tone:missingCount || duplicateCount ? "error" : coverage.complete === false ? "warning" : coverage.complete === true ? "ok" : ""};
     }
 
+    function caseColumnDisplayLabel(column){
+      const item = asObj(column), key = contextText(item.key);
+      if (key === "case_no") return "Case";
+      if (key === "geometry_id") return "해석 제품";
+      if (key === "remove") return "삭제";
+      return contextText(item.label) || key;
+    }
+
+    function caseColumnClass(key){
+      return `case-col-${contextText(key).replace(/[^A-Za-z0-9_-]/g, "-")}`;
+    }
+
     function caseTableHtml(){
       const matrix = asObj(requestState.case_matrix);
       const columns = asArray(matrix.visible_columns);
@@ -3588,14 +3637,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       const validation = caseTableValidationPresentation();
       const toolbar = `<div class="case-matrix-toolbar"><div class="case-matrix-title"><h4>Case 조합표</h4><span class="case-count">Case ${rows.length}개</span>${validation.text ? `<span class="case-validation-status ${esc(validation.tone)}">${esc(validation.text)}</span>` : ""}</div><button class="primary" type="button" data-action="add-case">Case 추가</button></div>`;
       if (!columns.length || !rows.length) return `${toolbar}<div class="empty">형상 또는 Case 추가 후 직접 매핑해 주세요.</div>`;
-      const caseColumnDisplayLabel = column => {
-        const item = asObj(column), key = contextText(item.key);
-        if (key === "case_no") return "Case";
-        if (key === "geometry_id") return "해석 제품";
-        if (key === "remove") return "삭제";
-        return contextText(item.label) || key;
-      };
-      const caseColumnClass = key => `case-col-${contextText(key).replace(/[^A-Za-z0-9_-]/g, "-")}`;
       const head = columns.map(column => {
         const item = asObj(column), key = contextText(item.key);
         return `<th class="${caseColumnClass(key)}">${esc(caseColumnDisplayLabel(item))}</th>`;
@@ -3613,7 +3654,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const deleteNotice = lastCaseDeleteNoticeVisible
         ? `<div class="case-action-notice" data-last-case-delete-notice role="status"><strong>마지막 Case는 삭제할 수 없습니다.</strong><span>해석을 위해 최소 1개의 Case가 필요합니다.</span></div>`
         : "";
-      return `${toolbar}<div class="matrix-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${deleteNotice}`;
+      return `${toolbar}<div class="matrix-wrap case-matrix-wrap"><table class="case-matrix-grid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>${deleteNotice}`;
     }
 
     function caseValidatorState(state=requestState){
@@ -3820,10 +3861,16 @@ HTML_TEMPLATE = r"""<!doctype html>
       const isMissing = field => !contextText(rawValue(field));
       const missingIcon = () => `<span class="preview-missing-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><circle cx="12" cy="17" r=".7"></circle></svg></span>`;
       const previewFieldLabel = (label, missing, attributes="") => `<span class="preview-field-label${missing ? " preview-field-missing" : ""}" ${attributes}>${missing ? missingIcon() : ""}<span>${esc(label)}</span></span>`;
+      const previewTableValue = (label, displayValue, missing=false) => {
+        const text = contextText(displayValue) || "-";
+        return `<span class="preview-table-value${missing ? " preview-field-missing" : ""}" data-preview-missing="${missing}" aria-label="${esc(`${label}: ${text}`)}">${missing ? missingIcon() : ""}<span>${esc(text)}</span></span>`;
+      };
       const kv = (label, field) => {
         const missing = isMissing(field);
         return `<div class="preview-kv" data-preview-field="${esc(label)}" data-preview-missing="${missing}">${previewFieldLabel(label, missing, "data-preview-label")}<span data-preview-value>${esc(value(field))}</span></div>`;
       };
+      const kvGrid = items => `<div class="preview-kv-grid">${items.join("")}</div>`;
+      const tableWrap = (table, className="") => `<div class="preview-table-wrap${className ? ` ${className}` : ""}">${table}</div>`;
       const section = (key, title, body) => `<section class="preview-section" id="preview-section-${esc(key)}" data-preview-section="${esc(key)}"><h4 data-preview-section-title>${esc(title)}</h4>${body}</section>`;
       const basic = asObj(state.basic_info);
       const overview = asObj(state.analysis_overview);
@@ -3832,56 +3879,45 @@ HTML_TEMPLATE = r"""<!doctype html>
       const productDrawingMissing = !products.length || products.some(product => !contextText(productText(product, "drawing_no")));
       const productDescriptionMissing = products.some((product, index) => index > 0 && !contextText(productDescription(product, true)));
       const productRows = products.length ? products.map((product, index) => `<tr data-preview-product="${esc(product.role || (index ? "comparison" : "base"))}"><td>${esc(index ? `비교 ${index}` : "Base")}</td><td>${esc(productText(product, "drawing_no") || "-")}</td><td>${esc(index ? productDescription(product, true) || "-" : "기존 형상")}</td></tr>`).join("") : `<tr><td colspan="3">등록된 제품이 없습니다.</td></tr>`;
-      const conditionLabels = {operating:"운전 조건",heat_exchanger:"열교환기 사양",supply_air:"취출 공기 조건",space_environment:"공간 환경 조건",name:"사양",fan:"운전",fan_rpm:"팬 회전수(RPM)",fin_type:"Fin type",tube_diameter:"관 직경(Pi)",row_count:"열 수",fpi:"FPI",heat_exchanger_temp:"취출 온도 (°C)",heat_exchanger_rh:"취출 상대습도 (%)",room_temp:"공간 온도 (°C)",room_rh:"공간 상대습도 (%)"};
-      const previewFieldKeysFor = (type, fields) => {
-        const orderedKeys = {
-          operating: [],
-          heat_exchanger: ["tube_diameter", "fin_type", "row_count", "fpi"],
-          supply_air: ["heat_exchanger_temp", "heat_exchanger_rh"],
-          space_environment: ["room_temp", "room_rh"],
-        };
-        return (orderedKeys[type] || Object.keys(fields)).filter(key => Object.prototype.hasOwnProperty.call(fields, key));
-      };
-      const previewConditionName = (row, cardType) => {
-        if (cardType === "operating") return contextText(row.name);
-        if (cardType === "heat_exchanger") return contextText(fieldDisplayValue(asObj(row.fields).name));
-        return "";
-      };
-      const previewConditionTitle = (row, cardType) => {
-        const title = conditionLabels[cardType] || row.label || row.id || "조건";
-        const name = previewConditionName(row, cardType);
-        return name ? `${title} (${name})` : title;
-      };
-      const previewConditionOrder = {operating: 10, heat_exchanger: 20, space_environment: 30, supply_air: 40};
-      const conditionRows = asArray(asObj(state.conditions).condition_sets)
-        .slice()
-        .sort((left, right) => (previewConditionOrder[contextText(asObj(left).type)] || 99) - (previewConditionOrder[contextText(asObj(right).type)] || 99))
-        .map(card => {
-        const row = asObj(card);
-        const cardType = contextText(row.type);
-        const cardLabels = cardType === "heat_exchanger" ? {...conditionLabels, ...heatExchangerFieldLabels(heatExchangerType([row]))} : conditionLabels;
-        const conditionItem = (label, field) => `<span class="preview-condition-item">${previewFieldLabel(label, isMissing(field))}<span>: ${esc(value(field))}</span></span>`;
-        const fields = previewFieldKeysFor(contextText(row.type), asObj(row.fields)).map(key => conditionItem(cardLabels[key] || key, asObj(row.fields)[key]));
-        const fanDisplay = operatingFanDisplay(row);
-        const fanPreviewText = fanDisplay.count === 1
-          ? `${fanDisplay.text} RPM`
-          : `팬 ${fanDisplay.count}개 · ${fanDisplay.text}${contextText(row.fan_rpm_mode) === "common" ? " RPM" : ""}`;
-        const fans = cardType === "operating"
-          ? [`<span class="preview-condition-item" aria-label="${esc(fanPreviewText)}">${previewFieldLabel("팬 회전수(RPM)", fanDisplay.missing)}<span>: ${esc(fanPreviewText)}</span></span>`]
-          : [];
-        const items = [...fans, ...fields];
-        return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(previewConditionTitle(row, cardType))}</td><td><div class="preview-condition-list">${items.join('<span class="preview-condition-separator" aria-hidden="true">/</span>') || "-"}</div></td></tr>`;
-      }).join("") || `<tr><td colspan="2">해석 조건이 없습니다.</td></tr>`;
+      const conditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj);
+      const conditionByType = type => conditionSets.filter(row => contextText(row.type) === type);
+      const operatingRows = conditionByType("operating").map((row, index) => {
+        const display = operatingFanDisplay(row), count = display.count;
+        const mode = contextText(row.fan_rpm_mode);
+        const setting = count === 1
+          ? `${display.text} RPM`
+          : mode === "common"
+            ? `${display.text.replace(/^모든 팬\s*/, "모든 팬 동일 · ")} RPM`
+            : `${display.text} RPM`;
+        return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(contextText(row.name) || `운전 ${index + 1}`)}</td><td>${esc(count || "-")}</td><td>${previewTableValue("팬 회전 설정", setting, display.missing)}</td></tr>`;
+      }).join("") || `<tr><td colspan="3">운전 조건이 없습니다.</td></tr>`;
+      const specificationRows = conditionByType("heat_exchanger").map((row, index) => {
+        const fields = asObj(row.fields), type = heatExchangerType([row]);
+        const labels = heatExchangerFieldLabels(type);
+        const name = contextText(fieldDisplayValue(fields.name)) || `사양 ${index + 1}`;
+        const keys = ["tube_diameter", "fin_type", "row_count", "fpi"];
+        const cells = keys.map(key => `<td>${previewTableValue(labels[key] || key, value(fields[key]), isMissing(fields[key]))}</td>`).join("");
+        return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(name)}</td><td>${esc(type || "-")}</td>${cells}</tr>`;
+      }).join("") || `<tr><td colspan="6">열교환기 사양이 없습니다.</td></tr>`;
+      const groupedField = (type, key) => asObj(asObj(conditionByType(type)[0]).fields)[key];
+      const groupedFieldValue = (type, key) => conditionFieldDisplayWithUnit(type, key, groupedField(type, key));
+      const environmentBody = kvGrid([kv("공간 온도", groupedFieldValue("space_environment", "room_temp")), kv("공간 상대습도", groupedFieldValue("space_environment", "room_rh"))]);
+      const supplyBody = kvGrid([kv("취출 온도", groupedFieldValue("supply_air", "heat_exchanger_temp")), kv("취출 상대습도", groupedFieldValue("supply_air", "heat_exchanger_rh"))]);
+      const operatingTable = tableWrap(`<table class="preview-table" data-preview-table="operating_conditions"><thead><tr><th></th><th>팬 개수</th><th>팬 회전 설정</th></tr></thead><tbody>${operatingRows}</tbody></table>`);
+      const specificationTable = tableWrap(`<table class="preview-table" data-preview-table="heat_exchanger_conditions"><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
+      const conditionsBody = `<div class="preview-condition-block"><h5>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5>열교환기 사양</h5>${specificationTable}</div><div class="preview-condition-pair"><div><h5>공간 환경 조건</h5>${environmentBody}</div><div><h5>취출 공기 조건</h5>${supplyBody}</div></div>`;
       const matrix = asObj(state.case_matrix);
       const matrixColumns = asArray(matrix.visible_columns).filter(column => asObj(column).key !== "remove");
       const rawMatrixRows = asArray(matrix.rows);
-      const matrixRows = rawMatrixRows.map(item => { const row = asObj(item); const cells = asObj(row.visible_cells); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => `<td>${esc(cells[asObj(column).key] || "-")}</td>`).join("")}</tr>`; }).join("");
-      const matrixTable = matrixColumns.length && matrixRows ? `<div class="matrix-wrap"><table class="preview-table" data-preview-table="case_matrix"><thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th>${previewFieldLabel(row.label || key, missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table></div>` : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
+      const matrixRows = rawMatrixRows.map(item => { const row = asObj(item); const cells = asObj(row.visible_cells); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => { const key = contextText(asObj(column).key); return `<td class="${caseColumnClass(key)}${key === "case_no" ? " case-number" : ""}">${esc(cells[key] || "-")}</td>`; }).join("")}</tr>`; }).join("");
+      const matrixTable = matrixColumns.length && matrixRows ? tableWrap(`<table class="preview-table case-matrix-grid" data-preview-table="case_matrix"><thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th class="${caseColumnClass(key)}">${previewFieldLabel(caseColumnDisplayLabel(row), missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table>`, "case-matrix-wrap") : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
+      const requestFields = [kv("의뢰 유형", overview.request_type), kv("프로젝트명(PMS)", overview.project_name), kv("개발 등급", overview.development_grade), kv("NPI 단계", overview.npi_stage), kv("모델명(Model Suffix)", overview.model_suffix), kv("희망 완료일", overview.desired_completion_date), kv("해석유형", context.analysis_type)];
+      const narrative = `<div class="preview-review-narrative">${kv("해석을 요청하게 된 배경", overview.request_description)}${kv("해석으로 확인하고 싶은 내용", overview.additional_result_request)}</div>`;
       panel.innerHTML = `<div class="preview-doc" data-preview-document="current-state">
-        ${section("requester", "의뢰자 정보", kv("사업부", basic.division) + kv("부서", basic.department) + kv("요청자", basic.requester_name) + kv("직급", basic.requester_role))}
-        ${section("overview", "요청 내용", kv("의뢰 유형", overview.request_type) + kv("프로젝트명(PMS)", overview.project_name) + kv("모델명(Model Suffix)", overview.model_suffix) + kv("개발 등급", overview.development_grade) + kv("NPI 단계", overview.npi_stage) + kv("희망 완료일", overview.desired_completion_date) + kv("해석을 요청하게 된 배경", overview.request_description) + kv("해석으로 확인하고 싶은 내용", overview.additional_result_request) + kv("해석유형", context.analysis_type))}
-        ${section("geometry", "해석 제품", `<div class="matrix-wrap"><table class="preview-table" data-preview-table="geometry"><thead><tr><th>형상</th><th>${previewFieldLabel("도면번호 (NPDM MCAD)", productDrawingMissing)}</th><th>${previewFieldLabel("설명", productDescriptionMissing)}</th></tr></thead><tbody>${productRows}</tbody></table></div>`)}
-        ${section("conditions", "해석 조건", `<div class="matrix-wrap"><table class="preview-table" data-preview-table="conditions"><thead><tr><th>조건</th><th>입력값</th></tr></thead><tbody>${conditionRows}</tbody></table></div>`)}
+        ${section("requester", "의뢰자 정보", kvGrid([kv("사업부", basic.division), kv("부서", basic.department), kv("요청자", basic.requester_name), kv("직급", basic.requester_role)]))}
+        ${section("overview", "요청 내용", `${kvGrid(requestFields)}${narrative}`)}
+        ${section("geometry", "해석 제품", tableWrap(`<table class="preview-table preview-product-table" data-preview-table="geometry"><colgroup><col class="preview-product-role"><col class="preview-product-drawing"><col class="preview-product-change"></colgroup><thead><tr><th>구분</th><th>${previewFieldLabel("총조립도 도면번호 (NPDM MCAD)", productDrawingMissing)}</th><th>${previewFieldLabel("Base 대비 변경점", productDescriptionMissing)}</th></tr></thead><tbody>${productRows}</tbody></table>`))}
+        ${section("conditions", "해석 조건", conditionsBody)}
         ${section("case-matrix", "Case Matrix", matrixTable)}
       </div>`;
       renderPreviewCaseMatrixStatus(state);

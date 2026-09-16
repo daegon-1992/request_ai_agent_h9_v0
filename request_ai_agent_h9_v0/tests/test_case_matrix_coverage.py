@@ -147,7 +147,7 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     assert case_common < case_table < duplicate_warning < case_status
     feedback_scope = (
         '.workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],'
-        '.workspace-form[data-screen="SCREEN-06"]) '
+        '.screen-group[data-screen="SCREEN-06"]) '
     )
     case_review_css = HTML_TEMPLATE.split(f"{feedback_scope}.case-review-message{{", 1)[1].split("}", 1)[0]
     assert "gap:12px" in case_review_css
@@ -207,14 +207,9 @@ def test_screen_five_uses_flat_case_section_and_compact_matrix_contracts():
     assert '.case-matrix-toolbar>[data-action="add-case"]{height:36px;min-height:36px;padding:0 11px;border:0;border-radius:7px;background:#34373E;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}' in HTML_TEMPLATE
     assert '.condition-row-action{width:34px;min-width:34px;height:34px;min-height:34px;' in HTML_TEMPLATE
     assert '.condition-row-action.remove{border-color:#C9CDD3;background:#fff;color:#444}' in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
-        '.matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
-        '.matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}'
-    ) in HTML_TEMPLATE
+    assert '.workspace-shell .case-matrix-grid{min-width:900px;width:100%;table-layout:fixed}' in HTML_TEMPLATE
+    assert '.workspace-shell .case-matrix-grid tbody td{height:62px;padding:6px 8px;vertical-align:top}' in HTML_TEMPLATE
+    assert '<div class="matrix-wrap case-matrix-wrap"><table class="case-matrix-grid">' in HTML_TEMPLATE
 
 
 def test_case_matrix_selection_presentations_are_derived_from_source_objects():
@@ -310,7 +305,7 @@ def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action
         "function caseValidatorState", 1
     )[0]
     screen_start = HTML_TEMPLATE.index('class="screen-group stage-static-screen" data-screen="SCREEN-05"')
-    screen_end = HTML_TEMPLATE.index('class="workspace-form screen-group" data-screen="SCREEN-06"', screen_start)
+    screen_end = HTML_TEMPLATE.index('class="screen-group" data-screen="SCREEN-06"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
     preserve = HTML_TEMPLATE.split("function preserveCaseSelections(changedSelect=null)", 1)[1].split(
         "function collectState()", 1
@@ -352,9 +347,10 @@ def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action
     assert 'if (mode === "individual") return {label, summary:`팬 ${count}개 · 팬별 입력`};' in operating_presentation
     assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in source_reference
     assert 'caseSourceSpecificationPresentation(specificationById.get(value), label)' in source_reference
-    assert 'if (key === "case_no") return "Case";' in case_table
-    assert 'if (key === "geometry_id") return "해석 제품";' in case_table
-    assert 'if (key === "remove") return "삭제";' in case_table
+    column_helpers = HTML_TEMPLATE.split("function caseColumnDisplayLabel", 1)[1].split("function caseTableHtml()", 1)[0]
+    assert 'if (key === "case_no") return "Case";' in column_helpers
+    assert 'if (key === "geometry_id") return "해석 제품";' in column_helpers
+    assert 'if (key === "remove") return "삭제";' in column_helpers
     assert 'class="${caseColumnClass(key)}"' in case_table
 
 
@@ -368,7 +364,7 @@ def test_case_matrix_ui_uses_three_column_source_detail_and_compact_select_contr
     assert '.case-select-field select{display:block;width:100%;min-width:0}' in HTML_TEMPLATE
     assert '.case-select-summary{min-width:0;padding:0 2px;color:#5F646C;font-size:11px;font-weight:500;line-height:1.3;' in HTML_TEMPLATE
     assert '.workspace-shell .workspace-form select{' in HTML_TEMPLATE
-    assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}' in HTML_TEMPLATE
+    assert '.workspace-shell .case-matrix-grid{min-width:900px;width:100%;table-layout:fixed}' in HTML_TEMPLATE
     assert '.case-col-case_no{width:5%}' in HTML_TEMPLATE
     assert '.case-col-geometry_id{width:17%}' in HTML_TEMPLATE
     assert '.case-col-fan{width:16%}' in HTML_TEMPLATE
@@ -378,9 +374,9 @@ def test_case_matrix_ui_uses_three_column_source_detail_and_compact_select_contr
     assert '.case-col-remove{width:6%}' in HTML_TEMPLATE
     assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in HTML_TEMPLATE
     assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in HTML_TEMPLATE
-    assert '.matrix-wrap th:last-child,' in HTML_TEMPLATE
-    assert '.matrix-wrap td:last-child{border-right:0}' in HTML_TEMPLATE
-    assert '.matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}' in HTML_TEMPLATE
+    assert '.case-matrix-grid th:last-child,' in HTML_TEMPLATE
+    assert '.case-matrix-grid td:last-child{border-right:0}' in HTML_TEMPLATE
+    assert '.case-matrix-grid tbody td{height:62px;padding:6px 8px;vertical-align:top}' in HTML_TEMPLATE
     assert '.matrix-wrap tbody td.case-number,' in HTML_TEMPLATE
     assert '.matrix-wrap tbody td.case-remove-cell{vertical-align:middle}' in HTML_TEMPLATE
     select_renderer = HTML_TEMPLATE.split("function caseSelectFieldHtml", 1)[1].split("function updateCaseSelectSummary", 1)[0]

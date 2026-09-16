@@ -14,8 +14,8 @@ def test_preview_marks_missing_field_labels_with_a_red_warning_icon():
     assert "color:var(--ui-error)" in HTML_TEMPLATE
     assert 'data-preview-missing="${missing}"' in preview
     assert "previewFieldLabel(label, missing" in preview
-    assert 'previewFieldLabel("도면번호 (NPDM MCAD)", productDrawingMissing)' in preview
-    assert 'previewFieldLabel("팬 회전수(RPM)", fanDisplay.missing)' in preview
+    assert 'previewFieldLabel("총조립도 도면번호 (NPDM MCAD)", productDrawingMissing)' in preview
+    assert 'previewTableValue("팬 회전 설정", setting, display.missing)' in preview
 
 
 def test_word_button_shows_required_input_warning_only_for_missing_required_input():
@@ -29,8 +29,8 @@ def test_word_button_shows_required_input_warning_only_for_missing_required_inpu
     assert "wordButton.disabled = wordExportInProgress || firstIncompleteIndex >= 0" in navigation
 
 
-def test_screen_six_uses_canonical_preview_card_read_only_and_action_contracts():
-    screen_start = HTML_TEMPLATE.index('class="workspace-form screen-group" data-screen="SCREEN-06"')
+def test_screen_six_uses_flat_read_only_review_sections_and_action_contracts():
+    screen_start = HTML_TEMPLATE.index('class="screen-group" data-screen="SCREEN-06"')
     screen_end = HTML_TEMPLATE.index('data-shell="AgentDock"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
 
@@ -38,49 +38,34 @@ def test_screen_six_uses_canonical_preview_card_read_only_and_action_contracts()
     assert 'class="section-title-icon"' not in screen
     assert 'class="title-icon"' in HTML_TEMPLATE[screen_end:]
     assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
-        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] > .screen-scroll-content > #section-preview{'
+        'margin-bottom:var(--request-workspace-card-section-gap);border:0;border-radius:0;'
+        'background:transparent;box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview '
-        '> .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;'
-        'background:transparent}'
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-section{'
+        'padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview '
-        '> .section-body{padding:16px;border-top:0}'
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-section + .preview-section{'
+        'margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}'
     ) in HTML_TEMPLATE
+    assert '.preview-review-narrative{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));' in HTML_TEMPLATE
+    assert '.preview-condition-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));' in HTML_TEMPLATE
+    assert '.preview-actions{display:flex;align-items:center;justify-content:flex-end;' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .screen-group > .section > .section-head h3,\n'
-        '    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{'
-        'color:var(--request-workspace-ink);font-size:16px;font-weight:600}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview '
-        '> .section-head h3{color:var(--ink)}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table th{'
-        'font-size:13px;font-weight:500;line-height:1.45}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-table td{'
-        'font-size:14px;font-weight:400;line-height:1.45}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] #wordExportSlotBtn{'
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] #wordExportSlotBtn{'
         'min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}'
     ) in HTML_TEMPLATE
 
 
 def test_screen_six_keeps_missing_markers_inline_at_semantic_icon_size():
     assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] '
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] '
         ':is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}'
     ) in HTML_TEMPLATE
     assert (
-        '.workspace-shell .workspace-form[data-screen="SCREEN-06"] .preview-missing-icon{'
+        '.workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-missing-icon{'
         'flex:0 0 14px;color:var(--ui-error)}'
     ) in HTML_TEMPLATE
     assert '<span class="preview-missing-icon" aria-hidden="true"><svg' in HTML_TEMPLATE

@@ -177,7 +177,7 @@ process.stdout.write(JSON.stringify({{duplicateHtml, resolvedHtml:target.innerHT
 def test_screen_three_duplicate_error_uses_shared_feedback_surface_and_blocks_forward_gate():
     feedback_scope = (
         '.workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],'
-        '.workspace-form[data-screen="SCREEN-06"]) '
+        '.screen-group[data-screen="SCREEN-06"]) '
     )
     assert f'{feedback_scope}.case-review-message.error{{border:1px solid var(--ui-error);background:var(--ui-error-bg)}}' in HTML_TEMPLATE
     assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE

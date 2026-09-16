@@ -29,7 +29,8 @@ def test_screen_one_keeps_its_existing_cta_architecture():
 
 def test_desktop_scroll_viewport_owns_the_workspace_edge_without_geometry_hacks():
     assert '.workspace-form > .screen-group[data-screen="SCREEN-01"]:not([hidden]){padding:var(--ui-workspace-padding)}' in HTML_TEMPLATE
-    assert '.workspace-tab#tab-preview.active{padding:var(--ui-workspace-padding)}' in HTML_TEMPLATE
+    assert '.workspace-tab#tab-preview.active{padding:var(--ui-workspace-padding)}' not in HTML_TEMPLATE
+    assert '.workspace-form > .screen-group:not([hidden]) > .screen-scroll-content{min-height:0;padding:var(--ui-workspace-padding) var(--ui-workspace-padding) 0;overflow-y:auto;overscroll-behavior:contain}' in HTML_TEMPLATE
     assert '.workspace-form > .screen-group:not([hidden]) > .screen-action-bar{flex:0 0 auto;margin:0 var(--ui-workspace-padding) var(--ui-workspace-padding)}' in HTML_TEMPLATE
     assert 'width:calc(100% + var(--ui-workspace-padding))' not in HTML_TEMPLATE
     assert 'margin-right:calc(-1 * var(--ui-workspace-padding))' not in HTML_TEMPLATE

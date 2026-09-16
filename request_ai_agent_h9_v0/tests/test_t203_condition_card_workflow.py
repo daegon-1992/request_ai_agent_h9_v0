@@ -428,19 +428,20 @@ def test_incomplete_rpm_inside_a_fan_configuration_remains_missing():
     assert fan_field["values"][0]["display_value"] == "900 / -"
 
 
-def test_full_preview_uses_condition_names_as_row_titles_without_repeating_them_in_values():
+def test_full_preview_projects_condition_groups_with_v17_review_structure():
     preview = HTML_TEMPLATE.split("function renderDocumentPreviewPanel", 1)[1].split("function renderCandidateNotice", 1)[0]
 
-    assert 'operating: []' in preview
-    assert 'heat_exchanger: ["tube_diameter", "fin_type", "row_count", "fpi"]' in preview
-    assert 'if (cardType === "operating") return contextText(row.name);' in preview
-    assert 'if (cardType === "heat_exchanger") return contextText(fieldDisplayValue(asObj(row.fields).name));' in preview
-    assert 'return name ? `${title} (${name})` : title;' in preview
-    assert 'const fanDisplay = operatingFanDisplay(row);' in preview
-    assert '`\ud32c ${fanDisplay.count}\uac1c \u00b7 ${fanDisplay.text}' in preview
-    assert 'previewFieldLabel("팬 회전수(RPM)", fanDisplay.missing)' in preview
-    assert '? [`${row.name || "Fan"}' not in preview
-    assert '${esc(previewConditionTitle(row, cardType))}' in preview
+    assert 'const conditionByType = type => conditionSets.filter(row => contextText(row.type) === type);' in preview
+    assert 'contextText(row.name) || `운전 ${index + 1}`' in preview
+    assert 'const display = operatingFanDisplay(row), count = display.count;' in preview
+    assert 'display.text.replace(/^모든 팬\\s*/, "모든 팬 동일 · ")' in preview
+    assert 'previewTableValue("팬 회전 설정", setting, display.missing)' in preview
+    assert 'const specificationRows = conditionByType("heat_exchanger")' in preview
+    assert 'const labels = heatExchangerFieldLabels(type);' in preview
+    assert '<th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th>' in preview
+    assert 'class="preview-condition-pair"' in preview
+    assert '<h5>공간 환경 조건</h5>' in preview
+    assert '<h5>취출 공기 조건</h5>' in preview
 
 
 def test_heat_exchanger_spec_is_system_generated_for_each_row():
@@ -470,7 +471,7 @@ def test_legacy_stopped_fan_without_rpm_restores_to_zero_and_preserves_explicit_
 
 
 def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contract():
-    helper = HTML_TEMPLATE.split('function caseGroupedConditionLabel(type, fields)', 1)[1].split('function caseSourceReferenceHtml()', 1)[0]
+    helper = HTML_TEMPLATE.split('function conditionUnitFields(type)', 1)[1].split('function caseSourceReferenceHtml()', 1)[0]
 
     assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in helper
     assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in helper
@@ -478,10 +479,11 @@ def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contra
     assert 'if (type === "space_environment" || type === "supply_air")' in helper
     assert 'if (label) add(type, card.id, label);' in helper
 
-    function_body = HTML_TEMPLATE.split('function caseGroupedConditionLabel(type, fields)', 1)[1].split('function liveCaseDropdownOptions()', 1)[0]
+    function_body = HTML_TEMPLATE.split('function conditionUnitFields(type)', 1)[1].split('function liveCaseDropdownOptions()', 1)[0]
     script = f'''function contextText(value){{ return String(value ?? "").trim(); }}
+function asArray(value){{ return Array.isArray(value) ? value : []; }}
 function fieldDisplayValue(value){{ return value && typeof value === "object" ? (value.display_value ?? value.value ?? "") : value; }}
-function caseGroupedConditionLabel(type, fields){function_body}
+function conditionUnitFields(type){function_body}
 const space = caseGroupedConditionLabel("space_environment", {{room_temp:"25", room_rh:"45"}});
 const supply = caseGroupedConditionLabel("supply_air", {{heat_exchanger_temp:"12°C", heat_exchanger_rh:"76%"}});
 if (space !== "25°C / 45%") throw new Error(space);

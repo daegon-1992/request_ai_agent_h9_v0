@@ -214,5 +214,7 @@ if (individual.text !== "상 1000 / 중 700 / 하 640" || individual.missing) th
     assert 'const details = display.text.split(" / ").map(value => `${value} RPM`).join(" / ");' in source_presentation
     assert 'return {label, summary:`팬 ${count}개 · ${details}`};' in source_presentation
     assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in case_reference
-    assert 'const fanDisplay = operatingFanDisplay(row);' in preview
+    assert 'const display = operatingFanDisplay(row), count = display.count;' in preview
+    assert 'display.text.replace(/^모든 팬\\s*/, "모든 팬 동일 · ")' in preview
+    assert 'previewTableValue("팬 회전 설정", setting, display.missing)' in preview
     assert '+N' not in helper + case_reference + preview
