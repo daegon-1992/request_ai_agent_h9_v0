@@ -78,12 +78,12 @@ def test_screen_one_fixed_taxonomy_selects_do_not_render_a_restore_action():
 
 def test_screen_three_uses_canonical_typography_and_navigation_density():
     assert '.workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
+    assert '.workspace-shell :is(.screen-action-bar button,.workflow-action-button){min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
 
 
 def test_screen_four_uses_canonical_typography_and_navigation_density():
     assert '.workspace-shell .workspace-form :is(label,.field-label){gap:6px;color:var(--ui-field-label);font-size:13px;font-weight:500;line-height:1.45}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
+    assert '.workspace-shell :is(.screen-action-bar button,.workflow-action-button){min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
 
 
 def test_request_content_has_navigation_only_action_bar_without_save_or_preview_work():

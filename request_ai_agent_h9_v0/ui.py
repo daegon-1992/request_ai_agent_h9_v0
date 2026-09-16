@@ -855,7 +855,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .request-content-screen > .screen-scroll-content > #section-overview{background:var(--request-workspace-surface)}
     .workspace-shell .request-content-screen > .screen-scroll-content > #section-overview .analysis-result-guidance{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .screen-action-bar{border-color:var(--ui-border-subtle);background:var(--ui-surface)}
-    .workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}
+    .workspace-shell :is(.screen-action-bar button,.workflow-action-button){min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}
     .workspace-shell .screen-action-bar button.primary{border-color:#2F3033;background:#2F3033;color:#fff}
     .workspace-shell .screen-action-bar button.primary:hover:not(:disabled){border-color:#252629;background:#252629}
     .workspace-shell .screen-action-bar button:not(.primary){border:1px solid #C9CDD3;background:#fff;color:#404348}
@@ -993,7 +993,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div:only-child{grid-column:1/-1}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div+div{padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair .preview-kv-grid{grid-template-columns:1fr}
-    .workspace-shell .screen-group[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] :is(.preview-missing-icon,.preview-missing-icon svg){width:14px;height:14px}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-missing-icon{flex:0 0 14px;color:var(--ui-error)}
     .workspace-shell :is(.geometry-screen,.stage-static-screen[data-screen="SCREEN-05"],.screen-group[data-screen="SCREEN-06"]) .case-review-message{display:grid;gap:12px;position:relative;margin-top:12px;padding:16px;border-radius:10px;box-shadow:none;color:var(--ink)}
@@ -1390,7 +1389,7 @@ HTML_TEMPLATE = r"""<!doctype html>
                   <div id="previewCoverageWarning"></div>
                   <div class="preview-actions">
                     <span class="word-export-required-warning" id="wordExportRequiredWarning" role="status" hidden><span class="preview-missing-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><circle cx="12" cy="17" r=".7"></circle></svg></span><span>필수 입력 누락</span></span>
-                    <button class="primary" id="wordExportSlotBtn" type="button">의뢰서 생성(Word)</button>
+                    <button class="primary workflow-action-button" id="wordExportSlotBtn" type="button">의뢰서 생성(Word)</button>
                   </div>
                 </div>
               </section>

@@ -54,9 +54,12 @@ def test_screen_six_uses_flat_read_only_review_sections_and_action_contracts():
     assert '.preview-condition-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));' in HTML_TEMPLATE
     assert '.preview-actions{display:flex;align-items:center;justify-content:flex-end;' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .screen-group[data-screen="SCREEN-06"] #wordExportSlotBtn{'
-        'min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}'
+        '.workspace-shell :is(.screen-action-bar button,.workflow-action-button){'
+        'min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;'
+        'border-radius:6px;font-size:13px;font-weight:600}'
     ) in HTML_TEMPLATE
+    assert 'class="primary workflow-action-button" id="wordExportSlotBtn"' in screen
+    assert '#wordExportSlotBtn{' not in HTML_TEMPLATE
 
 
 def test_screen_six_keeps_missing_markers_inline_at_semantic_icon_size():
