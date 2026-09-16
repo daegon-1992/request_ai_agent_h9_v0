@@ -207,6 +207,12 @@ if (individual.text !== "상 1000 / 중 700 / 하 640" || individual.missing) th
     assert result.returncode == 0, result.stderr
     case_reference = HTML_TEMPLATE.split("function caseSourceReferenceHtml()", 1)[1].split("function caseTableHtml()", 1)[0]
     preview = HTML_TEMPLATE.split("function renderDocumentPreviewPanel", 1)[1].split("function renderCandidateNotice", 1)[0]
-    assert '팬 개수: ${display.count} · 회전수(RPM): ${display.text}' in case_reference
+    case_presentation = HTML_TEMPLATE.split("function caseOperatingSelectionPresentation", 1)[1].split("function caseSourceOperatingPresentation", 1)[0]
+    source_presentation = HTML_TEMPLATE.split("function caseSourceOperatingPresentation", 1)[1].split("function caseProductSelectionPresentation", 1)[0]
+    assert 'if (count === 1) return {label, summary:rpms[0] ? `${rpms[0]} RPM` : ""};' in case_presentation
+    assert 'if (mode === "individual") return {label, summary:`팬 ${count}개 · 팬별 입력`};' in case_presentation
+    assert 'const details = display.text.split(" / ").map(value => `${value} RPM`).join(" / ");' in source_presentation
+    assert 'return {label, summary:`팬 ${count}개 · ${details}`};' in source_presentation
+    assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in case_reference
     assert 'const fanDisplay = operatingFanDisplay(row);' in preview
     assert '+N' not in helper + case_reference + preview

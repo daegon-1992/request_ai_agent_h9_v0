@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from copy import deepcopy
 import json
@@ -183,48 +183,37 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     assert 'screen.id !== "SCREEN-06"' in HTML_TEMPLATE
 
 
-def test_screen_five_uses_the_canonical_card_action_and_matrix_header_contracts():
+def test_screen_five_uses_flat_case_section_and_compact_matrix_contracts():
     assert (
         '.screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;'
         'line-height:1.35;letter-spacing:normal;color:var(--muted)}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case{'
-        'margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);'
-        'border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}'
+        'margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
-        '> .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}'
+        '> .section-head{min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
-        '> .section-body{padding:16px;border-top:0}'
+        '> .section-body{padding:0;border-top:0}'
     ) in HTML_TEMPLATE
+    assert '.case-source-reference{display:grid;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--divider)}' in HTML_TEMPLATE
+    assert '.case-source-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}' in HTML_TEMPLATE
+    assert '.case-source-counts{display:flex;align-items:center;gap:22px;min-width:0;color:#525252;font-size:12px;line-height:1.45}' in HTML_TEMPLATE
+    assert '.case-matrix-title h4{margin:0;color:var(--ink);font-size:14px;font-weight:600;line-height:1.45}' in HTML_TEMPLATE
+    assert '.case-matrix-toolbar>[data-action="add-case"]{height:36px;min-height:36px;padding:0 11px;border:0;border-radius:7px;background:#34373E;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}' in HTML_TEMPLATE
+    assert '.condition-row-action{width:34px;min-width:34px;height:34px;min-height:34px;' in HTML_TEMPLATE
+    assert '.condition-row-action.remove{border-color:#C9CDD3;background:#fff;color:#444}' in HTML_TEMPLATE
     assert (
-        '.workspace-shell .screen-group > .section > .section-head h3,\n'
-        '    .workspace-shell .workspace-form.screen-group > .section > .section-head h3{'
-        'color:var(--request-workspace-ink);font-size:16px;font-weight:600}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
-        '> .section-head h3{color:var(--ink)}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case '
-        '.case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;'
-        'padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .screen-action-bar button{min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}'
+        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
+        '.matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}'
     ) in HTML_TEMPLATE
     assert (
         '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
-        '.matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}'
-    ) in HTML_TEMPLATE
-    assert (
-        '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case '
-        '.matrix-wrap tbody td{height:80px;padding:8px;vertical-align:middle}'
+        '.matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}'
     ) in HTML_TEMPLATE
 
 
@@ -248,22 +237,30 @@ const esc = value => contextText(value);
 let requestState = {{
   geometry:{{
     base_product:{{geometry_id:"base_1",role:"base",drawing_no:"1"}},
-    comparison_products:[{{geometry_id:"comparison_1",role:"comparison",drawing_no:"11"}}]
+    comparison_products:[
+      {{geometry_id:"comparison_1",role:"comparison",drawing_no:"11",difference_from_base:"흡입 그릴 형상 변경"}},
+      {{geometry_id:"comparison_2",role:"comparison",drawing_no:"",difference_from_base:"도면번호 입력 전"}}
+    ]
   }},
   conditions:{{condition_sets:[
     {{id:"operating_1",type:"operating",fans:[{{id:"fan_1",values:{{fan_rpm:"1"}}}}]}},
-    {{id:"operating_2",type:"operating",fans:[
-      {{id:"fan_1",values:{{fan_rpm:"11111"}}}},{{id:"fan_2",values:{{fan_rpm:"11111"}}}},
-      {{id:"fan_3",values:{{fan_rpm:"11111"}}}},{{id:"fan_4",values:{{fan_rpm:"11111"}}}}
+    {{id:"operating_2",type:"operating",fan_rpm_mode:"common",fans:[
+      {{id:"fan_1",values:{{fan_rpm:"11111"}}}},{{id:"fan_2",values:{{fan_rpm:"11111"}}}}
     ]}},
     {{id:"operating_3",type:"operating",fan_rpm_mode:"individual",fans:[
       {{id:"fan_1",location:"상",values:{{fan_rpm:"100"}}}},
-      {{id:"fan_2",location:"중상",values:{{fan_rpm:"200"}}}},
-      {{id:"fan_3",location:"중하",values:{{fan_rpm:"300"}}}},
-      {{id:"fan_4",location:"하",values:{{fan_rpm:"1000"}}}}
+      {{id:"fan_2",location:"중",values:{{fan_rpm:"200"}}}},
+      {{id:"fan_3",location:"하",values:{{fan_rpm:"300"}}}}
+    ]}},
+    {{id:"operating_4",type:"operating",fan_rpm_mode:"individual",fans:[
+      {{id:"fan_1",location:"상",values:{{fan_rpm:"900"}}}},
+      {{id:"fan_2",location:"하",values:{{fan_rpm:"900"}}}}
     ]}},
     {{id:"heat_exchanger_1",type:"heat_exchanger",heat_exchanger_type:"Fin&Tube",fields:{{
       tube_diameter:"5",fin_type:"Slit(Half)",row_count:"1",fpi:"21"
+    }}}},
+    {{id:"heat_exchanger_2",type:"heat_exchanger",heat_exchanger_type:"Micro-Channel",fields:{{
+      tube_diameter:"10.5",fin_type:"Flat",row_count:"2",fpi:"67"
     }}}}
   ]}}
 }};
@@ -272,10 +269,17 @@ const sources = caseSelectionSources();
 const output = {{
   base:caseSelectionPresentation("geometry_id","base_1","Base",sources),
   comparison:caseSelectionPresentation("geometry_id","comparison_1","비교 1",sources),
+  comparisonFallback:caseSelectionPresentation("geometry_id","comparison_2","비교 2",sources),
   single:caseSelectionPresentation("fan","operating_1","운전 1",sources),
   common:caseSelectionPresentation("fan","operating_2","운전 2",sources),
   individual:caseSelectionPresentation("fan","operating_3","운전 3",sources),
-  specification:caseSelectionPresentation("heat_exchanger","heat_exchanger_1","사양 1",sources)
+  individualSame:caseSelectionPresentation("fan","operating_4","운전 4",sources),
+  specification:caseSelectionPresentation("heat_exchanger","heat_exchanger_1","사양 1",sources),
+  sourceBase:caseSourceProductPresentation(sources.productsById.get("base_1").product,"Base"),
+  sourceComparison:caseSourceProductPresentation(sources.productsById.get("comparison_1").product,"비교 1"),
+  sourceIndividual:caseSourceOperatingPresentation(sources.operatingById.get("operating_3"),"운전 3"),
+  sourceFinTube:caseSourceSpecificationPresentation(sources.specificationById.get("heat_exchanger_1"),"사양 1"),
+  sourceMicroChannel:caseSourceSpecificationPresentation(sources.specificationById.get("heat_exchanger_2"),"사양 2")
 }};
 process.stdout.write(JSON.stringify(output));
 '''
@@ -283,14 +287,20 @@ process.stdout.write(JSON.stringify(output));
 
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == {
-        "base": {"label": "Base", "summary": "도면번호 1"},
-        "comparison": {"label": "비교 1", "summary": "도면번호 11"},
-        "single": {"label": "운전 1 · 팬 1개", "summary": "1 RPM"},
-        "common": {"label": "운전 2 · 팬 4개", "summary": "모든 팬 11111 RPM"},
-        "individual": {"label": "운전 3 · 팬 4개", "summary": "상 100 · 중상 200 / 중하 300 · 하 1000 RPM"},
-        "specification": {"label": "사양 1 · Fin&Tube", "summary": "5Pi · Slit(Half) · 1열 · FPI 21"},
+        "base": {"label": "1", "summary": ""},
+        "comparison": {"label": "11", "summary": ""},
+        "comparisonFallback": {"label": "비교 2", "summary": ""},
+        "single": {"label": "운전 1", "summary": "1 RPM"},
+        "common": {"label": "운전 2", "summary": "팬 2개 · 11111 RPM"},
+        "individual": {"label": "운전 3", "summary": "팬 3개 · 팬별 입력"},
+        "individualSame": {"label": "운전 4", "summary": "팬 2개 · 팬별 입력"},
+        "specification": {"label": "사양 1 · F&T", "summary": "5Pi · Slit(Half) · 1열 · FPI 21"},
+        "sourceBase": {"label": "1", "summary": "기존 형상"},
+        "sourceComparison": {"label": "11", "summary": "흡입 그릴 형상 변경"},
+        "sourceIndividual": {"label": "운전 3", "summary": "팬 3개 · 상 100 RPM / 중 200 RPM / 하 300 RPM"},
+        "sourceFinTube": {"label": "사양 1", "summary": "Fin&Tube · 5Pi · Slit(Half) · 1열 · FPI 21"},
+        "sourceMicroChannel": {"label": "사양 2", "summary": "Micro-Channel · 10.5 · Flat · 2열 · FPDM 67"},
     }
-
 
 def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action_path():
     source_reference = HTML_TEMPLATE.split("function caseSourceReferenceHtml()", 1)[1].split(
@@ -307,10 +317,14 @@ def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action
     )[0]
 
     assert "입력값 요약" in source_reference
-    assert "형상 ${asArray(options.geometry_id).length} · 운전 ${asArray(options.fan).length} · 사양 ${asArray(options.heat_exchanger).length}" in source_reference
+    assert 'class="case-source-counts" aria-label="입력값 개수"' in source_reference
+    assert '<b>해석 제품</b> ${geometryCount}개' in source_reference
+    assert '<b>운전 조건</b> ${operatingCount}개' in source_reference
+    assert '<b>열교환기 사양</b> ${specificationCount}개' in source_reference
     assert 'data-action="toggle-case-source"' in source_reference
     assert 'aria-expanded="${String(caseSourceSummaryExpanded)}"' in source_reference
-    assert "caseSourceSummaryExpanded ? \"접기\" : \"펼치기\"" in source_reference
+    assert 'caseSourceSummaryExpanded ? "상세 닫기" : "상세 보기"' in source_reference
+    assert 'class="case-source-column"' in source_reference
     assert "Case 조합표" in case_table
     assert 'class="case-select-field"' in HTML_TEMPLATE
     assert 'class="case-select-summary"' in HTML_TEMPLATE
@@ -318,22 +332,60 @@ def test_case_matrix_summary_disclosure_toolbar_and_select_fields_use_one_action
     assert HTML_TEMPLATE.count('data-action="add-case">Case 추가</button>') == 1
     assert 'data-action="add-case"' not in screen.split('id="section-case"', 1)[1].split('<div class="section-body">', 1)[0]
     assert 'aria-label="Case ${index + 1} 삭제"' in case_table
-    assert '>삭제</button>' in case_table
+    assert 'class="condition-row-action remove"' in case_table
+    assert '>−</button>' in case_table
     assert "updateCaseSelectSummary(changedSelect);" in preserve
     assert 'preserveCaseSelections(event.target);' in HTML_TEMPLATE
-    assert "caseConfigurationIssues().length" in HTML_TEMPLATE.split("function caseTableValidationPresentation()", 1)[1].split("function caseTableHtml()", 1)[0]
-    assert "caseCoverageState()" in HTML_TEMPLATE.split("function caseTableValidationPresentation()", 1)[1].split("function caseTableHtml()", 1)[0]
+    validation = HTML_TEMPLATE.split("function caseTableValidationPresentation()", 1)[1].split("function caseTableHtml()", 1)[0]
+    assert "caseSelectionMissingIssues().length" in validation
+    assert "caseDuplicateIssues().length" in validation
+    assert "caseCoverageState()" in validation
+    assert '`미선택 항목 ${missingCount}건`' in validation
+    assert '`중복 Case ${duplicateCount}건`' in validation
+    assert 'parts.push("미사용 입력값 있음")' in validation
+    product_presentation = HTML_TEMPLATE.split("function caseProductSelectionPresentation", 1)[1].split("function caseSourceProductPresentation", 1)[0]
+    source_product_presentation = HTML_TEMPLATE.split("function caseSourceProductPresentation", 1)[1].split("function caseSpecificationSelectionPresentation", 1)[0]
+    operating_presentation = HTML_TEMPLATE.split("function caseOperatingSelectionPresentation", 1)[1].split("function caseSourceOperatingPresentation", 1)[0]
+    assert 'return {label:drawingNo || contextText(rawLabel), summary:""};' in product_presentation
+    assert 'base ? "기존 형상" : (productText(product, "difference_from_base") || productText(product, "display_name"))' in source_product_presentation
+    assert 'caseSourceProductPresentation(productsById.get(value), label)' in source_reference
+    assert 'if (mode === "individual") return {label, summary:`팬 ${count}개 · 팬별 입력`};' in operating_presentation
+    assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in source_reference
+    assert 'caseSourceSpecificationPresentation(specificationById.get(value), label)' in source_reference
+    assert 'if (key === "case_no") return "Case";' in case_table
+    assert 'if (key === "geometry_id") return "해석 제품";' in case_table
+    assert 'if (key === "remove") return "삭제";' in case_table
+    assert 'class="${caseColumnClass(key)}"' in case_table
 
 
-def test_case_matrix_ui_wraps_long_values_and_keeps_native_select_focus_contract():
-    assert '.case-source-list li{display:grid;grid-template-columns:minmax(110px,125px) minmax(0,1fr);' in HTML_TEMPLATE
-    assert '.case-source-details{min-width:0;color:#45484B;font-weight:400;overflow-wrap:anywhere;white-space:normal}' in HTML_TEMPLATE
-    assert '.case-select-field{width:100%;min-width:0;min-height:64px;' in HTML_TEMPLATE
-    assert '.case-select-field:focus-within{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}' in HTML_TEMPLATE
-    assert '.case-select-field select{display:block;width:100%;min-width:0;min-height:38px;' in HTML_TEMPLATE
-    assert '.case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;' in HTML_TEMPLATE
-    assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}' in HTML_TEMPLATE
-
+def test_case_matrix_ui_uses_three_column_source_detail_and_compact_select_contract():
+    assert '.case-source-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1.15fr);' in HTML_TEMPLATE
+    assert '.case-source-list li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px;' in HTML_TEMPLATE
+    assert '.case-source-details{min-width:0;color:#34373E;font-size:12px;font-weight:500;line-height:1.45;' in HTML_TEMPLATE
+    assert '.case-select-field{display:grid;width:100%;min-width:0;gap:2px;align-content:start}' in HTML_TEMPLATE
+    assert '.case-select-field{width:100%;min-width:0;min-height:64px;' not in HTML_TEMPLATE
+    assert '.case-select-field:focus-within{' not in HTML_TEMPLATE
+    assert '.case-select-field select{display:block;width:100%;min-width:0}' in HTML_TEMPLATE
+    assert '.case-select-summary{min-width:0;padding:0 2px;color:#5F646C;font-size:11px;font-weight:500;line-height:1.3;' in HTML_TEMPLATE
+    assert '.workspace-shell .workspace-form select{' in HTML_TEMPLATE
+    assert '.workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}' in HTML_TEMPLATE
+    assert '.case-col-case_no{width:5%}' in HTML_TEMPLATE
+    assert '.case-col-geometry_id{width:17%}' in HTML_TEMPLATE
+    assert '.case-col-fan{width:16%}' in HTML_TEMPLATE
+    assert '.case-col-heat_exchanger{width:24%}' in HTML_TEMPLATE
+    assert '.case-col-space_environment{width:16%}' in HTML_TEMPLATE
+    assert '.case-col-supply_air{width:16%}' in HTML_TEMPLATE
+    assert '.case-col-remove{width:6%}' in HTML_TEMPLATE
+    assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in HTML_TEMPLATE
+    assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in HTML_TEMPLATE
+    assert '.matrix-wrap th:last-child,' in HTML_TEMPLATE
+    assert '.matrix-wrap td:last-child{border-right:0}' in HTML_TEMPLATE
+    assert '.matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}' in HTML_TEMPLATE
+    assert '.matrix-wrap tbody td.case-number,' in HTML_TEMPLATE
+    assert '.matrix-wrap tbody td.case-remove-cell{vertical-align:middle}' in HTML_TEMPLATE
+    select_renderer = HTML_TEMPLATE.split("function caseSelectFieldHtml", 1)[1].split("function updateCaseSelectSummary", 1)[0]
+    assert 'const supportsSummary = key !== "geometry_id";' in select_renderer
+    assert 'const summaryHtml = supportsSummary ?' in select_renderer
 
 def test_case_error_warning_groups_missing_fields_uses_visible_labels_and_clears_when_resolved():
     start = HTML_TEMPLATE.index("function caseValidatorState(state=requestState)")

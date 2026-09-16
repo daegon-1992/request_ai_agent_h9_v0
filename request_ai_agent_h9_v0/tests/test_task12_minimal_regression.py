@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from copy import deepcopy
 import importlib
@@ -459,18 +459,23 @@ def test_ui_uses_agent_heading_and_manual_case_controls_without_summary_or_regen
 def test_case_matrix_lists_shape_operation_and_specification_inputs_above_the_table():
     summary = HTML_TEMPLATE.split("function caseSourceReferenceHtml()", 1)[1].split("function caseTableHtml()", 1)[0]
 
-    assert "아래 입력값을 확인하고 Case별 형상·운전·사양을 선택해 주세요." in summary
+    assert 'class="case-source-counts" aria-label="입력값 개수"' in summary
+    assert '<b>해석 제품</b> ${geometryCount}개' in summary
+    assert '<b>운전 조건</b> ${operatingCount}개' in summary
+    assert '<b>열교환기 사양</b> ${specificationCount}개' in summary
     assert "listHtml(options.geometry_id" in summary
     assert "listHtml(options.fan" in summary
     assert "listHtml(options.heat_exchanger" in summary
-    assert 'class="case-source-category"' not in summary
+    assert 'class="case-source-column"' in summary
     assert 'class="case-source-name"' in summary
     assert 'class="case-source-details"' in summary
-    assert "case-source-grid" not in summary
-    assert "case-source-group" not in summary
-    assert '도면번호: ${productText(product, "drawing_no") || "-"} · 설명: ${description}' in summary
-    assert '팬 개수: ${display.count} · 회전수(RPM): ${display.text}' in summary
-    assert 'HEX type: ${type}' in summary
+    assert 'sourceColumn("해석 제품", geometryList)' in summary
+    assert 'sourceColumn("운전 조건", operatingList)' in summary
+    assert 'sourceColumn("열교환기 사양", specificationList)' in summary
+    assert 'caseSourceProductPresentation(productsById.get(value), label)' in summary
+    assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in summary
+    assert 'caseSourceSpecificationPresentation(specificationById.get(value), label)' in summary
+    assert 'caseSourceSummaryExpanded ? "상세 닫기" : "상세 보기"' in summary
     assert '$("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}`;' in HTML_TEMPLATE
 
 

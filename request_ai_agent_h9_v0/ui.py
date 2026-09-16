@@ -534,8 +534,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .condition-card-rows{display:grid;gap:0;padding:0}
     .condition-card-row{display:grid;grid-template-columns:repeat(var(--field-count),minmax(0,1fr)) max-content;gap:9px;align-items:end;padding:10px 0;border-bottom:1px solid #EEF0F2}
     .condition-card-row:last-child{border-bottom:0}
-    .condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(5,minmax(0,1fr)) max-content;gap:9px}
-    .condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:nowrap}
+    .condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(3,minmax(0,1.15fr)) repeat(2,minmax(0,1fr)) max-content;gap:9px}
+    .condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:normal;overflow-wrap:break-word}
     .condition-card-type-heat_exchanger .condition-spec-name{padding-inline:4px;white-space:nowrap}
     .condition-card-type-operating .condition-card-row{grid-template-columns:64px 100px minmax(260px,1fr) max-content;align-items:end}
     .condition-card-type-operating .condition-row-actions{grid-column:4;grid-row:1}
@@ -581,37 +581,39 @@ HTML_TEMPLATE = r"""<!doctype html>
     .chip.candidate{border-color:var(--ui-border);background:var(--ui-surface-subtle);color:var(--ui-text-secondary)}
     .field-status-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:500}
     .matrix-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
-    .case-source-reference{display:grid;margin-bottom:16px;border:1px solid var(--line);border-radius:10px;background:var(--paper);overflow:hidden}
-    .case-source-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:#F7F7F7}
-    .case-source-head>div{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:wrap}
-    .case-source-head h4{margin:0;color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
-    .case-source-count{color:#55585B;font-size:13px;font-weight:500;line-height:1.55}
-    .case-source-toggle{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
-    .case-source-content{padding:0 14px 12px}
+    .case-source-reference{display:grid;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--divider)}
+    .case-source-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+    .case-source-head h4{margin:0;color:var(--ink);font-size:14px;font-weight:600;line-height:1.45}
+    .case-source-counts{display:flex;align-items:center;gap:22px;min-width:0;color:#525252;font-size:12px;line-height:1.45}
+    .case-source-counts span{white-space:nowrap}
+    .case-source-counts b{color:#34373E;font-weight:500}
+    .case-source-toggle{height:30px;min-height:30px;padding:0 9px;border:1px solid #D5D8DD;border-radius:6px;background:var(--paper);color:#555;font-size:12px;font-weight:500}
+    .case-source-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1.15fr);gap:0;margin-top:14px;padding-top:14px;border-top:1px solid #EEF0F2}
     .case-source-content[hidden]{display:none}
-    .case-source-guidance{margin:10px 0 4px;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
-    .case-source-list{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
-    .case-source-list li{display:grid;grid-template-columns:minmax(110px,125px) minmax(0,1fr);gap:12px;align-items:start;min-width:0;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.55}
-    .case-source-name{color:#242424;font-weight:600;overflow-wrap:anywhere}
-    .case-source-details{min-width:0;color:#45484B;font-weight:400;overflow-wrap:anywhere;white-space:normal}
-    .case-matrix-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}
-    .case-matrix-title{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
-    .case-matrix-title h4{margin:0;color:var(--ink);font-size:16px;font-weight:600;line-height:1.55}
-    .case-count{color:#55585B;font-size:13px;font-weight:500;line-height:1.45}
-    .case-validation-status{display:inline-flex;align-items:center;min-height:22px;padding:2px 7px;border:1px solid var(--line);border-radius:8px;background:#F7F7F7;color:#55585B;font-size:12px;font-weight:500;line-height:1.3}
-    .case-validation-status.error{border-color:var(--ui-error);background:var(--ui-error-bg);color:var(--ui-error)}
-    .case-validation-status.warning{border-color:var(--ui-warning-border);background:var(--ui-warning-bg);color:var(--ui-warning-text)}
-    .case-validation-status.ok{color:#3E6B48}
-    .case-matrix-toolbar>[data-action="add-case"]{min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap}
-    .case-select-field{width:100%;min-width:0;min-height:64px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);overflow:hidden}
-    .case-select-field:focus-within{border-color:var(--ui-active);outline:2px solid rgba(52,55,62,.18);outline-offset:1px}
-    .case-select-field select{display:block;width:100%;min-width:0;min-height:38px;padding:8px 11px 5px;border:0;border-radius:7px 7px 0 0;background-color:var(--paper);color:var(--ink);font-size:14px;font-weight:600;line-height:1.35;box-shadow:none}
-    .case-select-field select:focus-visible{border:0;outline:0;outline-offset:0;box-shadow:none}
-    .case-select-summary{min-width:0;padding:0 11px 8px;color:#45484B;font-size:13px;font-weight:400;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
+    .case-source-column{min-width:0;padding:0 18px}
+    .case-source-column:first-child{padding-left:0}
+    .case-source-column:last-child{padding-right:0}
+    .case-source-column + .case-source-column{border-left:1px solid #EEF0F2}
+    .case-source-column h5{margin:0 0 8px;color:#34373E;font-size:13px;font-weight:500;line-height:1.45}
+    .case-source-list{display:grid;margin:0;padding:0;list-style:none}
+    .case-source-list li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px;align-items:start;min-width:0;padding:3px 0}
+    .case-source-name{color:#6B7078;font-size:12px;font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+    .case-source-details{min-width:0;color:#34373E;font-size:12px;font-weight:500;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
+    .case-matrix-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px}
+    .case-matrix-title{display:flex;align-items:center;gap:9px;min-width:0;flex-wrap:wrap}
+    .case-matrix-title h4{margin:0;color:var(--ink);font-size:14px;font-weight:600;line-height:1.45}
+    .case-count{color:#777;font-size:11px;font-weight:400;line-height:1.4}
+    .case-validation-status{display:inline-flex;align-items:center;color:#55585B;font-size:11px;font-weight:500;line-height:1.4}
+    .case-validation-status.error{color:var(--ui-error)}
+    .case-validation-status.warning{color:var(--ui-warning-text)}
+    .case-validation-status.ok{color:#3F7E51}
+    .case-matrix-toolbar>[data-action="add-case"]{height:36px;min-height:36px;padding:0 11px;border:0;border-radius:7px;background:#34373E;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
+    .case-select-field{display:grid;width:100%;min-width:0;gap:2px;align-content:start}
+    .case-select-field select{display:block;width:100%;min-width:0}
+    .case-select-summary{min-width:0;padding:0 2px;color:#5F646C;font-size:11px;font-weight:500;line-height:1.3;overflow-wrap:anywhere;white-space:normal}
     .case-select-summary[hidden]{display:none}
     .case-number{width:54px;color:#45484B;font-size:14px;font-weight:600;text-align:center}
     .case-remove-cell{width:64px;text-align:center}
-    .case-remove-action{min-height:36px;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap}
     .geometry-drawing-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
     .case-review-message{display:grid;gap:7px;position:relative;margin-top:10px;padding:8px 10px;border-radius:8px;color:#242424;font-size:12px;line-height:1.4}
     .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
@@ -767,7 +769,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       .layout.agent-hidden .agent-dock{display:grid;opacity:0;pointer-events:none;transform:translateX(calc(100% + 24px));visibility:hidden}
     }
     @media (max-width:720px){
-      .case-source-list li{grid-template-columns:110px minmax(0,1fr);gap:10px}
+      .case-source-content{grid-template-columns:1fr}
+      .case-source-column{padding:12px 0 0}
+      .case-source-column:first-child{padding-top:0}
+      .case-source-column + .case-source-column{border-left:0;border-top:1px solid #EEF0F2}
       .screen-map{grid-template-columns:repeat(6,max-content);gap:18px;min-height:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
       .screen-map-item{min-height:36px}
       .grid,.grid.compact,.grid.two,.request-basic-grid,.request-detail-grid,.prep-quick-grid{grid-template-columns:1fr}
@@ -932,14 +937,27 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .condition-input-screen .fan-input-set{padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
     .workspace-shell .condition-input-screen .fan-input-order{width:24px;height:24px;align-self:center;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:#55585B;font-size:11px;font-weight:500;line-height:1.2}
     .workspace-shell .condition-input-screen .condition-row-actions{min-height:40px;align-items:center}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-body{padding:16px;border-top:0}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case{margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head{min-height:0;padding:0 0 13px;border-bottom:0;background:transparent}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-body{padding:0;border-top:0}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case > .section-head h3{color:var(--ink)}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] > .screen-scroll-content > #section-case .case-matrix-toolbar>[data-action="add-case"]{height:auto;min-height:36px;padding:7px 11px;border-radius:8px;font-size:14px;font-weight:500}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap{border-radius:7px}
     .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th{font-size:13px;font-weight:500;line-height:1.45}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{table-layout:fixed}
-    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td{height:80px;padding:8px;vertical-align:middle}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap table{min-width:900px;width:100%;table-layout:fixed}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-case_no{width:5%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-geometry_id{width:17%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-fan{width:16%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-heat_exchanger{width:24%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-space_environment{width:16%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-supply_air{width:16%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap .case-col-remove{width:6%}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th,
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap td{border-right:1px solid var(--line)}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap th:last-child,
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap td:last-child{border-right:0}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td{height:62px;padding:6px 8px;vertical-align:top}
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td.case-number,
+    .workspace-shell .stage-static-screen[data-screen="SCREEN-05"] #section-case .matrix-wrap tbody td.case-remove-cell{vertical-align:middle}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview{margin-bottom:var(--request-workspace-card-section-gap);border:1px solid var(--ui-border);border-radius:var(--ui-radius-panel);background:var(--ui-surface);box-shadow:none;overflow:visible}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-head{min-height:0;padding:16px 16px 0;border-bottom:0;background:transparent}
     .workspace-shell .workspace-form[data-screen="SCREEN-06"] > #section-preview > .section-body{padding:16px;border-top:0}
@@ -3357,7 +3375,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         const hasUnit = unit === "°C"
           ? compact.endsWith("°c") || compact.endsWith("℃")
           : unit === "%" ? compact.endsWith("%") : true;
-        parts.push(hasUnit ? value : `${value} ${unit}`);
+        parts.push(hasUnit ? value : `${value}${unit}`);
       }
       return parts.join(" / ");
     }
@@ -3434,20 +3452,38 @@ HTML_TEMPLATE = r"""<!doctype html>
     function caseOperatingSelectionPresentation(rawCard, rawLabel){
       const card = asObj(rawCard), fans = asArray(card.fans).map(asObj);
       const display = operatingFanDisplay(card), count = display.count;
-      const label = `${contextText(rawLabel)} · 팬 ${count}개`;
+      const label = contextText(rawLabel);
       const rpms = fans.map(fan => contextText(asObj(fan.values).fan_rpm));
       if (count === 1) return {label, summary:rpms[0] ? `${rpms[0]} RPM` : ""};
-      const allSame = rpms.length === count && rpms.every(value => value && value === rpms[0]);
-      if (allSame) return {label, summary:`모든 팬 ${rpms[0]} RPM`};
-      const entries = fans.map((fan, index) => {
-        const rpm = rpms[index];
-        if (!rpm) return "";
-        const identity = contextText(fan.location) || contextText(fan.name) || `팬 ${index + 1}`;
-        return `${identity} ${rpm}`;
-      }).filter(Boolean);
-      const groups = [];
-      for (let index = 0; index < entries.length; index += 2) groups.push(entries.slice(index, index + 2).join(" · "));
-      return {label, summary:groups.length ? `${groups.join(" / ")} RPM` : ""};
+      const mode = contextText(card.fan_rpm_mode);
+      if (mode === "individual") return {label, summary:`팬 ${count}개 · 팬별 입력`};
+      const commonRpm = rpms.find(Boolean) || "";
+      return {label, summary:commonRpm ? `팬 ${count}개 · ${commonRpm} RPM` : `팬 ${count}개`};
+    }
+
+    function caseSourceOperatingPresentation(rawCard, rawLabel){
+      const card = asObj(rawCard), display = operatingFanDisplay(card), count = display.count;
+      const label = contextText(rawLabel);
+      if (count === 1) return {label, summary:display.text && display.text !== "-" ? `${display.text} RPM` : ""};
+      if (contextText(card.fan_rpm_mode) === "individual") {
+        const details = display.text.split(" / ").map(value => `${value} RPM`).join(" / ");
+        return {label, summary:`팬 ${count}개 · ${details}`};
+      }
+      const rpm = asArray(card.fans).map(asObj).map(fan => contextText(asObj(fan.values).fan_rpm)).find(Boolean) || "";
+      return {label, summary:rpm ? `팬 ${count}개 · ${rpm} RPM` : `팬 ${count}개`};
+    }
+
+    function caseProductSelectionPresentation(rawProduct, rawLabel){
+      const product = asObj(rawProduct);
+      const drawingNo = productText(product, "drawing_no");
+      return {label:drawingNo || contextText(rawLabel), summary:""};
+    }
+
+    function caseSourceProductPresentation(rawProduct, rawLabel){
+      const product = asObj(rawProduct), drawingNo = productText(product, "drawing_no");
+      const base = contextText(product.role) === "base";
+      const difference = base ? "기존 형상" : (productText(product, "difference_from_base") || productText(product, "display_name"));
+      return {label:drawingNo || contextText(rawLabel), summary:difference};
     }
 
     function caseSpecificationSelectionPresentation(rawCard, rawLabel){
@@ -3464,20 +3500,21 @@ HTML_TEMPLATE = r"""<!doctype html>
         suffix(rowCount, "열"),
         fpi ? `${fpiLabel} ${fpi}` : "",
       ].filter(Boolean);
-      return {label:[contextText(rawLabel), type].filter(Boolean).join(" · "), summary:details.join(" · ")};
+      const compactType = type === "Fin&Tube" ? "F&T" : type === "Micro-Channel" ? "MC" : type;
+      return {label:[contextText(rawLabel), compactType].filter(Boolean).join(" · "), summary:details.join(" · ")};
+    }
+
+    function caseSourceSpecificationPresentation(rawCard, rawLabel){
+      const matrixPresentation = caseSpecificationSelectionPresentation(rawCard, rawLabel);
+      const type = heatExchangerType([asObj(rawCard)]);
+      return {label:contextText(rawLabel), summary:[type, matrixPresentation.summary].filter(Boolean).join(" · ")};
     }
 
     function caseSelectionPresentation(key, rawValue, rawLabel="", sources=caseSelectionSources()){
       const value = contextText(rawValue), fallbackLabel = contextText(rawLabel) || value;
       if (!value) return {label:fallbackLabel, summary:""};
       const productSource = asObj(sources.productsById.get(value));
-      if (productSource.product) {
-        const product = asObj(productSource.product);
-        const base = contextText(product.role) === "base";
-        const label = fallbackLabel;
-        const drawingNo = productText(product, "drawing_no");
-        return {label, summary:drawingNo ? `도면번호 ${drawingNo}` : ""};
-      }
+      if (productSource.product) return caseProductSelectionPresentation(productSource.product, fallbackLabel);
       if (sources.operatingById.has(value)) return caseOperatingSelectionPresentation(sources.operatingById.get(value), fallbackLabel);
       if (sources.specificationById.has(value)) return caseSpecificationSelectionPresentation(sources.specificationById.get(value), fallbackLabel);
       return {label:fallbackLabel, summary:""};
@@ -3492,7 +3529,9 @@ HTML_TEMPLATE = r"""<!doctype html>
         if (value === selectedValue) selectedPresentation = presentation;
         return `<option value="${esc(value)}" ${value === selectedValue ? "selected" : ""}>${esc(presentation.label)}</option>`;
       }).join("");
-      return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${optionHtml}</select><div class="case-select-summary" ${selectedPresentation.summary ? "" : "hidden"}>${esc(selectedPresentation.summary)}</div></div>`;
+      const supportsSummary = key !== "geometry_id";
+      const summaryHtml = supportsSummary ? `<div class="case-select-summary" ${selectedPresentation.summary ? "" : "hidden"}>${esc(selectedPresentation.summary)}</div>` : "";
+      return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${optionHtml}</select>${summaryHtml}</div>`;
     }
 
     function updateCaseSelectSummary(select){
@@ -3510,41 +3549,34 @@ HTML_TEMPLATE = r"""<!doctype html>
       const productsById = new Map(sources.products.map(product => [contextText(product.geometry_id), product]));
       const operatingById = sources.operatingById;
       const specificationById = sources.specificationById;
-      const listHtml = (items, detailsFor) => {
+      const listHtml = (items, presentationFor) => {
         const rows = asArray(items).map(raw => {
-          const item = asObj(raw), value = contextText(item.value), label = contextText(item.label) || value;
-          return `<li><strong class="case-source-name">${esc(label)}</strong><span class="case-source-details">${esc(detailsFor(value))}</span></li>`;
+          const item = asObj(raw), value = contextText(item.value), fallbackLabel = contextText(item.label) || value;
+          const presentation = presentationFor(value, fallbackLabel);
+          return `<li><strong class="case-source-name">${esc(presentation.label || fallbackLabel)}</strong><span class="case-source-details">${esc(presentation.summary || "-")}</span></li>`;
         }).join("");
         return rows || `<li><strong class="case-source-name">입력값 없음</strong><span class="case-source-details">-</span></li>`;
       };
-      const geometryList = listHtml(options.geometry_id, value => {
-        const product = asObj(productsById.get(value));
-        const description = contextText(product.role) === "base" ? "기존 형상" : productDescription(product, true) || "-";
-        return `도면번호: ${productText(product, "drawing_no") || "-"} · 설명: ${description}`;
-      });
-      const operatingList = listHtml(options.fan, value => {
-        const card = asObj(operatingById.get(value));
-        const display = operatingFanDisplay(card);
-        return `팬 개수: ${display.count} · 회전수(RPM): ${display.text}`;
-      });
-      const specificationList = listHtml(options.heat_exchanger, value => {
-        const card = asObj(specificationById.get(value)), fields = asObj(card.fields);
-        const type = heatExchangerType([card]), labels = heatExchangerFieldLabels(type);
-        const detail = key => fieldDisplayValue(fields[key]) || "-";
-        return `HEX type: ${type} · ${labels.tube_diameter}: ${detail("tube_diameter")} · ${labels.fin_type}: ${detail("fin_type")} · ${labels.row_count}: ${detail("row_count")} · ${labels.fpi}: ${detail("fpi")}`;
-      });
-      const countText = `형상 ${asArray(options.geometry_id).length} · 운전 ${asArray(options.fan).length} · 사양 ${asArray(options.heat_exchanger).length}`;
-      return `<section class="case-source-reference" aria-labelledby="caseSourceTitle"><div class="case-source-head"><div><h4 id="caseSourceTitle">입력값 요약</h4><span class="case-source-count">${esc(countText)}</span></div><button class="ghost case-source-toggle" type="button" data-action="toggle-case-source" aria-controls="caseSourceDetails" aria-expanded="${String(caseSourceSummaryExpanded)}">${caseSourceSummaryExpanded ? "접기" : "펼치기"}</button></div><div class="case-source-content" id="caseSourceDetails" ${caseSourceSummaryExpanded ? "" : "hidden"}><p class="case-source-guidance">아래 입력값을 확인하고 Case별 형상·운전·사양을 선택해 주세요.</p><ul class="case-source-list">${geometryList}${operatingList}${specificationList}</ul></div></section>`;
+      const geometryList = listHtml(options.geometry_id, (value, label) => caseSourceProductPresentation(productsById.get(value), label));
+      const operatingList = listHtml(options.fan, (value, label) => caseSourceOperatingPresentation(operatingById.get(value), label));
+      const specificationList = listHtml(options.heat_exchanger, (value, label) => caseSourceSpecificationPresentation(specificationById.get(value), label));
+      const geometryCount = asArray(options.geometry_id).length;
+      const operatingCount = asArray(options.fan).length;
+      const specificationCount = asArray(options.heat_exchanger).length;
+      const sourceColumn = (title, list) => `<section class="case-source-column"><h5>${esc(title)}</h5><ul class="case-source-list">${list}</ul></section>`;
+      return `<section class="case-source-reference" aria-labelledby="caseSourceTitle"><div class="case-source-head"><h4 id="caseSourceTitle">입력값 요약</h4><div class="case-source-counts" aria-label="입력값 개수"><span><b>해석 제품</b> ${geometryCount}개</span><span><b>운전 조건</b> ${operatingCount}개</span><span><b>열교환기 사양</b> ${specificationCount}개</span></div><button class="case-source-toggle" type="button" data-action="toggle-case-source" aria-controls="caseSourceDetails" aria-expanded="${String(caseSourceSummaryExpanded)}">${caseSourceSummaryExpanded ? "상세 닫기" : "상세 보기"}</button></div><div class="case-source-content" id="caseSourceDetails" ${caseSourceSummaryExpanded ? "" : "hidden"}>${sourceColumn("해석 제품", geometryList)}${sourceColumn("운전 조건", operatingList)}${sourceColumn("열교환기 사양", specificationList)}</div></section>`;
     }
 
     function caseTableValidationPresentation(){
-      const issueCount = caseConfigurationIssues().length;
+      const missingCount = caseSelectionMissingIssues().length;
+      const duplicateCount = caseDuplicateIssues().length;
       const coverage = caseCoverageState();
       const parts = [];
-      if (issueCount) parts.push(`오류 ${issueCount}건`);
-      if (coverage.complete === false) parts.push("미사용 입력값 확인 필요");
-      else if (!issueCount && coverage.complete === true) parts.push("검증 완료");
-      return {text:parts.join(" · "), tone:issueCount ? "error" : coverage.complete === false ? "warning" : coverage.complete === true ? "ok" : ""};
+      if (missingCount) parts.push(`미선택 항목 ${missingCount}건`);
+      if (duplicateCount) parts.push(`중복 Case ${duplicateCount}건`);
+      if (coverage.complete === false) parts.push("미사용 입력값 있음");
+      else if (!missingCount && !duplicateCount && coverage.complete === true) parts.push("검증 완료");
+      return {text:parts.join(" · "), tone:missingCount || duplicateCount ? "error" : coverage.complete === false ? "warning" : coverage.complete === true ? "ok" : ""};
     }
 
     function caseTableHtml(){
@@ -3556,15 +3588,26 @@ HTML_TEMPLATE = r"""<!doctype html>
       const validation = caseTableValidationPresentation();
       const toolbar = `<div class="case-matrix-toolbar"><div class="case-matrix-title"><h4>Case 조합표</h4><span class="case-count">Case ${rows.length}개</span>${validation.text ? `<span class="case-validation-status ${esc(validation.tone)}">${esc(validation.text)}</span>` : ""}</div><button class="primary" type="button" data-action="add-case">Case 추가</button></div>`;
       if (!columns.length || !rows.length) return `${toolbar}<div class="empty">형상 또는 Case 추가 후 직접 매핑해 주세요.</div>`;
-      const head = columns.map(column => `<th>${esc(asObj(column).label || asObj(column).key)}</th>`).join("");
+      const caseColumnDisplayLabel = column => {
+        const item = asObj(column), key = contextText(item.key);
+        if (key === "case_no") return "Case";
+        if (key === "geometry_id") return "해석 제품";
+        if (key === "remove") return "삭제";
+        return contextText(item.label) || key;
+      };
+      const caseColumnClass = key => `case-col-${contextText(key).replace(/[^A-Za-z0-9_-]/g, "-")}`;
+      const head = columns.map(column => {
+        const item = asObj(column), key = contextText(item.key);
+        return `<th class="${caseColumnClass(key)}">${esc(caseColumnDisplayLabel(item))}</th>`;
+      }).join("");
       const body = rows.map((raw, index) => {
         const row = asObj(raw), id = contextText(row.case_id), values = asObj(row.condition_values);
         return `<tr data-case-row="${esc(id)}">${columns.map(column => {
           const item = asObj(column), key = contextText(item.key);
-          if (key === "case_no") return `<td class="case-number">${index + 1}</td>`;
-          if (key === "remove") return `<td class="case-remove-cell"><button class="ghost case-remove-action" type="button" data-action="remove-case" data-case-id="${esc(id)}" title="Case ${index + 1} 삭제" aria-label="Case ${index + 1} 삭제">삭제</button></td>`;
+          if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${index + 1}</td>`;
+          if (key === "remove") return `<td class="case-remove-cell ${caseColumnClass(key)}"><button class="condition-row-action remove" type="button" data-action="remove-case" data-case-id="${esc(id)}" title="Case ${index + 1} 삭제" aria-label="Case ${index + 1} 삭제">−</button></td>`;
           const selected = key === "geometry_id" ? row.geometry_id : values[key];
-          return `<td>${caseSelectFieldHtml(id, key, selected, optionMap[key], sources)}</td>`;
+          return `<td class="${caseColumnClass(key)}">${caseSelectFieldHtml(id, key, selected, optionMap[key], sources)}</td>`;
         }).join("")}</tr>`;
       }).join("");
       const deleteNotice = lastCaseDeleteNoticeVisible

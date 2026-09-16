@@ -305,10 +305,11 @@ def test_fan_detail_uses_the_screen_four_local_action_and_subsurface_standard():
     ) in HTML_TEMPLATE
 
 
-def test_heat_exchanger_spec_is_narrow_and_remaining_columns_share_equal_widths():
-    assert '.condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(5,minmax(0,1fr)) max-content;gap:9px}' in HTML_TEMPLATE
-    assert '.condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:nowrap}' in HTML_TEMPLATE
+def test_heat_exchanger_fields_use_exactly_two_balanced_width_classes():
+    assert '.condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(3,minmax(0,1.15fr)) repeat(2,minmax(0,1fr)) max-content;gap:9px}' in HTML_TEMPLATE
+    assert '.condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:normal;overflow-wrap:break-word}' in HTML_TEMPLATE
     assert '.condition-card-type-heat_exchanger .condition-spec-name{padding-inline:4px;white-space:nowrap}' in HTML_TEMPLATE
+    assert 'repeat(3,minmax(0,1.15fr)) repeat(2,minmax(0,1fr))' in HTML_TEMPLATE
 
 
 def test_fan_count_controls_replace_the_legacy_multiple_fan_mode():
@@ -352,7 +353,8 @@ def test_operating_rows_use_fan_names_and_heat_exchanger_numeric_inputs_share_wi
     assert '.condition-card-type-operating .condition-row-actions{grid-column:4;grid-row:1}' in HTML_TEMPLATE
     assert '.condition-card-type-operating .condition-spec-name{padding-inline:3px;white-space:nowrap}' in HTML_TEMPLATE
     assert '.fan-count-custom-control{grid-template-columns:minmax(0,1fr) 42px;gap:4px;width:90px}' in HTML_TEMPLATE
-    assert 'repeat(5,minmax(0,1fr))' in HTML_TEMPLATE
+    assert '.condition-card-type-heat_exchanger .condition-card-row{grid-template-columns:64px repeat(3,minmax(0,1.15fr)) repeat(2,minmax(0,1fr)) max-content;gap:9px}' in HTML_TEMPLATE
+    assert '.condition-card-type-heat_exchanger .condition-card-row>label{min-width:0;white-space:normal;overflow-wrap:break-word}' in HTML_TEMPLATE
     assert '.fan-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))' in HTML_TEMPLATE
     assert '.fan-input-set{display:grid;grid-template-columns:30px minmax(100px,1fr) minmax(90px,120px)' in HTML_TEMPLATE
     assert 'const multiple = fans.length >= 2;' in HTML_TEMPLATE
@@ -475,3 +477,15 @@ def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contra
     assert 'return parts.join(" / ");' in helper
     assert 'if (type === "space_environment" || type === "supply_air")' in helper
     assert 'if (label) add(type, card.id, label);' in helper
+
+    function_body = HTML_TEMPLATE.split('function caseGroupedConditionLabel(type, fields)', 1)[1].split('function liveCaseDropdownOptions()', 1)[0]
+    script = f'''function contextText(value){{ return String(value ?? "").trim(); }}
+function fieldDisplayValue(value){{ return value && typeof value === "object" ? (value.display_value ?? value.value ?? "") : value; }}
+function caseGroupedConditionLabel(type, fields){function_body}
+const space = caseGroupedConditionLabel("space_environment", {{room_temp:"25", room_rh:"45"}});
+const supply = caseGroupedConditionLabel("supply_air", {{heat_exchanger_temp:"12°C", heat_exchanger_rh:"76%"}});
+if (space !== "25°C / 45%") throw new Error(space);
+if (supply !== "12°C / 76%") throw new Error(supply);
+'''
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", check=False)
+    assert result.returncode == 0, result.stderr
