@@ -238,6 +238,32 @@ def test_table_cells_remove_bullet_glyphs_and_list_numbering():
         for cell in row.cells
         for paragraph in cell.paragraphs
     )
+    document_xml = document._element.xml
+    for pagination_property in ("w:keepNext", "w:keepLines", "w:cantSplit"):
+        assert pagination_property not in document_xml
+
+
+def test_non_case_table_content_uses_one_typography_rule():
+    document = Document(BytesIO(build_word_docx(_preview_payload())))
+
+    for table in document.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    assert paragraph.style.name == "Normal"
+                    for run in paragraph.runs:
+                        if run.text:
+                            assert run.font.name == "Malgun Gothic"
+
+    for table_index, table in enumerate(document.tables):
+        if table_index == len(document.tables) - 1:
+            continue
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        if run.text:
+                            assert run.font.size.pt == pytest.approx(9.0)
 
 
 def test_case_table_keeps_each_screen_row_and_removes_only_generic_names():

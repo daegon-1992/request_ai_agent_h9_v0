@@ -204,33 +204,6 @@ def _set_repeat_table_header(row: Any) -> None:
     tr_pr.append(tbl_header)
 
 
-def _prevent_row_split(row: Any) -> None:
-    tr_pr = row._tr.get_or_add_trPr()
-    cant_split = OxmlElement("w:cantSplit")
-    tr_pr.append(cant_split)
-
-
-def _keep_table_together_when_possible(table: Any) -> None:
-    """Move a table to the next page instead of splitting it when it fits there.
-
-    Word has no table-level ``keep together`` switch. Chaining the cell
-    paragraphs with ``keep_with_next`` and keeping each row unsplittable gives
-    the intended behavior: if the whole table fits on a fresh page, Word moves
-    it there as one block. If the table itself is taller than one page, Word may
-    still paginate it, with the existing repeated header and unsplit rows.
-    """
-
-    rows = list(table.rows)
-    if not rows:
-        return
-    for row_index, row in enumerate(rows):
-        keep_with_next = row_index < len(rows) - 1
-        for cell in row.cells:
-            for paragraph in cell.paragraphs:
-                paragraph.paragraph_format.keep_together = True
-                paragraph.paragraph_format.keep_with_next = keep_with_next
-
-
 def _set_paragraph_bottom_border(paragraph: Any, *, color: str = _SECTION_RULE_COLOR, size: str = "6") -> None:
     p_pr = paragraph._p.get_or_add_pPr()
     p_bdr = p_pr.find(qn("w:pBdr"))
@@ -323,7 +296,6 @@ def _configure_document(document: Any) -> None:
 def _add_document_title(document: Any) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=0, after=13, line=1.0)
-    paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run("해석 의뢰서")
     _set_run_style(run, size_pt=21.0, bold=True, color=_TEXT_COLOR)
     _set_paragraph_bottom_border(paragraph, color=_ACCENT_COLOR, size="12")
@@ -353,12 +325,11 @@ def _add_request_identity(document: Any, request_title: Any, request_no: Any) ->
         ("의뢰 번호", _request_identity_value(request_no, request_no=True)),
     )
     for row, values in zip(table.rows, rows):
-        _prevent_row_split(row)
         for cell, width in zip(row.cells, widths):
             cell.width = width
         _set_cell_shading(row.cells[0], _LABEL_FILL)
-        _set_cell_text(row.cells[0], values[0], bold=True, color=_MUTED_COLOR, size_pt=9.5)
-        _set_cell_text(row.cells[1], values[1], size_pt=10.0)
+        _set_cell_text(row.cells[0], values[0], bold=True, color=_MUTED_COLOR, size_pt=9.0)
+        _set_cell_text(row.cells[1], values[1], size_pt=9.0)
 
     spacer = document.add_paragraph()
     _set_paragraph_spacing(spacer, before=0, after=7, line=1.0)
@@ -367,7 +338,6 @@ def _add_request_identity(document: Any, request_title: Any, request_no: Any) ->
 def _add_section_heading(document: Any, title: str, index: int) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=17 if index > 1 else 2, after=9, line=1.0)
-    paragraph.paragraph_format.keep_with_next = True
     number_run = paragraph.add_run(f"{index:02d}  ")
     _set_run_style(number_run, size_pt=10.0, bold=True, color=_ACCENT_COLOR)
     title_run = paragraph.add_run(title or "구분")
@@ -378,7 +348,6 @@ def _add_section_heading(document: Any, title: str, index: int) -> None:
 def _add_group_heading(document: Any, title: Any) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=9, after=5, line=1.0)
-    paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run(_text(title) or "구분")
     _set_run_style(run, size_pt=10.5, bold=True, color=_ACCENT_COLOR)
 
@@ -416,27 +385,23 @@ def _add_key_value_table(
 
     for offset in range(0, len(fields), 2):
         row = table.add_row()
-        _prevent_row_split(row)
         for cell, width in zip(row.cells, widths):
             cell.width = width
 
         left_label, left_value = fields[offset]
         _set_cell_shading(row.cells[0], _LABEL_FILL)
-        _set_cell_text(row.cells[0], left_label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
-        _set_cell_text(row.cells[1], left_value, size_pt=9.8)
+        _set_cell_text(row.cells[0], left_label, bold=True, color=_MUTED_COLOR, size_pt=9.0)
+        _set_cell_text(row.cells[1], left_value, size_pt=9.0)
 
         if offset + 1 < len(fields):
             right_label, right_value = fields[offset + 1]
             _set_cell_shading(row.cells[2], _LABEL_FILL)
-            _set_cell_text(row.cells[2], right_label, bold=True, color=_MUTED_COLOR, size_pt=9.2)
-            _set_cell_text(row.cells[3], right_value, size_pt=9.8)
+            _set_cell_text(row.cells[2], right_label, bold=True, color=_MUTED_COLOR, size_pt=9.0)
+            _set_cell_text(row.cells[3], right_value, size_pt=9.0)
         else:
             value_cell = row.cells[1].merge(row.cells[2]).merge(row.cells[3])
             value_cell.width = Cm(page_width_cm - label_width)
-            _set_cell_text(value_cell, left_value, size_pt=9.8)
-
-    _keep_table_together_when_possible(table)
-
+            _set_cell_text(value_cell, left_value, size_pt=9.0)
 
 def _add_narrative_field(document: Any, label: str, value: str) -> None:
     """Give long request context enough horizontal and vertical reading space."""
@@ -447,23 +412,20 @@ def _add_narrative_field(document: Any, label: str, value: str) -> None:
     _set_table_fixed_width(table, _PORTRAIT_CONTENT_WIDTH_CM)
     _set_table_borders(table, color=_BORDER_COLOR, size="5")
     for row in table.rows:
-        _prevent_row_split(row)
         row.cells[0].width = Cm(_PORTRAIT_CONTENT_WIDTH_CM)
 
     label_cell = table.cell(0, 0)
     _set_cell_shading(label_cell, _LABEL_FILL)
-    _set_cell_text(label_cell, label, bold=True, color=_ACCENT_COLOR, size_pt=9.5)
+    _set_cell_text(label_cell, label, bold=True, color=_ACCENT_COLOR, size_pt=9.0)
 
     value_cell = table.cell(1, 0)
     value_cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
     _set_cell_margins(value_cell, top=135, start=145, bottom=150, end=145)
     paragraph = value_cell.paragraphs[0]
     paragraph.clear()
-    _set_paragraph_spacing(paragraph, line=1.18)
-    _set_run_style(paragraph.add_run(value or "-"), size_pt=10.2)
-
-    _keep_table_together_when_possible(table)
-
+    paragraph.style = "Normal"
+    _set_paragraph_spacing(paragraph, line=1.05)
+    _set_run_style(paragraph.add_run(value or "-"), size_pt=9.0)
 
 def _add_narrative_fields(document: Any, fields: Sequence[tuple[str, str]]) -> None:
     for index, (label, value) in enumerate(fields):
@@ -563,7 +525,6 @@ def _add_data_table(
     if caption:
         paragraph = document.add_paragraph()
         _set_paragraph_spacing(paragraph, before=2, after=5, line=1.0)
-        paragraph.paragraph_format.keep_with_next = True
         run = paragraph.add_run(caption)
         _set_run_style(run, size_pt=9.5, bold=True, color=_MUTED_COLOR)
 
@@ -592,7 +553,6 @@ def _add_data_table(
     if normalized_headers:
         header_row = table.add_row()
         _set_repeat_table_header(header_row)
-        _prevent_row_split(header_row)
         for index, value in enumerate(normalized_headers):
             cell = header_row.cells[index]
             if index < len(widths):
@@ -610,7 +570,6 @@ def _add_data_table(
 
     for row_index, values in enumerate(normalized_rows):
         row = table.add_row()
-        _prevent_row_split(row)
         for index, value in enumerate(values):
             cell = row.cells[index]
             if index < len(widths):
@@ -627,10 +586,6 @@ def _add_data_table(
             )
             if is_case_matrix:
                 cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-
-    if not is_case_matrix:
-        _keep_table_together_when_possible(table)
-
 
 def _section_blocks(section: Mapping[str, Any]) -> list[Mapping[str, Any]]:
     return [_mapping(block) for block in _items(section.get("blocks"))]
@@ -695,9 +650,8 @@ def _render_blocks(
 def _add_case_summary(document: Any, row_count: int) -> None:
     paragraph = document.add_paragraph()
     _set_paragraph_spacing(paragraph, before=0, after=7, line=1.05)
-    paragraph.paragraph_format.keep_with_next = True
     run = paragraph.add_run(f"총 {row_count}개 Case로 구성됩니다.")
-    _set_run_style(run, size_pt=9.5, color=_MUTED_COLOR)
+    _set_run_style(run, size_pt=9.0, color=_MUTED_COLOR)
 
 
 def _case_table_for_word(case_table: Mapping[str, Any]) -> dict[str, Any]:
