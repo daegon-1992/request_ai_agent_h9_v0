@@ -135,7 +135,7 @@ def test_word_recomposes_screen_six_as_a_reader_focused_engineering_request():
         "확인 내용",
         "DRAW-B",
         "토출부 변경",
-        "모든 팬 동일 · 900 RPM",
+        "모든 팬 동일 900 RPM",
         "Louver",
         "25 °C",
         "70 %",
@@ -190,3 +190,22 @@ def test_wide_case_matrix_moves_to_a_readable_landscape_page():
     assert case_table.rows[0].cells[0].text == "No."
     assert case_table.rows[1].cells[1].text == "Base"
     assert sum(cell.width.cm for cell in case_table.rows[0].cells) == pytest.approx(25.7, abs=0.1)
+
+
+def test_table_cells_remove_bullet_glyphs_and_list_numbering():
+    payload = _preview_payload()
+    operating_table = payload["sections"][3]["blocks"][1]
+    operating_table["rows"][0][0] = "• 운전 1"
+
+    document = Document(BytesIO(build_word_docx(payload)))
+    table = next(table for table in document.tables if table.cell(0, 1).text == "팬 개수")
+
+    assert table.rows[1].cells[0].text == "운전 1"
+    assert table.rows[1].cells[2].text == "모든 팬 동일 900 RPM"
+    assert all(
+        paragraph._p.pPr is None or paragraph._p.pPr.find(qn("w:numPr")) is None
+        for table in document.tables
+        for row in table.rows
+        for cell in row.cells
+        for paragraph in cell.paragraphs
+    )

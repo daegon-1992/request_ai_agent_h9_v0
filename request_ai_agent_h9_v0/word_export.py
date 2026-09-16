@@ -10,6 +10,7 @@ Runtime dependency:
 from __future__ import annotations
 
 from io import BytesIO
+import re
 from typing import Any, Mapping, Sequence
 
 try:
@@ -41,6 +42,8 @@ _ALT_ROW_FILL = "FAFBFC"
 _SECTION_RULE_COLOR = "AEB5BC"
 _PORTRAIT_CONTENT_WIDTH_CM = 17.0
 _LANDSCAPE_CONTENT_WIDTH_CM = 25.7
+_LEADING_TABLE_BULLET_RE = re.compile(r"(?m)^[ \t]*[•●▪◦][ \t]*")
+_SPACED_MIDDLE_DOT_RE = re.compile(r"[ \t]+·[ \t]+")
 
 # Long/free-text fields read better as a full-width row than as a 2-up key/value grid.
 _NARRATIVE_LABELS = {
@@ -70,6 +73,13 @@ def _text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).replace("\x00", "").strip()
+
+
+def _table_text(value: Any) -> str:
+    """Remove presentation-only bullet glyphs without changing stored values."""
+
+    text = _LEADING_TABLE_BULLET_RE.sub("", _text(value))
+    return _SPACED_MIDDLE_DOT_RE.sub(" ", text)
 
 
 def _items(value: Any) -> list[Any]:
@@ -250,11 +260,15 @@ def _set_cell_text(
 ) -> None:
     if align is None:
         align = WD_ALIGN_PARAGRAPH.LEFT
-    text = _text(value)
+    text = _table_text(value)
     if not text:
         text = "-"
     paragraph = cell.paragraphs[0]
     paragraph.clear()
+    p_pr = paragraph._p.get_or_add_pPr()
+    num_pr = p_pr.find(qn("w:numPr"))
+    if num_pr is not None:
+        p_pr.remove(num_pr)
     paragraph.alignment = align
     _set_paragraph_spacing(paragraph, before=0, after=0, line=1.0 if compact else 1.05)
     run = paragraph.add_run(text)
