@@ -39,5 +39,31 @@ def test_full_preview_uses_product_widths_and_shared_case_matrix_contract():
     assert 'class="preview-table case-matrix-grid" data-preview-table="case_matrix"' in preview
     assert 'caseColumnDisplayLabel(row)' in preview
     assert 'caseColumnClass(key)' in preview
+    assert 'const matrixSources = caseSelectionSources(state);' in preview
+    assert 'caseReadonlyFieldHtml(key, selected, cells[key], matrixSources)' in preview
     assert '<select' not in preview
     assert 'data-action="remove-case"' not in preview
+
+
+def test_full_preview_only_projects_active_environment_fields():
+    preview = HTML_TEMPLATE.split("function renderDocumentPreviewPanel", 1)[1].split(
+        "function renderCandidateNotice", 1
+    )[0]
+
+    assert 'const groupedConditionBody = type =>' in preview
+    assert '.filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key))' in preview
+    assert '.map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])))' in preview
+    assert 'environmentBody ? `<div><h5>공간 환경 조건</h5>' in preview
+    assert 'supplyBody ? `<div><h5>취출 공기 조건</h5>' in preview
+
+
+def test_full_preview_heat_exchanger_columns_use_balanced_fixed_widths():
+    preview = HTML_TEMPLATE.split("function renderDocumentPreviewPanel", 1)[1].split(
+        "function renderCandidateNotice", 1
+    )[0]
+
+    assert 'class="preview-table preview-specification-table"' in preview
+    assert '<col class="preview-spec-name"><col class="preview-spec-type"><col class="preview-spec-dimension"><col class="preview-spec-fin"><col class="preview-spec-rows"><col class="preview-spec-pitch">' in preview
+    assert '.preview-spec-name{width:14%}' in HTML_TEMPLATE
+    assert ':is(.preview-spec-type,.preview-spec-dimension,.preview-spec-fin){width:22%}' in HTML_TEMPLATE
+    assert ':is(.preview-spec-rows,.preview-spec-pitch){width:10%}' in HTML_TEMPLATE

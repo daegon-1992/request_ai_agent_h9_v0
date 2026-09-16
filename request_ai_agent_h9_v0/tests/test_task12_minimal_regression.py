@@ -93,10 +93,8 @@ def test_supply_and_space_condition_fields_use_the_requested_temperature_first_o
     assert [field["label"] for field in fieldset_cards["supply_air"]["fields"]] == ["취출 온도", "취출 상대습도"]
     assert 'supply_air: ["heat_exchanger_temp", "heat_exchanger_rh"]' in HTML_TEMPLATE
     assert 'space_environment: ["room_temp", "room_rh"]' in HTML_TEMPLATE
-    assert 'kv("공간 온도", groupedFieldValue("space_environment", "room_temp"))' in HTML_TEMPLATE
-    assert 'kv("공간 상대습도", groupedFieldValue("space_environment", "room_rh"))' in HTML_TEMPLATE
-    assert 'kv("취출 온도", groupedFieldValue("supply_air", "heat_exchanger_temp"))' in HTML_TEMPLATE
-    assert 'kv("취출 상대습도", groupedFieldValue("supply_air", "heat_exchanger_rh"))' in HTML_TEMPLATE
+    assert '.filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key))' in HTML_TEMPLATE
+    assert '.map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])))' in HTML_TEMPLATE
 
 
 def test_thermal_flow_excludes_humidity_from_conditions_matrix_and_screen_data():
@@ -132,10 +130,10 @@ def test_analysis_type_controls_active_cards_columns_and_clears_inactive_values(
     assert [column["key"] for column in get_active_case_matrix_columns(_context())] == [
         "fan", "heat_exchanger", "space_environment", "supply_air",
     ]
-    preview_conditions = HTML_TEMPLATE.split('const conditionsBody = ', 1)[1].split(';', 1)[0]
-    assert preview_conditions.index('<h5>운전 조건</h5>') < preview_conditions.index('<h5>열교환기 사양</h5>')
-    assert preview_conditions.index('<h5>열교환기 사양</h5>') < preview_conditions.index('<h5>공간 환경 조건</h5>')
-    assert preview_conditions.index('<h5>공간 환경 조건</h5>') < preview_conditions.index('<h5>취출 공기 조건</h5>')
+    preview = HTML_TEMPLATE.split('function renderDocumentPreviewPanel', 1)[1].split('function renderCandidateNotice', 1)[0]
+    assert preview.index('const operatingTable = ') < preview.index('const specificationTable = ')
+    assert preview.index('const specificationTable = ') < preview.index('const environmentSections = ')
+    assert preview.index('environmentBody ? `<div><h5>공간 환경 조건</h5>') < preview.index('supplyBody ? `<div><h5>취출 공기 조건</h5>')
     state[SECTION_REQUEST_CONTEXT].update(_context("일반 유동 해석"))
     changed = sanitize_state(state)
     assert {card["type"] for card in changed[SECTION_CONDITIONS]["condition_sets"]} == {"operating", "heat_exchanger"}

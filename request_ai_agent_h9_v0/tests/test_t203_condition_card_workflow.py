@@ -473,8 +473,8 @@ def test_legacy_stopped_fan_without_rpm_restores_to_zero_and_preserves_explicit_
 def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contract():
     helper = HTML_TEMPLATE.split('function conditionUnitFields(type)', 1)[1].split('function caseSourceReferenceHtml()', 1)[0]
 
-    assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in helper
-    assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in helper
+    assert 'space_environment:[["room_temp","공간 온도","°C"],["room_rh","공간 상대습도","%"]]' in helper
+    assert 'supply_air:[["heat_exchanger_temp","취출 온도","°C"],["heat_exchanger_rh","취출 상대습도","%"]]' in helper
     assert 'return parts.join(" / ");' in helper
     assert 'if (type === "space_environment" || type === "supply_air")' in helper
     assert 'if (label) add(type, card.id, label);' in helper

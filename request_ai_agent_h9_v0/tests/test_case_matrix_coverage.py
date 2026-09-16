@@ -372,8 +372,8 @@ def test_case_matrix_ui_uses_three_column_source_detail_and_compact_select_contr
     assert '.case-col-space_environment{width:16%}' in HTML_TEMPLATE
     assert '.case-col-supply_air{width:16%}' in HTML_TEMPLATE
     assert '.case-col-remove{width:6%}' in HTML_TEMPLATE
-    assert 'space_environment:[["room_temp","°C"],["room_rh","%"]]' in HTML_TEMPLATE
-    assert 'supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]]' in HTML_TEMPLATE
+    assert 'space_environment:[["room_temp","공간 온도","°C"],["room_rh","공간 상대습도","%"]]' in HTML_TEMPLATE
+    assert 'supply_air:[["heat_exchanger_temp","취출 온도","°C"],["heat_exchanger_rh","취출 상대습도","%"]]' in HTML_TEMPLATE
     assert '.case-matrix-grid th:last-child,' in HTML_TEMPLATE
     assert '.case-matrix-grid td:last-child{border-right:0}' in HTML_TEMPLATE
     assert '.case-matrix-grid tbody td{height:62px;padding:6px 8px;vertical-align:top}' in HTML_TEMPLATE

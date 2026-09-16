@@ -610,6 +610,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-matrix-toolbar>[data-action="add-case"]{height:36px;min-height:36px;padding:0 11px;border:0;border-radius:7px;background:#34373E;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
     .case-select-field{display:grid;width:100%;min-width:0;gap:2px;align-content:start}
     .case-select-field select{display:block;width:100%;min-width:0}
+    .case-readonly-value{min-width:0;padding:0 2px;color:var(--ui-field-value);font-size:13px;font-weight:500;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
     .case-select-summary{min-width:0;padding:0 2px;color:#5F646C;font-size:11px;font-weight:500;line-height:1.3;overflow-wrap:anywhere;white-space:normal}
     .case-select-summary[hidden]{display:none}
     .case-number{width:54px;color:#45484B;font-size:14px;font-weight:600;text-align:center}
@@ -978,11 +979,18 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-role{width:14%}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-drawing{width:26%}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-product-change{width:60%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-specification-table{table-layout:fixed}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-spec-name{width:14%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] :is(.preview-spec-type,.preview-spec-dimension,.preview-spec-fin){width:22%}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] :is(.preview-spec-rows,.preview-spec-pitch){width:10%}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table-value{display:inline-flex;align-items:center;gap:4px}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table.case-matrix-grid th{padding:8px;background:var(--soft)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table.case-matrix-grid td{padding:6px 8px}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block + .preview-condition-block{margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block h5,
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair h5{margin:0 0 10px;color:var(--ink);font-size:13px;font-weight:500;line-height:1.45}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div:only-child{grid-column:1/-1}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair>div+div{padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair .preview-kv-grid{grid-template-columns:1fr}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] #wordExportSlotBtn{min-height:44px;padding:0 18px;border-radius:8px;font-size:15px;font-weight:600}
@@ -3389,15 +3397,15 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function conditionUnitFields(type){
       return {
-        space_environment:[["room_temp","°C"],["room_rh","%"]],
-        supply_air:[["heat_exchanger_temp","°C"],["heat_exchanger_rh","%"]],
+        space_environment:[["room_temp","공간 온도","°C"],["room_rh","공간 상대습도","%"]],
+        supply_air:[["heat_exchanger_temp","취출 온도","°C"],["heat_exchanger_rh","취출 상대습도","%"]],
       }[type] || [];
     }
 
     function conditionFieldDisplayWithUnit(type, key, field){
       const value = contextText(fieldDisplayValue(field));
       if (!value) return "";
-      const unit = contextText(asArray(conditionUnitFields(type)).find(item => item[0] === key)?.[1]);
+      const unit = contextText(asArray(conditionUnitFields(type)).find(item => item[0] === key)?.[2]);
       if (!unit) return value;
       const compact = value.replace(/\s+/g, "").toLowerCase();
       const hasUnit = unit === "°C"
@@ -3470,10 +3478,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       return {count, text:values.join(" / ") || "-", missing:mode !== "individual" || fans.some((fan, index) => !contextText(asObj(fan).location) || !rpms[index])};
     }
 
-    function caseSelectionSources(){
-      const geometry = asObj(requestState.geometry);
+    function caseSelectionSources(sourceState=requestState){
+      const state = asObj(sourceState);
+      const geometry = asObj(state.geometry);
       const products = [asObj(geometry.base_product), ...asArray(geometry.comparison_products)];
-      const conditionSets = asArray(asObj(requestState.conditions).condition_sets).map(asObj);
+      const conditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj);
       return {
         products,
         productsById:new Map(products.map((product, index) => [contextText(product.geometry_id), {product, index}])),
@@ -3567,8 +3576,18 @@ HTML_TEMPLATE = r"""<!doctype html>
         return `<option value="${esc(value)}" ${value === selectedValue ? "selected" : ""}>${esc(presentation.label)}</option>`;
       }).join("");
       const supportsSummary = key !== "geometry_id";
-      const summaryHtml = supportsSummary ? `<div class="case-select-summary" ${selectedPresentation.summary ? "" : "hidden"}>${esc(selectedPresentation.summary)}</div>` : "";
+      const summaryHtml = supportsSummary ? caseSelectionSummaryHtml(selectedPresentation.summary) : "";
       return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${optionHtml}</select>${summaryHtml}</div>`;
+    }
+
+    function caseSelectionSummaryHtml(summary){
+      const text = contextText(summary);
+      return `<div class="case-select-summary" ${text ? "" : "hidden"}>${esc(text)}</div>`;
+    }
+
+    function caseReadonlyFieldHtml(key, selected, rawLabel, sources){
+      const presentation = caseSelectionPresentation(key, selected, rawLabel, sources);
+      return `<div class="case-select-field case-select-readonly"><div class="case-readonly-value">${esc(presentation.label || "-")}</div>${caseSelectionSummaryHtml(presentation.summary)}</div>`;
     }
 
     function updateCaseSelectSummary(select){
@@ -3899,17 +3918,27 @@ HTML_TEMPLATE = r"""<!doctype html>
         const cells = keys.map(key => `<td>${previewTableValue(labels[key] || key, value(fields[key]), isMissing(fields[key]))}</td>`).join("");
         return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(name)}</td><td>${esc(type || "-")}</td>${cells}</tr>`;
       }).join("") || `<tr><td colspan="6">열교환기 사양이 없습니다.</td></tr>`;
-      const groupedField = (type, key) => asObj(asObj(conditionByType(type)[0]).fields)[key];
-      const groupedFieldValue = (type, key) => conditionFieldDisplayWithUnit(type, key, groupedField(type, key));
-      const environmentBody = kvGrid([kv("공간 온도", groupedFieldValue("space_environment", "room_temp")), kv("공간 상대습도", groupedFieldValue("space_environment", "room_rh"))]);
-      const supplyBody = kvGrid([kv("취출 온도", groupedFieldValue("supply_air", "heat_exchanger_temp")), kv("취출 상대습도", groupedFieldValue("supply_air", "heat_exchanger_rh"))]);
+      const groupedConditionBody = type => {
+        const fields = asObj(asObj(conditionByType(type)[0]).fields);
+        const items = conditionUnitFields(type)
+          .filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key))
+          .map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])));
+        return items.length ? kvGrid(items) : "";
+      };
+      const environmentBody = groupedConditionBody("space_environment");
+      const supplyBody = groupedConditionBody("supply_air");
       const operatingTable = tableWrap(`<table class="preview-table" data-preview-table="operating_conditions"><thead><tr><th></th><th>팬 개수</th><th>팬 회전 설정</th></tr></thead><tbody>${operatingRows}</tbody></table>`);
-      const specificationTable = tableWrap(`<table class="preview-table" data-preview-table="heat_exchanger_conditions"><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
-      const conditionsBody = `<div class="preview-condition-block"><h5>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5>열교환기 사양</h5>${specificationTable}</div><div class="preview-condition-pair"><div><h5>공간 환경 조건</h5>${environmentBody}</div><div><h5>취출 공기 조건</h5>${supplyBody}</div></div>`;
+      const specificationTable = tableWrap(`<table class="preview-table preview-specification-table" data-preview-table="heat_exchanger_conditions"><colgroup><col class="preview-spec-name"><col class="preview-spec-type"><col class="preview-spec-dimension"><col class="preview-spec-fin"><col class="preview-spec-rows"><col class="preview-spec-pitch"></colgroup><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
+      const environmentSections = [
+        environmentBody ? `<div><h5>공간 환경 조건</h5>${environmentBody}</div>` : "",
+        supplyBody ? `<div><h5>취출 공기 조건</h5>${supplyBody}</div>` : "",
+      ].filter(Boolean).join("");
+      const conditionsBody = `<div class="preview-condition-block"><h5>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5>열교환기 사양</h5>${specificationTable}</div>${environmentSections ? `<div class="preview-condition-pair">${environmentSections}</div>` : ""}`;
       const matrix = asObj(state.case_matrix);
       const matrixColumns = asArray(matrix.visible_columns).filter(column => asObj(column).key !== "remove");
       const rawMatrixRows = asArray(matrix.rows);
-      const matrixRows = rawMatrixRows.map(item => { const row = asObj(item); const cells = asObj(row.visible_cells); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => { const key = contextText(asObj(column).key); return `<td class="${caseColumnClass(key)}${key === "case_no" ? " case-number" : ""}">${esc(cells[key] || "-")}</td>`; }).join("")}</tr>`; }).join("");
+      const matrixSources = caseSelectionSources(state);
+      const matrixRows = rawMatrixRows.map(item => { const row = asObj(item), cells = asObj(row.visible_cells), selections = asObj(row.condition_values); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => { const key = contextText(asObj(column).key); if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${esc(cells[key] || "-")}</td>`; const selected = key === "geometry_id" ? row.geometry_id : selections[key]; return `<td class="${caseColumnClass(key)}">${caseReadonlyFieldHtml(key, selected, cells[key], matrixSources)}</td>`; }).join("")}</tr>`; }).join("");
       const matrixTable = matrixColumns.length && matrixRows ? tableWrap(`<table class="preview-table case-matrix-grid" data-preview-table="case_matrix"><thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th class="${caseColumnClass(key)}">${previewFieldLabel(caseColumnDisplayLabel(row), missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table>`, "case-matrix-wrap") : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
       const requestFields = [kv("의뢰 유형", overview.request_type), kv("프로젝트명(PMS)", overview.project_name), kv("개발 등급", overview.development_grade), kv("NPI 단계", overview.npi_stage), kv("모델명(Model Suffix)", overview.model_suffix), kv("희망 완료일", overview.desired_completion_date), kv("해석유형", context.analysis_type)];
       const narrative = `<div class="preview-review-narrative">${kv("해석을 요청하게 된 배경", overview.request_description)}${kv("해석으로 확인하고 싶은 내용", overview.additional_result_request)}</div>`;
