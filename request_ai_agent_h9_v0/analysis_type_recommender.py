@@ -6,6 +6,7 @@ from copy import deepcopy
 import re
 from typing import Any, Mapping
 
+from .condition_fieldsets import build_condition_fieldset
 from .constants import (
     ANALYSIS_TYPE_ALIASES,
     ANALYSIS_TYPE_OPTIONS,
@@ -30,42 +31,19 @@ AI_SUGGESTED_SOURCE = "ai_suggested"
 
 DEFAULT_CONDITION_CANDIDATES = {
     "기류 패턴": {
-        "material_type": ["Air"],
         "fan_rpm": ["1000", "1200"],
         "room_temp": ["27"],
-        "room_rh": ["50"],
         "heat_exchanger_temp": ["7"],
-        "heat_exchanger_rh": ["90"],
     },
     "풍량": {
-        "material_type": ["Air"],
         "fan_rpm": ["1000", "1200"],
-        "room_temp": ["27"],
-        "room_rh": ["50"],
-        "heat_exchanger_temp": ["7"],
-        "heat_exchanger_rh": ["90"],
-    },
-    "압력손실 해석": {
-        "material_type": ["Air"],
-        "fan_rpm": ["1000", "1200"],
-        "pressure": ["0"],
     },
     "이슬맺힘": {
-        "material_type": ["Air"],
-        "pressure": ["대기압"],
         "fan_rpm": ["780"],
         "room_temp": ["27"],
         "room_rh": ["78"],
         "heat_exchanger_temp": ["15"],
         "heat_exchanger_rh": ["95"],
-        "heat_exchanger_spec": ["P7.0 2R 18FPISlit(Half)"],
-    },
-    "구조 해석": {
-        "material_type": ["N/A"],
-    },
-    "진동/소음 검토": {
-        "material_type": ["Air"],
-        "fan_rpm": ["1000", "1200"],
     },
 }
 
@@ -378,9 +356,15 @@ def _rag_candidate_conditions(state: Mapping[str, Any], analysis_type: str, *, r
 def _merged_candidate_conditions(state: Mapping[str, Any], analysis_type: str, *, rag_enabled: bool = True) -> dict[str, list[dict[str, Any]]]:
     merged: dict[str, list[dict[str, Any]]] = {}
     canonical = canonical_analysis_type(analysis_type)
+    fieldset = build_condition_fieldset({"analysis_type": canonical})
+    active_field_keys = set(fieldset["field_keys"]) if fieldset["analysis_type"] == canonical else set()
     for field_key, values in DEFAULT_CONDITION_CANDIDATES.get(canonical, {}).items():
+        if field_key not in active_field_keys:
+            continue
         merged[field_key] = [{"value": value, "evidence": {}} for value in values]
     for field_key, rows in _rag_candidate_conditions(state, canonical, rag_enabled=rag_enabled).items():
+        if field_key not in active_field_keys:
+            continue
         current = merged.setdefault(field_key, [])
         for row in rows:
             value = _line(row.get("value"))

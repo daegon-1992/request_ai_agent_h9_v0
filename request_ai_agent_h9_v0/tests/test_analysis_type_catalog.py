@@ -1,3 +1,4 @@
+from request_ai_agent_h9_v0.analysis_type_recommender import condition_recommendation_payload
 from request_ai_agent_h9_v0.app import create_app
 from request_ai_agent_h9_v0.condition_fieldsets import (
     build_condition_fieldset,
@@ -74,6 +75,41 @@ def test_airflow_pattern_keeps_temperature_without_humidity():
     fieldset = build_condition_fieldset({"analysis_type": "기류 패턴"})
     assert {"room_temp", "heat_exchanger_temp"} <= set(fieldset["field_keys"])
     assert set(fieldset["field_keys"]).isdisjoint({"room_rh", "heat_exchanger_rh"})
+
+
+def test_condition_recommendations_follow_the_canonical_active_fieldset(monkeypatch):
+    rag_candidates = {
+        "fan_rpm": [{"value": "900", "evidence": {}}],
+        "room_temp": [{"value": "26", "evidence": {}}],
+        "room_rh": [{"value": "55", "evidence": {}}],
+        "heat_exchanger_temp": [{"value": "11", "evidence": {}}],
+        "heat_exchanger_rh": [{"value": "85", "evidence": {}}],
+    }
+    monkeypatch.setattr(
+        "request_ai_agent_h9_v0.analysis_type_recommender._rag_candidate_conditions",
+        lambda *_args, **_kwargs: rag_candidates,
+    )
+
+    state = create_initial_state()
+    expected = {
+        "풍량": {"fan_rpm"},
+        "기류 패턴": {"fan_rpm", "room_temp", "heat_exchanger_temp"},
+        "이슬맺힘": {
+            "fan_rpm",
+            "room_temp",
+            "room_rh",
+            "heat_exchanger_temp",
+            "heat_exchanger_rh",
+        },
+        "열교환기 유속 프로파일": {"fan_rpm"},
+        "압력손실 해석": set(),
+    }
+
+    for analysis_type, expected_keys in expected.items():
+        payload = condition_recommendation_payload(state, analysis_type)
+        operation_keys = {operation["field_key"] for operation in payload["operations"]}
+        assert operation_keys == expected_keys
+        assert operation_keys <= set(build_condition_fieldset({"analysis_type": analysis_type})["field_keys"])
 
 
 def test_saved_air_volume_request_refreshes_old_temperature_policy():
