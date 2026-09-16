@@ -3930,10 +3930,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       const operatingTable = tableWrap(`<table class="preview-table" data-preview-table="operating_conditions"><thead><tr><th></th><th>팬 개수</th><th>팬 회전 설정</th></tr></thead><tbody>${operatingRows}</tbody></table>`);
       const specificationTable = tableWrap(`<table class="preview-table preview-specification-table" data-preview-table="heat_exchanger_conditions"><colgroup><col class="preview-spec-name"><col class="preview-spec-type"><col class="preview-spec-dimension"><col class="preview-spec-fin"><col class="preview-spec-rows"><col class="preview-spec-pitch"></colgroup><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
       const environmentSections = [
-        environmentBody ? `<div><h5>공간 환경 조건</h5>${environmentBody}</div>` : "",
-        supplyBody ? `<div><h5>취출 공기 조건</h5>${supplyBody}</div>` : "",
+        environmentBody ? `<div><h5 data-preview-group-title>공간 환경 조건</h5>${environmentBody}</div>` : "",
+        supplyBody ? `<div><h5 data-preview-group-title>취출 공기 조건</h5>${supplyBody}</div>` : "",
       ].filter(Boolean).join("");
-      const conditionsBody = `<div class="preview-condition-block"><h5>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5>열교환기 사양</h5>${specificationTable}</div>${environmentSections ? `<div class="preview-condition-pair">${environmentSections}</div>` : ""}`;
+      const conditionsBody = `<div class="preview-condition-block"><h5 data-preview-group-title>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5 data-preview-group-title>열교환기 사양</h5>${specificationTable}</div>${environmentSections ? `<div class="preview-condition-pair">${environmentSections}</div>` : ""}`;
       const matrix = asObj(state.case_matrix);
       const matrixColumns = asArray(matrix.visible_columns).filter(column => asObj(column).key !== "remove");
       const rawMatrixRows = asArray(matrix.rows);
@@ -4856,14 +4856,16 @@ HTML_TEMPLATE = r"""<!doctype html>
         request_no:requestNo,
         state:requestState,
         sections:Array.from(documentNode.querySelectorAll('[data-preview-section]')).map(section => {
-          const blocks = Array.from(section.querySelectorAll('[data-preview-label], table[data-preview-table]'))
+          const blocks = Array.from(section.querySelectorAll('[data-preview-label], [data-preview-group-title], table[data-preview-table]'))
+            .filter(node => !node.matches('[data-preview-label]') || !node.closest('table'))
             .map(node => {
               if (node.matches('[data-preview-label]')) {
                 const row = node.closest('.preview-kv');
                 return {type:"field", label:clean(node.textContent), value:clean(row?.querySelector('[data-preview-value]')?.textContent)};
               }
+              if (node.matches('[data-preview-group-title]')) return {type:"group", title:clean(node.textContent)};
               const rows = Array.from(node.querySelectorAll('tbody tr')).map(row => Array.from(row.querySelectorAll('td')).map(cell => clean(cell.textContent)));
-              return {type:"table", caption:clean(node.querySelector('caption')?.textContent), headers:Array.from(node.querySelectorAll('thead th')).map(cell => clean(cell.textContent)), rows};
+              return {type:"table", key:clean(node.dataset.previewTable), caption:clean(node.querySelector('caption')?.textContent), headers:Array.from(node.querySelectorAll('thead th')).map(cell => clean(cell.textContent)), rows};
             });
           return {title:clean(section.querySelector('[data-preview-section-title]')?.textContent), blocks};
         }),

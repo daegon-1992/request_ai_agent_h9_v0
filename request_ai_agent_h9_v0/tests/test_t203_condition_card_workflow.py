@@ -440,8 +440,8 @@ def test_full_preview_projects_condition_groups_with_v17_review_structure():
     assert 'const labels = heatExchangerFieldLabels(type);' in preview
     assert '<th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th>' in preview
     assert 'class="preview-condition-pair"' in preview
-    assert '<h5>공간 환경 조건</h5>' in preview
-    assert '<h5>취출 공기 조건</h5>' in preview
+    assert '<h5 data-preview-group-title>공간 환경 조건</h5>' in preview
+    assert '<h5 data-preview-group-title>취출 공기 조건</h5>' in preview
 
 
 def test_heat_exchanger_spec_is_system_generated_for_each_row():

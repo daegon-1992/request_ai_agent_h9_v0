@@ -53,8 +53,8 @@ def test_full_preview_only_projects_active_environment_fields():
     assert 'const groupedConditionBody = type =>' in preview
     assert '.filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key))' in preview
     assert '.map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])))' in preview
-    assert 'environmentBody ? `<div><h5>공간 환경 조건</h5>' in preview
-    assert 'supplyBody ? `<div><h5>취출 공기 조건</h5>' in preview
+    assert 'environmentBody ? `<div><h5 data-preview-group-title>공간 환경 조건</h5>' in preview
+    assert 'supplyBody ? `<div><h5 data-preview-group-title>취출 공기 조건</h5>' in preview
 
 
 def test_full_preview_heat_exchanger_columns_use_balanced_fixed_widths():

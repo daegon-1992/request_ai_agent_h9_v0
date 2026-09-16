@@ -133,7 +133,7 @@ def test_analysis_type_controls_active_cards_columns_and_clears_inactive_values(
     preview = HTML_TEMPLATE.split('function renderDocumentPreviewPanel', 1)[1].split('function renderCandidateNotice', 1)[0]
     assert preview.index('const operatingTable = ') < preview.index('const specificationTable = ')
     assert preview.index('const specificationTable = ') < preview.index('const environmentSections = ')
-    assert preview.index('environmentBody ? `<div><h5>공간 환경 조건</h5>') < preview.index('supplyBody ? `<div><h5>취출 공기 조건</h5>')
+    assert preview.index('environmentBody ? `<div><h5 data-preview-group-title>공간 환경 조건</h5>') < preview.index('supplyBody ? `<div><h5 data-preview-group-title>취출 공기 조건</h5>')
     state[SECTION_REQUEST_CONTEXT].update(_context("일반 유동 해석"))
     changed = sanitize_state(state)
     assert {card["type"] for card in changed[SECTION_CONDITIONS]["condition_sets"]} == {"operating", "heat_exchanger"}
