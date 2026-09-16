@@ -47,7 +47,7 @@ def test_screen02_to_05_actions_use_real_flex_bottom_layout_without_position_hac
 
 def test_screen02_to_05_navigation_buttons_share_one_compact_contract():
     assert '.workspace-shell :is(.screen-action-bar button,.workflow-action-button){min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-action-bar button.primary{border-color:#2F3033;background:#2F3033;color:#fff}' in HTML_TEMPLATE
+    assert '.workspace-shell :is(.screen-action-bar button.primary,.workflow-action-button.primary){border-color:#2F3033;background:#2F3033;color:#fff}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-action-bar button:not(.primary){border:1px solid #C9CDD3;background:#fff;color:#404348}' in HTML_TEMPLATE
 
 

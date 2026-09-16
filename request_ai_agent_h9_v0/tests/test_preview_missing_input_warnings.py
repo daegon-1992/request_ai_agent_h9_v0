@@ -58,6 +58,10 @@ def test_screen_six_uses_flat_read_only_review_sections_and_action_contracts():
         'min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;'
         'border-radius:6px;font-size:13px;font-weight:600}'
     ) in HTML_TEMPLATE
+    assert (
+        '.workspace-shell :is(.screen-action-bar button.primary,.workflow-action-button.primary){'
+        'border-color:#2F3033;background:#2F3033;color:#fff}'
+    ) in HTML_TEMPLATE
     assert 'class="primary workflow-action-button" id="wordExportSlotBtn"' in screen
     assert '#wordExportSlotBtn{' not in HTML_TEMPLATE
 

@@ -856,9 +856,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .request-content-screen > .screen-scroll-content > #section-overview .analysis-result-guidance{border-color:var(--request-workspace-border);background:var(--soft)}
     .workspace-shell .screen-action-bar{border-color:var(--ui-border-subtle);background:var(--ui-surface)}
     .workspace-shell :is(.screen-action-bar button,.workflow-action-button){min-width:0;width:auto;height:36px;min-height:36px;padding:0 13px;border-radius:6px;font-size:13px;font-weight:600}
-    .workspace-shell .screen-action-bar button.primary{border-color:#2F3033;background:#2F3033;color:#fff}
-    .workspace-shell .screen-action-bar button.primary:hover:not(:disabled){border-color:#252629;background:#252629}
+    .workspace-shell :is(.screen-action-bar button.primary,.workflow-action-button.primary){border-color:#2F3033;background:#2F3033;color:#fff}
+    .workspace-shell :is(.screen-action-bar button.primary,.workflow-action-button.primary):hover:not(:disabled){border-color:#252629;background:#252629}
     .workspace-shell .screen-action-bar button:not(.primary){border:1px solid #C9CDD3;background:#fff;color:#404348}
+    .workspace-shell :is(.screen-action-bar button,.workflow-action-button):disabled{border-color:var(--ui-disabled-border);background:var(--ui-disabled-bg);color:var(--ui-disabled-text)}
     .workspace-shell .prep-start-actions #prepStartBtn{background:#2F3033;color:#fff}
     .workspace-shell .screen-map-item:focus-visible{outline-color:rgba(52,55,62,.18)}
     .topbar .subtitle{display:none}

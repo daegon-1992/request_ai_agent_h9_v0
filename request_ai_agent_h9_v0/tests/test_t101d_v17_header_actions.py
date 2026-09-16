@@ -10,5 +10,5 @@ def test_header_typography_uses_canonical_contract():
 
 def test_shared_primary_action_colors_are_charcoal():
     assert '.top-actions #newRequestBtn{height:36px;min-height:36px;padding:0 15px;border:0;border-radius:6px;background:#34373E;color:#fff;font-size:13px;font-weight:600}' in HTML_TEMPLATE
-    assert '.workspace-shell .screen-action-bar button.primary{border-color:#2F3033;background:#2F3033;color:#fff}' in HTML_TEMPLATE
+    assert '.workspace-shell :is(.screen-action-bar button.primary,.workflow-action-button.primary){border-color:#2F3033;background:#2F3033;color:#fff}' in HTML_TEMPLATE
     assert '.workspace-shell .screen-action-bar button:not(.primary){border:1px solid #C9CDD3;background:#fff;color:#404348}' in HTML_TEMPLATE
