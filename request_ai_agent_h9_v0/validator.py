@@ -7,7 +7,7 @@ import re
 from typing import Any, Mapping
 
 from .condition_fields import clean_text
-from .condition_fieldsets import get_active_condition_fields
+from .condition_fieldsets import analysis_scopes_for_context, get_active_condition_fields
 from .constants import (
     FIELD_STATUS_PROVIDED,
     SECTION_ANALYSIS_OVERVIEW,
@@ -71,6 +71,7 @@ def _add_issue(
     field_key: str = "",
     field_label: str = "",
     action: str = "",
+    analysis_scope: str = "",
 ) -> None:
     issue = {
         "severity": severity,
@@ -90,6 +91,8 @@ def _add_issue(
     if action:
         issue["action"] = action
         issue["actionLabel"] = "이 위치 보완"
+    if analysis_scope:
+        issue["analysis_scope"] = analysis_scope
     result[severity].append(issue)
 
 
@@ -375,85 +378,99 @@ def _validate_case_matrix(result: ValidationResult, state: Mapping[str, Any]) ->
 
     matrix = _as_mapping(state.get(SECTION_CASE_MATRIX))
     rows = _as_list(matrix.get("rows"))
-    options = _as_mapping(matrix.get("dropdown_options"))
+    options_by_scope = _as_mapping(matrix.get("dropdown_options_by_scope"))
     columns = _as_list(matrix.get("visible_columns"))
     condition_keys = [
         clean_text(column.get("key"))
         for column in columns
         if _as_mapping(column).get("kind") == "condition" and clean_text(_as_mapping(column).get("key"))
     ]
-    geometry_ids = {clean_text(item.get("value")) for item in _as_list(options.get("geometry_id")) if isinstance(item, Mapping)}
-    option_values = {
-        key: {clean_text(item.get("value")) for item in _as_list(options.get(key)) if isinstance(item, Mapping)}
-        for key in condition_keys
-    }
+    scopes = analysis_scopes_for_context(state)
+    for scope in scopes:
+        options = _as_mapping(options_by_scope.get(scope)) if scope else _as_mapping(matrix.get("dropdown_options"))
+        if not options:
+            options = _as_mapping(matrix.get("dropdown_options"))
+        scoped_rows = [
+            (global_index, _as_mapping(row))
+            for global_index, row in enumerate(rows)
+            if not scope or clean_text(_as_mapping(row).get("analysis_scope")) == scope
+        ]
+        geometry_ids = {clean_text(item.get("value")) for item in _as_list(options.get("geometry_id")) if isinstance(item, Mapping)}
+        option_values = {
+            key: {clean_text(item.get("value")) for item in _as_list(options.get(key)) if isinstance(item, Mapping)}
+            for key in condition_keys
+        }
 
-    if not rows:
-        _add_issue(
-            result,
-            SEVERITY_BLOCKING,
-            code="case_matrix.rows_missing",
-            section=SECTION_CASE_MATRIX,
-            path="case_matrix.rows",
-            message="At least one Case is required.",
-            action="Add a Case and map its geometry and active conditions.",
-        )
-        return
-
-    seen_signatures: dict[tuple[str, ...], int] = {}
-    for index, raw_row in enumerate(rows, start=1):
-        row = _as_mapping(raw_row)
-        geometry_id = clean_text(row.get("geometry_id"))
-        case_is_valid = geometry_id in geometry_ids
-        if geometry_id not in geometry_ids:
+        if not scoped_rows:
             _add_issue(
                 result,
                 SEVERITY_BLOCKING,
-                code="case_matrix.geometry_missing",
+                code="case_matrix.rows_missing",
                 section=SECTION_CASE_MATRIX,
-                path=f"case_matrix.rows[{index - 1}].geometry_id",
-                field_key="geometry_id",
-                message=f"Case {index} needs a valid geometry selection.",
-                action="Select a geometry from the current geometry list.",
+                path="case_matrix.rows",
+                message="At least one Case is required.",
+                action="Add a Case and map its geometry and active conditions.",
+                analysis_scope=scope,
             )
-        values = _as_mapping(row.get("condition_values"))
-        for key in condition_keys:
-            value = clean_text(values.get(key))
-            if value in option_values.get(key, set()):
+            continue
+        seen_signatures: dict[tuple[str, ...], int] = {}
+        for case_no, (global_index, row) in enumerate(scoped_rows, start=1):
+            geometry_id = clean_text(row.get("geometry_id"))
+            case_is_valid = geometry_id in geometry_ids
+            if geometry_id not in geometry_ids:
+                _add_issue(
+                    result,
+                    SEVERITY_BLOCKING,
+                    code="case_matrix.geometry_missing",
+                    section=SECTION_CASE_MATRIX,
+                    path=f"case_matrix.rows[{global_index}].geometry_id",
+                    field_key="geometry_id",
+                    message=f"Case {case_no} needs a valid geometry selection.",
+                    action="Select a geometry from the current geometry list.",
+                    analysis_scope=scope,
+                )
+                result[SEVERITY_BLOCKING][-1]["case_no"] = case_no
+            values = _as_mapping(row.get("condition_values"))
+            for key in condition_keys:
+                value = clean_text(values.get(key))
+                if value in option_values.get(key, set()):
+                    continue
+                case_is_valid = False
+                _add_issue(
+                    result,
+                    SEVERITY_BLOCKING,
+                    code=f"case_matrix.{key}.missing",
+                    section=SECTION_CASE_MATRIX,
+                    path=f"case_matrix.rows[{global_index}].condition_values.{key}",
+                    field_key=key,
+                    message=f"Case {case_no} needs a valid {key} selection.",
+                    action="Select one of the latest active condition values.",
+                    analysis_scope=scope,
+                )
+                result[SEVERITY_BLOCKING][-1]["case_no"] = case_no
+            if not case_is_valid:
                 continue
-            case_is_valid = False
-            _add_issue(
-                result,
-                SEVERITY_BLOCKING,
-                code=f"case_matrix.{key}.missing",
-                section=SECTION_CASE_MATRIX,
-                path=f"case_matrix.rows[{index - 1}].condition_values.{key}",
-                field_key=key,
-                message=f"Case {index} needs a valid {key} selection.",
-                action="Select one of the latest active condition values.",
-            )
-        if not case_is_valid:
-            continue
-        signature = (geometry_id, *(clean_text(values.get(key)) for key in condition_keys))
-        matching_case_no = seen_signatures.get(signature)
-        if matching_case_no is not None:
-            _add_issue(
-                result,
-                SEVERITY_BLOCKING,
-                code="case_matrix.duplicate",
-                section=SECTION_CASE_MATRIX,
-                path=f"case_matrix.rows[{index - 1}].geometry_id",
-                field_key="geometry_id",
-                message=f"Case {index} duplicates an existing Case.",
-                action="Change the geometry or condition selection, or remove the duplicate Case.",
-            )
-            result[SEVERITY_BLOCKING][-1]["case_no"] = index
-            result[SEVERITY_BLOCKING][-1]["duplicate_of_case_no"] = matching_case_no
-            continue
-        seen_signatures[signature] = index
+            signature = (geometry_id, *(clean_text(values.get(key)) for key in condition_keys))
+            matching_case_no = seen_signatures.get(signature)
+            if matching_case_no is not None:
+                _add_issue(
+                    result,
+                    SEVERITY_BLOCKING,
+                    code="case_matrix.duplicate",
+                    section=SECTION_CASE_MATRIX,
+                    path=f"case_matrix.rows[{global_index}].geometry_id",
+                    field_key="geometry_id",
+                    message=f"Case {case_no} duplicates an existing Case.",
+                    action="Change the geometry or condition selection, or remove the duplicate Case.",
+                    analysis_scope=scope,
+                )
+                result[SEVERITY_BLOCKING][-1]["case_no"] = case_no
+                result[SEVERITY_BLOCKING][-1]["duplicate_of_case_no"] = matching_case_no
+                continue
+            seen_signatures[signature] = case_no
 
 
-def case_matrix_coverage(matrix: Mapping[str, Any]) -> dict[str, Any]:
+def _case_matrix_coverage_single(matrix: Mapping[str, Any]) -> dict[str, Any]:
     """Report unused current Matrix options without changing blocking readiness."""
 
     source = _as_mapping(matrix)
@@ -515,6 +532,33 @@ def case_matrix_coverage(matrix: Mapping[str, Any]) -> dict[str, Any]:
     return {"complete": not unused_items, "unused_items": unused_items}
 
 
+def case_matrix_coverage(matrix: Mapping[str, Any], request_context: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Report coverage independently for each requested analysis scope."""
+
+    source = _as_mapping(matrix)
+    scopes = analysis_scopes_for_context(request_context)
+    if scopes == ("",):
+        return _case_matrix_coverage_single(source)
+    options_by_scope = _as_mapping(source.get("dropdown_options_by_scope"))
+    rows = _as_list(source.get("rows"))
+    by_scope: dict[str, dict[str, Any]] = {}
+    for scope in scopes:
+        scoped_matrix = {
+            **dict(source),
+            "dropdown_options": _as_mapping(options_by_scope.get(scope)),
+            "rows": [row for row in rows if clean_text(_as_mapping(row).get("analysis_scope")) == scope],
+        }
+        coverage = _case_matrix_coverage_single(scoped_matrix)
+        for item in coverage["unused_items"]:
+            item["analysis_scope"] = scope
+        by_scope[scope] = coverage
+    return {
+        "complete": all(item["complete"] for item in by_scope.values()),
+        "unused_items": [item for scope in scopes for item in by_scope[scope]["unused_items"]],
+        "by_scope": by_scope,
+    }
+
+
 def validate_state(source: Mapping[str, Any]) -> ValidationResult:
     """Validate structured state and derived axes without using chat logs."""
 
@@ -548,7 +592,7 @@ def validate_state(source: Mapping[str, Any]) -> ValidationResult:
     _validate_conditions(result, state)
     _validate_case_matrix(result, state)
     matrix = _as_mapping(state.get(SECTION_CASE_MATRIX))
-    result["coverage"] = case_matrix_coverage(matrix)
+    result["coverage"] = case_matrix_coverage(matrix, state)
     case_count = len(_as_list(matrix.get("rows")))
     can_submit = len(result[SEVERITY_BLOCKING]) == 0 and case_count > 0
 

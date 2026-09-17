@@ -6,7 +6,7 @@ from copy import deepcopy
 from typing import Any, Mapping
 from uuid import uuid4
 
-from .condition_fieldsets import build_condition_fieldset
+from .condition_fieldsets import ANALYSIS_SCOPE_VALUES, build_condition_fieldset, is_rac_window_context
 from .constants import (
     DISABLED_ANALYSIS_TYPE_OPTIONS,
     ENABLED_ANALYSIS_TYPE_OPTIONS,
@@ -57,7 +57,7 @@ def confirm_request_context_state(
     )
     if current_context.get("context_locked") is True:
         raise ValueError("request_context_already_locked")
-    for key in ("taxonomy_id", "division", "product_lineup", "platform", "analysis_type", "operation_mode"):
+    for key in ("taxonomy_id", "division", "product_lineup", "platform", "analysis_type", "analysis_scope", "operation_mode"):
         value = _clean(raw_context.get(key))
         if value:
             current_context[key] = value
@@ -107,6 +107,13 @@ def confirm_request_context_state(
             "display_path": _clean(taxonomy_path.get("display_path")),
         }
     )
+    if is_rac_window_context(current_context):
+        analysis_scope = _clean(current_context.get("analysis_scope")).lower()
+        if analysis_scope not in ANALYSIS_SCOPE_VALUES:
+            raise ValueError("missing_context:analysis_scope")
+        current_context["analysis_scope"] = analysis_scope
+    else:
+        current_context["analysis_scope"] = ""
     analysis_type = _clean(current_context.get("analysis_type"))
     if analysis_type in DISABLED_ANALYSIS_TYPE_OPTIONS:
         raise ValueError("disabled_analysis_type:" + analysis_type)

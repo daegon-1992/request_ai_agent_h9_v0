@@ -470,7 +470,7 @@ def _context_confirm_state(raw_state: Mapping[str, Any], raw_context: Mapping[st
 def _context_fieldset_state(raw_state: Mapping[str, Any], raw_context: Mapping[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     state = _derive_state(raw_state)
     current_context = dict(state.get(SECTION_REQUEST_CONTEXT) if isinstance(state.get(SECTION_REQUEST_CONTEXT), Mapping) else {})
-    for key in ("taxonomy_id", "analysis_type", "operation_mode"):
+    for key in ("taxonomy_id", "analysis_type", "analysis_scope", "operation_mode"):
         value = _clean_text(raw_context.get(key))
         if value:
             current_context[key] = value

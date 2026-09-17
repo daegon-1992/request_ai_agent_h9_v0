@@ -41,11 +41,13 @@ from .constants import (
     VALUE_SOURCE_USER,
 )
 from .condition_fieldsets import (
+    analysis_scopes_for_context,
     build_condition_fieldset,
     build_condition_input_structure,
     default_condition_sets,
     get_active_case_matrix_columns,
     get_active_condition_fields,
+    normalize_analysis_scope,
     sanitize_condition_sets,
 )
 from .product_taxonomy import load_product_taxonomy, taxonomy_path_by_id
@@ -98,6 +100,7 @@ REQUEST_CONTEXT_KEYS = (
     "chassis",
     "display_path",
     "analysis_type",
+    "analysis_scope",
     "operation_mode",
     "context_locked",
     "condition_fieldset_key",
@@ -860,6 +863,7 @@ def default_request_context() -> dict[str, Any]:
         "chassis": None,
         "display_path": "",
         "analysis_type": "",
+        "analysis_scope": "",
         "operation_mode": "",
         "context_locked": False,
         "condition_fieldset_key": "",
@@ -919,6 +923,11 @@ def migrate_legacy_context(raw_state: Mapping[str, Any] | Any, normalized_state:
         "analysis_type",
         "analysisType",
     ))
+    context["analysis_scope"] = _first_mapping_value(
+        context_sources,
+        "analysis_scope",
+        "analysisScope",
+    )
     context["operation_mode"] = _first_mapping_value(
         context_sources,
         "operation_mode",
@@ -950,6 +959,7 @@ def normalize_request_context(raw_context: Any, raw_state: Mapping[str, Any] | A
         "platform",
         "display_path",
         "analysis_type",
+        "analysis_scope",
         "operation_mode",
         "condition_fieldset_key",
     ):
@@ -983,6 +993,7 @@ def normalize_request_context(raw_context: Any, raw_state: Mapping[str, Any] | A
                 "display_path": _clean_text(taxonomy_path.get("display_path")),
             }
         )
+    context["analysis_scope"] = normalize_analysis_scope(context.get("analysis_scope"), context)
     return context
 
 
@@ -1083,8 +1094,15 @@ def _manual_matrix_condition_options(
     return options
 
 
-def _manual_case_row(row_id: str, *, geometry_id: str = "", auto_geometry_id: str = "", condition_values: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    return {
+def _manual_case_row(
+    row_id: str,
+    *,
+    geometry_id: str = "",
+    auto_geometry_id: str = "",
+    condition_values: Mapping[str, Any] | None = None,
+    analysis_scope: str = "",
+) -> dict[str, Any]:
+    row = {
         "case_id": _slug(row_id, "case_001"),
         "geometry_id": _clean_text(geometry_id),
         "auto_geometry_id": _clean_text(auto_geometry_id),
@@ -1094,6 +1112,9 @@ def _manual_case_row(row_id: str, *, geometry_id: str = "", auto_geometry_id: st
             if _clean_text(key)
         },
     }
+    if analysis_scope:
+        row["analysis_scope"] = analysis_scope
+    return row
 
 
 def _migrate_manual_condition_label(key: str, value: Any) -> str:
@@ -1153,12 +1174,13 @@ def _migrate_grouped_manual_condition_value(
     return (matches[0] if len(matches) == 1 else ""), True
 
 
-def _sanitize_manual_case_matrix(
+def _sanitize_manual_case_matrix_scope(
     raw_matrix: Any,
     *,
     products: list[dict[str, Any]],
     condition_sets: list[dict[str, Any]],
     request_context: Mapping[str, Any],
+    analysis_scope: str = "",
 ) -> dict[str, Any]:
     """Normalize the manual Case Matrix and invalidate obsolete selections."""
 
@@ -1189,10 +1211,11 @@ def _sanitize_manual_case_matrix(
         if not isinstance(raw_row, Mapping):
             continue
         row = _manual_case_row(
-            _clean_text(raw_row.get("case_id")) or f"case_{index:03d}",
+            _clean_text(raw_row.get("case_id")) or f"{analysis_scope + '_' if analysis_scope else ''}case_{index:03d}",
             geometry_id=_clean_text(raw_row.get("geometry_id")),
             auto_geometry_id=_clean_text(raw_row.get("auto_geometry_id")),
             condition_values=raw_row.get("condition_values", raw_row.get("selections")),
+            analysis_scope=analysis_scope,
         )
         while row["case_id"] in seen_ids:
             row["case_id"] = f"case_{index:03d}_{len(seen_ids) + 1}"
@@ -1239,7 +1262,7 @@ def _sanitize_manual_case_matrix(
         geometry_id = option["value"]
         if geometry_id in prior_snapshot:
             continue
-        row_id = f"case_{len(rows) + 1:03d}"
+        row_id = f"{analysis_scope + '_' if analysis_scope else ''}case_{len(rows) + 1:03d}"
         while row_id in seen_ids:
             row_id = f"case_{len(rows) + 1:03d}_{len(seen_ids) + 1}"
         rows.append(_manual_case_row(
@@ -1247,6 +1270,7 @@ def _sanitize_manual_case_matrix(
             geometry_id=geometry_id,
             auto_geometry_id=geometry_id,
             condition_values=default_condition_values,
+            analysis_scope=analysis_scope,
         ))
         seen_ids.add(row_id)
 
@@ -1284,6 +1308,96 @@ def _sanitize_manual_case_matrix(
         "source_inputs": {
             "geometry_count": len(geometry_options),
             "active_condition_keys": [column["key"] for column in condition_columns],
+        },
+    }
+
+
+def _sanitize_manual_case_matrix(
+    raw_matrix: Any,
+    *,
+    products: list[dict[str, Any]],
+    condition_sets: list[dict[str, Any]],
+    request_context: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Normalize one independent manual Matrix for each requested analysis scope."""
+
+    scopes = analysis_scopes_for_context(request_context)
+    if scopes == ("",):
+        raw = raw_matrix if isinstance(raw_matrix, Mapping) else {}
+        source_rows = raw.get("rows") if isinstance(raw.get("rows"), list) else []
+        unscoped_rows = [
+            row for row in source_rows
+            if isinstance(row, Mapping) and not _clean_text(row.get("analysis_scope"))
+        ]
+        if len(unscoped_rows) != len(source_rows):
+            raw = dict(raw)
+            raw["rows"] = unscoped_rows
+            raw["geometry_snapshot_ids"] = []
+            raw_matrix = raw
+        return _sanitize_manual_case_matrix_scope(
+            raw_matrix,
+            products=products,
+            condition_sets=condition_sets,
+            request_context=request_context,
+        )
+
+    raw = raw_matrix if isinstance(raw_matrix, Mapping) else {}
+    source_rows = raw.get("rows") if isinstance(raw.get("rows"), list) else []
+    rows_by_scope: dict[str, list[Mapping[str, Any]]] = {scope: [] for scope in scopes}
+    for raw_row in source_rows:
+        if not isinstance(raw_row, Mapping):
+            continue
+        row_scope = _clean_text(raw_row.get("analysis_scope")).lower()
+        if row_scope in {"indoor", "outdoor"} and row_scope not in rows_by_scope:
+            continue
+        if row_scope not in rows_by_scope:
+            row_scope = scopes[0]
+        rows_by_scope[row_scope].append(raw_row)
+    snapshots_by_scope = raw.get("geometry_snapshot_ids_by_scope")
+    snapshots_by_scope = snapshots_by_scope if isinstance(snapshots_by_scope, Mapping) else {}
+
+    payloads: dict[str, dict[str, Any]] = {}
+    for scope in scopes:
+        scoped_raw = dict(raw)
+        scoped_raw["rows"] = rows_by_scope[scope]
+        scoped_snapshot = snapshots_by_scope.get(scope)
+        if isinstance(scoped_snapshot, list):
+            scoped_raw["geometry_snapshot_ids"] = scoped_snapshot
+        elif scope != scopes[0]:
+            scoped_raw["geometry_snapshot_ids"] = []
+        scoped_conditions = [
+            card for card in condition_sets
+            if _clean_text(card.get("analysis_scope")).lower() == scope
+        ]
+        payloads[scope] = _sanitize_manual_case_matrix_scope(
+            scoped_raw,
+            products=products,
+            condition_sets=scoped_conditions,
+            request_context=request_context,
+            analysis_scope=scope,
+        )
+
+    first = payloads[scopes[0]]
+    rows = [row for scope in scopes for row in payloads[scope]["rows"]]
+    return {
+        "matrix_type": "manual_mapping",
+        "rows": rows,
+        "visible_columns": deepcopy(first["visible_columns"]),
+        "dropdown_options": deepcopy(first["dropdown_options"]),
+        "dropdown_options_by_scope": {
+            scope: deepcopy(payloads[scope]["dropdown_options"]) for scope in scopes
+        },
+        "geometry_snapshot_ids": deepcopy(first["geometry_snapshot_ids"]),
+        "geometry_snapshot_ids_by_scope": {
+            scope: deepcopy(payloads[scope]["geometry_snapshot_ids"]) for scope in scopes
+        },
+        "generation_status": FIELD_STATUS_PROVIDED if rows else FIELD_STATUS_MISSING,
+        "source_inputs": {
+            "geometry_count": sum(payloads[scope]["source_inputs"]["geometry_count"] for scope in scopes),
+            "active_condition_keys": deepcopy(first["source_inputs"]["active_condition_keys"]),
+            "by_scope": {
+                scope: deepcopy(payloads[scope]["source_inputs"]) for scope in scopes
+            },
         },
     }
 

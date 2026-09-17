@@ -505,7 +505,7 @@ def _preview_column_widths_cm(table_key: str, headers: Sequence[str], total_widt
     """Mirror fixed SCREEN-06 preview column ratios where the DOM defines them."""
 
     column_count = len(headers)
-    if table_key == "case_matrix":
+    if table_key.startswith("case_matrix"):
         case_ratios = {
             "No.": 5,
             "No": 5,
@@ -519,11 +519,15 @@ def _preview_column_widths_cm(table_key: str, headers: Sequence[str], total_widt
         ratio_total = sum(ratios)
         return [total_width_cm * ratio / ratio_total for ratio in ratios]
 
+    ratio_key = next(
+        (key for key in ("geometry", "operating_conditions", "heat_exchanger_conditions") if table_key.startswith(key)),
+        table_key,
+    )
     ratios = {
         "geometry": (14, 26, 60),
         "operating_conditions": (20, 18, 62),
         "heat_exchanger_conditions": (14, 22, 22, 22, 10, 10),
-    }.get(table_key)
+    }.get(ratio_key)
     if ratios is None or len(ratios) != column_count:
         return []
     ratio_total = sum(ratios)
@@ -541,10 +545,7 @@ def _add_data_table(
     table_key = _text(table_block.get("key"))
     headers = [_text(item) for item in _items(table_block.get("headers"))]
     if headers and not headers[0]:
-        headers[0] = {
-            "operating_conditions": "운전 구분",
-            "heat_exchanger_conditions": "사양 구분",
-        }.get(table_key, "구분")
+        headers[0] = "운전 구분" if table_key.startswith("operating_conditions") else "사양 구분" if table_key.startswith("heat_exchanger_conditions") else "구분"
     headers = [item or "-" for item in headers]
     rows = [[_text(item) or "-" for item in _items(row)] for row in _items(table_block.get("rows"))]
 
@@ -559,7 +560,7 @@ def _add_data_table(
         return
 
     is_case_matrix = (
-        table_key == "case_matrix"
+        table_key.startswith("case_matrix")
         or "case matrix" in caption.lower()
         or "case matrix" in _text(section_title).lower()
     )

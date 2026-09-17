@@ -14,6 +14,7 @@ from .field_registry import get_field_registry
 from .field_registry import get_geometry_products_adapter
 from .form_context import build_form_context
 from .product_taxonomy import find_product_taxonomy_matches
+from .condition_fieldsets import ANALYSIS_SCOPE_VALUES, is_rac_window_context
 from .constants import DISABLED_ANALYSIS_TYPE_OPTIONS, ENABLED_ANALYSIS_TYPE_OPTIONS, MAX_FANS_PER_OPERATING_CONDITION
 from .state import field_value
 
@@ -276,6 +277,11 @@ def normalize_context_confirmation_operation(
         "taxonomy_id": _clean(hierarchy[0].get("taxonomy_id")),
         "analysis_type": analysis_type,
     }
+    if is_rac_window_context(hierarchy[0]):
+        analysis_scope = _clean(raw_context.get("analysis_scope")).lower()
+        if analysis_scope not in ANALYSIS_SCOPE_VALUES:
+            return None
+        context["analysis_scope"] = analysis_scope
     return {
         "op": "confirm_request_context",
         "context": context,
@@ -298,7 +304,7 @@ def build_agent_write_contract(state: Mapping[str, Any] | None = None) -> dict[s
             "confirm_request_context": {
                 "required": ["op", "context"],
                 "available": _as_mapping(source.get("request_context")).get("context_locked") is not True,
-                "semantics": "taxonomy_id 또는 Division·Product Line-up·Platform·Chassis의 정확한 단일 경로와 해석유형을 검증하고 최초 한 번 확정",
+                "semantics": "taxonomy_id 또는 Division·Product Line-up·Platform·Chassis의 정확한 단일 경로와 해석유형을 검증하고 최초 한 번 확정. RAC Window는 analysis_scope(indoor/outdoor/both)도 필수",
             },
             "set": {
                 "required": ["op", "path", "value"],

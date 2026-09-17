@@ -212,7 +212,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .screen-map-item[aria-disabled="true"] .screen-map-number{background:var(--ui-step-inactive);opacity:.72}
     .screen-map-item[aria-disabled="true"] .screen-map-label{color:var(--ui-text-muted);opacity:.72}
     .screen-map-item[aria-disabled="true"] .screen-map-lock{display:grid;opacity:.65}
-    .legacy-stage-rail{display:none}
     .screen-group{min-width:0}
     .screen-heading{margin:0 0 6px;padding:0;font-size:22px;font-weight:600;line-height:1.35;letter-spacing:normal;color:var(--muted)}
     .screen-heading span{color:var(--ink)}
@@ -220,30 +219,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     .title-icon{width:29px;height:29px;display:inline-grid;flex:0 0 29px;place-items:center;border:0;border-radius:var(--ui-radius-panel);background:var(--ui-user-bubble);color:var(--ui-agent-blue)}
     .title-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
     .screen-heading-code{color:var(--muted)!important}
-    .hero{
-      padding:12px;
-      border-bottom:1px solid var(--line);
-      background:var(--soft);
-    }
-    .hero-row{
-      display:grid;
-      grid-template-columns:minmax(210px,1fr) auto;
-      gap:10px;
-      align-items:end;
-    }
-    .hero h2{margin:0 0 7px;font-size:15px;color:var(--ink);letter-spacing:0}
-    .hero p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
-    .candidate-notice{
-      margin-top:9px;
-      display:none;
-      border:1px solid #c6c6c6;
-      background:#f7f7f7;
-      color:#4a4a4a;
-      border-radius:8px;
-      padding:8px 10px;
-      font-size:12px;
-      line-height:1.45;
-    }
     .workspace{min-height:0;overflow:visible;padding:var(--ui-workspace-padding);border:0;border-radius:0;background:transparent;box-shadow:none}
     .workspace-tab{display:none;min-height:0}
     .workspace-tab.active{display:block}
@@ -271,53 +246,25 @@ HTML_TEMPLATE = r"""<!doctype html>
       border-radius:var(--ui-radius-panel);
       background:var(--ui-surface-subtle);
     }
-    .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
     .prep-info-icon{width:20px;height:20px;display:grid;flex:0 0 20px;place-items:center;margin-top:1px;color:#303234}
     .prep-info-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
-    .prep-head-copy{min-width:0}
-    .prep-head h3{margin:0;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:0}
-    .prep-head p{margin:0;color:#55585B;font-family:"Noto Sans KR","Malgun Gothic","Segoe UI",sans-serif;font-size:13px;font-weight:400;line-height:1.55}
-    .prep-head .prep-guidance{font-size:13px;line-height:1.55}
-    .prep-guidance-line{display:block}
-    .prep-guidance-line:first-child{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}
-    .prep-guidance-next{margin-top:4px;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}
-    .prep-guidance-next .prep-guidance-emphasis{color:#55585B;font-weight:400}
-    .prep-guidance-emphasis{color:var(--ink);font-weight:600}
     .prep-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .prep-actions button.active{border-color:var(--brand);background:var(--brand);color:#fff}
     .prep-body{padding:0;display:grid;gap:24px}
     .prep-flow{display:none}
     .prep-flow.active{display:grid;gap:10px}
-    .prep-step{
-      border:1px solid var(--line);
-      border-radius:8px;
-      background:var(--paper);
-      padding:10px;
-    }
-    .prep-step.disabled{opacity:.55}
-    .prep-step-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
-    .prep-step-title strong{font-size:13px;color:var(--ink)}
-    .prep-choice-grid{display:flex;gap:7px;flex-wrap:wrap}
-    .prep-choice{
-      min-width:76px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:4px;
-      background:var(--paper);
-      border-color:var(--line);
-      color:var(--ink);
-    }
-    .prep-choice.selected{border-color:var(--brand);background:var(--soft);color:var(--brand-strong)}
-    .prep-choice:disabled{opacity:.48}
-    .prep-choice-lock{width:12px;height:12px;display:inline-grid;flex:0 0 12px;place-items:center}
-    .prep-choice-lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
     .prep-quick-groups{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}
     .prep-quick-group{min-width:0;padding:0;border:0;background:transparent}
     .prep-quick-group-analysis{padding:24px 0 0;border-top:1px solid var(--ui-border-subtle)}
     .prep-quick-group-title{margin:0 0 13px;font-size:16px;font-weight:600;line-height:1.45;color:var(--ink)}
     .prep-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:12px;row-gap:14px;align-items:end}
     .prep-analysis-grid{display:grid;grid-template-columns:minmax(240px,.38fr) minmax(0,.62fr);gap:24px;align-items:start}
+    .analysis-scope-field{grid-column:1/-1;display:grid;gap:7px}
+    .analysis-scope-label{color:var(--ink);font-size:13px;font-weight:500}
+    .direct-choice,.analysis-scope-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .direct-choice button,.analysis-scope-tabs button{min-height:34px;padding:6px 13px;border:1px solid var(--ui-border);border-radius:7px;background:var(--ui-surface);color:var(--ui-text-secondary);font-size:13px;font-weight:500}
+    .direct-choice button[aria-pressed="true"],.analysis-scope-tabs button[aria-selected="true"]{border-color:#34373E;background:#34373E;color:#fff;font-weight:600;box-shadow:0 0 0 2px rgba(52,55,62,.12)}
+    .analysis-scope-tabs{margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--ui-border-subtle)}
+    .analysis-scope-context{margin:0 0 18px;color:var(--ui-text-primary);font-size:14px;font-weight:600}
     .analysis-type-detail{min-width:0;padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
     .analysis-type-detail-eyebrow{margin:0 0 8px;color:var(--ui-text-muted);font-size:12px;font-weight:500}
     .analysis-type-detail-title{margin:0 0 12px;color:var(--ink);font-size:16px;font-weight:600}
@@ -747,7 +694,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .submit-modal[hidden]{display:none}
     .context-change-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
     @media (max-width:1180px){
-      .hero-row,.condition-grid,.heat-exchanger-grid,.review-grid,.prep-quick-groups,.condition-primary-grid,.condition-environment-grid{grid-template-columns:1fr}
+      .condition-grid,.heat-exchanger-grid,.review-grid,.prep-quick-groups,.condition-primary-grid,.condition-environment-grid{grid-template-columns:1fr}
       .prep-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .prep-analysis-grid{grid-template-columns:1fr}
       .analysis-type-detail{padding-left:0;padding-top:20px;border-left:0;border-top:1px solid var(--ui-border-subtle)}
@@ -780,13 +727,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       .request-type-field,.request-project-field{grid-column:auto}
     }
     /* T2-01A: completed Shell, SCREEN-01/02, and Agent Dock share the design-lock surface system. */
-    .hero h2,.prep-head h3,.prep-step-title strong,.section h3,.screen-heading span{color:var(--ink)}
-    .prep-choice{border-color:var(--line);background:var(--paper);color:var(--ink)}
-    .prep-choice.selected{border-color:var(--brand);background:var(--soft);color:var(--brand)}
+    .section h3,.screen-heading span{color:var(--ink)}
     .chip{border-color:var(--line);background:var(--soft);color:var(--muted)}
     .chip.info{border-color:var(--line);background:var(--soft);color:var(--brand)}
     .chip.required{border-color:#c6c6c6;background:#f7f7f7;color:var(--warning)}
-    .screen-heading-code{font-size:12px;font-weight:500;color:var(--muted)!important}
+    .screen-heading-code{font-size:12px;font-weight:500}
     .screen-action-bar{display:flex;flex:0 0 auto;justify-content:space-between;gap:10px;margin-top:auto;padding:10px 0 0;border-top:1px solid var(--ui-border-subtle);background:var(--ui-surface)}
     /* SCREEN-01~06 workspace-only visual surface; Agent Dock is a sibling of .workspace-shell. */
     .workspace-shell{
@@ -803,13 +748,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       color:var(--request-workspace-ink);
     }
     .screen-navigation-status{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
-    .workspace-shell .hero[hidden]{display:none}
     .workspace-shell .workspace-form{font-family:var(--request-workspace-font)}
     .workspace-shell .workspace-form .screen-heading{color:var(--request-workspace-muted)}
     .workspace-shell .workspace-form .screen-heading span{color:var(--request-workspace-ink)}
     .workspace-shell .screen-group > .section{border-color:var(--request-workspace-border);border-radius:var(--request-workspace-radius);background:var(--request-workspace-surface);box-shadow:var(--request-workspace-shadow)}
     .workspace-shell .screen-group > .request-prep-card{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
-    .workspace-shell .request-prep-card .prep-info-icon,.workspace-shell .request-prep-card .prep-head-copy{display:none}
     .workspace-shell .request-prep-card .prep-head{min-height:0;padding:0;border:0;background:transparent}
     .workspace-shell .request-prep-card .prep-actions:has(button:not([hidden])){margin-bottom:13px}
     .workspace-shell .screen-group > .section > .section-head{background:var(--request-workspace-surface);border-color:var(--request-workspace-border)}
@@ -848,6 +791,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239A9EA5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='m7 9 5 5 5-5'/%3E%3C/svg%3E");
     }
     .workspace-shell .workspace-form button{font-family:var(--request-workspace-font);font-weight:500;border-color:var(--request-workspace-border);background-color:var(--request-workspace-surface);color:var(--request-workspace-ink);box-shadow:none}
+    .workspace-shell .workspace-form .direct-choice button[aria-pressed="true"],.workspace-shell .workspace-form .analysis-scope-tabs button[aria-selected="true"]{border-color:#34373E;background:#34373E;color:#fff;font-weight:600;box-shadow:0 0 0 2px rgba(52,55,62,.12)}
     .workspace-shell .workspace-form button.primary{border-color:var(--ui-primary);background-color:var(--ui-primary);color:#fff}
     .workspace-shell .workspace-form button.primary:hover:not(:disabled){border-color:var(--ui-primary-hover);background:var(--ui-primary-hover)}
     .workspace-shell .workspace-form button:disabled{border-color:var(--line);background:var(--disabled-bg);color:var(--disabled-text)}
@@ -988,6 +932,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table.case-matrix-grid th{padding:8px;background:var(--soft)}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-table.case-matrix-grid td{padding:6px 8px}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block + .preview-condition-block{margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-scope-group + .preview-scope-group{margin-top:24px;padding-top:24px;border-top:1px solid var(--ui-border-subtle)}
+    .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-scope-heading{margin:0 0 14px;color:var(--ink);font-size:15px;font-weight:600;line-height:1.45}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-block h5,
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair h5{margin:0 0 10px;color:var(--ink);font-size:13px;font-weight:500;line-height:1.45}
     .workspace-shell .screen-group[data-screen="SCREEN-06"] .preview-condition-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:20px;padding-top:20px;border-top:1px solid var(--ui-border-subtle)}
@@ -1152,12 +1098,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       </nav>
 
     <section class="panel main" data-shell="MainWorkspaceContent">
-      <div class="hero" hidden>
-       <div class="hero-row">
-          <button id="recommendBtn" hidden aria-hidden="true" type="button">해석유형 추천</button>
-        </div>
-        <div class="candidate-notice" id="candidateNotice"></div>
-      </div>
       <div class="workspace">
         <div class="workspace-tab active" id="tab-write">
           <div class="workspace-form" id="formView">
@@ -1166,36 +1106,9 @@ HTML_TEMPLATE = r"""<!doctype html>
           <p class="screen-description">해석 대상 제품과 수행할 해석유형을 선택합니다.</p>
           <section class="request-prep-card" id="requestPrepCard">
             <div class="prep-head">
-              <span class="prep-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span>
-              <div class="prep-head-copy">
-                <h3 class="visually-hidden">해석 대상 제품 선택</h3>
-                <p class="prep-guidance"><span class="prep-guidance-line">요청자 소속이 아니라, <span class="prep-guidance-emphasis">해석 대상 제품을 기준으로 선택</span>합니다.</span><span class="prep-guidance-line prep-guidance-next"><span class="prep-guidance-emphasis">제품 분류</span>를 선택한 후 수행할 <span class="prep-guidance-emphasis">해석유형</span>을 지정합니다.</span></p>
-              </div>
               <div class="prep-actions"><button class="ghost" id="contextChangeBtn" type="button" hidden>의뢰대상 변경</button><button class="primary" id="nextRequestContentBtn" type="button" data-screen-action="SCREEN-02" hidden>다음: 요청 내용</button></div>
             </div>
             <div class="prep-body">
-              <div class="prep-flow" id="guidedPrepFlow">
-                <div class="prep-step" data-prep-step="division">
-                  <div class="prep-step-title"><strong>1. Division 선택</strong><span class="chip info" id="prepDivisionStatus">선택 필요</span></div>
-                  <div class="prep-choice-grid" id="prepDivisionChoices"></div>
-                </div>
-                <div class="prep-step" data-prep-step="product_lineup">
-                  <div class="prep-step-title"><strong>2. Product Line-up 선택</strong><span class="chip info" id="prepProductLineupStatus">Division 기준</span></div>
-                  <div class="prep-choice-grid" id="prepProductLineupChoices"></div>
-                </div>
-                <div class="prep-step" data-prep-step="platform">
-                  <div class="prep-step-title"><strong>3. Platform 선택</strong><span class="chip info" id="prepPlatformStatus">Product Line-up 기준</span></div>
-                  <div class="prep-choice-grid" id="prepPlatformChoices"></div>
-                </div>
-                <div class="prep-step" data-prep-step="chassis">
-                  <div class="prep-step-title"><strong>4. Chassis 선택</strong><span class="chip info" id="prepChassisStatus">Platform 기준</span></div>
-                  <div class="prep-choice-grid" id="prepChassisChoices"></div>
-                </div>
-                <div class="prep-step" data-prep-step="analysis_type">
-                  <div class="prep-step-title"><strong>5. 해석유형 선택</strong><span class="chip info" id="prepAnalysisStatus">우선 표시</span></div>
-                  <div class="prep-choice-grid" id="prepAnalysisChoices"></div>
-                </div>
-              </div>
               <div class="prep-flow active" id="quickPrepFlow">
                 <div class="prep-quick-groups">
                   <section class="prep-quick-group" aria-labelledby="productClassificationHeading">
@@ -1214,6 +1127,14 @@ HTML_TEMPLATE = r"""<!doctype html>
                       <div class="analysis-type-detail" id="analysisTypeDetail" aria-live="polite">
                         <p class="analysis-type-detail-eyebrow">선택한 해석유형</p>
                         <p class="analysis-type-detail-description">해석유형을 선택하면 해당 해석의 목적과 적합한 활용 사례를 확인할 수 있습니다.</p>
+                      </div>
+                      <div class="analysis-scope-field" id="analysisScopeField" hidden>
+                        <span class="analysis-scope-label">해석 범위</span>
+                        <div class="direct-choice" role="group" aria-label="해석 범위">
+                          <button type="button" data-analysis-scope="indoor" aria-pressed="false">실내측</button>
+                          <button type="button" data-analysis-scope="outdoor" aria-pressed="false">실외측</button>
+                          <button type="button" data-analysis-scope="both" aria-pressed="false">실내·실외 모두</button>
+                        </div>
                       </div>
                     </div>
                   </section>
@@ -1341,7 +1262,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           <h2 class="screen-heading" id="screen04Heading"><span>해석 조건</span></h2>
           <p class="screen-description">각 해석 조건의 첫 번째 조건은 <strong>Base 조건</strong>이며, 우측의 <strong>추가(+)</strong> 버튼으로 추가한 조건은 <strong>비교 조건</strong>으로 사용됩니다.</p>
           <section class="section open" id="section-conditions" data-section="conditions">
-            <div class="section-body" id="conditionFields"></div>
+            <div class="section-body"><div id="conditionScopeTabs"></div><div id="conditionFields"></div></div>
           </section>
           </div>
           <div class="screen-action-bar" aria-label="해석 조건 단계 이동">
@@ -1359,6 +1280,7 @@ HTML_TEMPLATE = r"""<!doctype html>
               <div class="section-title"><h3>Case 구성</h3></div>
             </div>
             <div class="section-body">
+              <div id="caseScopeTabs"></div>
               <div id="caseCommon"></div>
               <div id="caseMatrix"></div>
               <div class="case-duplicate-warning case-review-message error" id="caseDuplicateWarning" aria-live="polite"></div>
@@ -1464,8 +1386,6 @@ HTML_TEMPLATE = r"""<!doctype html>
     };
     const prepAnalysisTypes = ["풍량","기류 패턴","이슬맺힘","열교환기 유속 프로파일","기류도달거리","PDB","실사용 해석","집진해석(먼지거동)","PCB발열","다상유동"];
     const disabledAnalysisTypes = ["기류도달거리","PDB","실사용 해석","집진해석(먼지거동)","PCB발열","다상유동"];
-    const disabledAnalysisTypeReason = "추후 지원 예정";
-    const disabledAnalysisTypeLockIcon = `<span class="prep-choice-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span>`;
     const disabledAnalysisTypeLockPrefix = "\u{1F512}\uFE0E ";
     const analysisTypeDetails = {
       "풍량": {
@@ -1516,13 +1436,13 @@ HTML_TEMPLATE = r"""<!doctype html>
       {id:"SCREEN-05", headingId:"screen05Heading", tab:"write", requiresContext:true},
       {id:"SCREEN-06", headingId:"screen06Heading", tab:"preview", requiresContext:false},
     ];
+    const analysisScopeLabels = {indoor:"실내측", outdoor:"실외측", both:"실내·실외 모두"};
     const operationModeOptions = ["실내", "실외", "동시운전"];
     const excludedConditionKeys = new Set(["material_type", "pressure", "vane_or_louver", "filter_state"]);
     let requestState = {};
     let previewStateRevision = 0;
     let previewRefreshTimer = null;
     let schema = {};
-    let recommendMode = false;
     let activeTopTab = "write";
     let activeScreen = "SCREEN-01";
     let wordExportInProgress = false;
@@ -1538,7 +1458,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     const fanCountCustomCards = new Set();
     let expandedFanCardId = "";
     let requestContextDraft = {};
-    let activePrepMode = "quick";
+    let activeConditionScope = "indoor";
+    let activeCaseScope = "indoor";
     let prepAssistStarted = false;
     const stageAssistConfigs = {
       start: {
@@ -1872,6 +1793,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         chassis: null,
         display_path: "",
         analysis_type: "",
+        analysis_scope: "",
         operation_mode: "",
         context_locked: false,
         condition_fieldset_key: "",
@@ -1894,6 +1816,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         chassis: context.chassis === null ? null : contextText(context.chassis),
         display_path: contextText(context.display_path),
         analysis_type: contextText(context.analysis_type),
+        analysis_scope: contextText(context.analysis_scope),
         operation_mode: contextText(context.operation_mode),
         context_locked: context.context_locked === true,
       };
@@ -1901,6 +1824,31 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function isContextLocked(){
       return contextFromState().context_locked === true;
+    }
+
+    function isRacWindowContext(context=contextFromState()){
+      return contextText(context.division) === "RAC"
+        && contextText(context.product_lineup) === "Window"
+        && contextText(context.platform) === "Window";
+    }
+
+    function requestedAnalysisScopes(context=contextFromState()){
+      if (!isRacWindowContext(context)) return [""];
+      return contextText(context.analysis_scope) === "both"
+        ? ["indoor", "outdoor"]
+        : [["indoor", "outdoor"].includes(contextText(context.analysis_scope)) ? contextText(context.analysis_scope) : "indoor"];
+    }
+
+    function hasBothAnalysisScopes(context=contextFromState()){
+      return isRacWindowContext(context) && contextText(context.analysis_scope) === "both";
+    }
+
+    function scopeLabel(scope){ return analysisScopeLabels[contextText(scope)] || ""; }
+
+    function scopeTabsHtml(kind, activeScope){
+      if (!hasBothAnalysisScopes()) return "";
+      const contextLabel = kind === "conditions" ? `${scopeLabel(activeScope)} 해석 조건` : `${scopeLabel(activeScope)} Case 구성`;
+      return `<div class="analysis-scope-tabs" role="tablist" aria-label="${kind === "conditions" ? "해석 조건" : "Case Matrix"} 해석 범위">${["indoor","outdoor"].map(scope => `<button type="button" role="tab" data-scope-tab="${kind}" data-analysis-scope="${scope}" aria-selected="${String(scope === activeScope)}">${scopeLabel(scope)}</button>`).join("")}</div><div class="analysis-scope-context" aria-live="polite">${contextLabel}</div>`;
     }
 
     function syncRequestContextDraftFromState(){
@@ -1979,25 +1927,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       return contextText(asObj(asObj(productHierarchyPayload().division_rules)[division]).platform_selection_mode) || "catalog";
     }
 
-    function renderPrepChoices(containerId, field, values, selected, disabled=false, disabledValues=[], disabledReason="", disabledSuffix="", showDisabledLock=false){
-      const container = $(containerId);
-      if (!container) return;
-      const rows = uniqueValues(values);
-      const disabledSet = new Set(uniqueValues(disabledValues));
-      if (!rows.length) {
-        container.innerHTML = `<div class="empty">선택 가능한 항목 없음</div>`;
-        return;
-      }
-      container.innerHTML = rows.map(value => {
-        const unavailable = disabled || disabledSet.has(value);
-        const reasonAttrs = unavailable && disabledReason ? ` title="${esc(disabledReason)}" aria-label="${esc(`${value}: ${disabledReason}`)}"` : "";
-        const displayValue = value === NULL_CHASSIS_VALUE ? "null" : value;
-        const label = disabledSet.has(value) && disabledSuffix ? `${displayValue}${disabledSuffix}` : displayValue;
-        const lockIcon = disabledSet.has(value) && showDisabledLock ? disabledAnalysisTypeLockIcon : "";
-        return `<button type="button" class="prep-choice ${value === selected ? "selected" : ""}" data-context-choice="${esc(field)}" data-context-value="${esc(value)}" ${unavailable ? "disabled" : ""}${reasonAttrs}>${lockIcon}${esc(label)}</button>`;
-      }).join("");
-    }
-
     function renderPrepSelect(selectId, values, selected, placeholder, disabled=false, disabledValues=[], disabledSuffix="", disabledPrefix=""){
       const select = $(selectId);
       if (!select) return;
@@ -2011,13 +1940,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       select.innerHTML = optionHtml;
       select.disabled = disabled;
       select.value = rows.includes(selected) ? selected : "";
-    }
-
-    function setPrepStatus(id, value, fallback){
-      const el = $(id);
-      if (!el) return;
-      el.textContent = value || fallback;
-      el.className = `chip ${value ? "ok" : "info"}`;
     }
 
     function renderRequestPrepCard(){
@@ -2046,36 +1968,19 @@ HTML_TEMPLATE = r"""<!doctype html>
       const chassisAutoNull = chassisRows.length === 1 && chassisRows[0] === NULL_CHASSIS_VALUE;
       const chassisDisabled = !context.platform || chassisAutoNull;
 
-      document.querySelectorAll("button[data-prep-mode]").forEach(button => {
-        const active = button.dataset.prepMode === activePrepMode;
-        button.classList.toggle("active", active);
-        button.classList.toggle("primary", active);
-        button.classList.toggle("ghost", !active);
-      });
-      $("guidedPrepFlow")?.classList.toggle("active", activePrepMode === "guided");
-      $("quickPrepFlow")?.classList.toggle("active", activePrepMode === "quick");
-
-      renderPrepChoices("prepDivisionChoices", "division", divisions, context.division);
-      renderPrepChoices("prepProductLineupChoices", "product_lineup", productLineupRows, context.product_lineup, productLineupDisabled);
-      renderPrepChoices("prepPlatformChoices", "platform", platformRows, context.platform, platformDisabled);
-      renderPrepChoices("prepChassisChoices", "chassis", chassisRows, selectedChassisOption, chassisDisabled);
-      renderPrepChoices("prepAnalysisChoices", "analysis_type", prepAnalysisTypes, context.analysis_type, false, disabledAnalysisTypes, disabledAnalysisTypeReason, " (예정)", true);
-
       renderPrepSelect("quickDivisionSelect", divisions, context.division, "Division 선택");
       renderPrepSelect("quickProductLineupSelect", productLineupRows, context.product_lineup, productLineupDisabled ? "Division 먼저 선택" : "Product Line-up 선택", productLineupDisabled);
       renderPrepSelect("quickPlatformSelect", platformRows, context.platform, !context.product_lineup ? "Product Line-up 먼저 선택" : "Platform 선택", platformDisabled);
       renderPrepSelect("quickChassisSelect", chassisRows, selectedChassisOption, !context.platform ? "Platform 먼저 선택" : "Chassis 선택", chassisDisabled);
       renderPrepSelect("quickAnalysisTypeSelect", prepAnalysisTypes, context.analysis_type, "해석유형 선택", false, disabledAnalysisTypes, " (예정)", disabledAnalysisTypeLockPrefix);
 
-      setPrepStatus("prepDivisionStatus", context.division, "선택 필요");
-      setPrepStatus("prepProductLineupStatus", context.product_lineup, productLineupDisabled ? "Division 기준" : "선택 필요");
-      setPrepStatus("prepPlatformStatus", context.platform, !context.product_lineup ? "Product Line-up 기준" : (platformDerived ? "자동 설정" : "선택 필요"));
-      setPrepStatus("prepChassisStatus", nullChassisSelected ? "null" : contextText(context.chassis), !context.platform ? "Platform 기준" : "선택 필요");
-      setPrepStatus("prepAnalysisStatus", context.analysis_type, "우선 표시");
-
-      document.querySelectorAll("[data-prep-step='product_lineup']").forEach(el => el.classList.toggle("disabled", productLineupDisabled));
-      document.querySelectorAll("[data-prep-step='platform']").forEach(el => el.classList.toggle("disabled", platformDisabled));
-      document.querySelectorAll("[data-prep-step='chassis']").forEach(el => el.classList.toggle("disabled", chassisDisabled));
+      const scopeField = $("analysisScopeField");
+      if (scopeField) {
+        const visible = isRacWindowContext(context);
+        scopeField.hidden = !visible;
+        const selectedScope = ["indoor","outdoor","both"].includes(contextText(context.analysis_scope)) ? context.analysis_scope : "";
+        scopeField.querySelectorAll("button[data-analysis-scope]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.analysisScope === selectedScope)));
+      }
 
       const detail = $("analysisTypeDetail");
       if (detail) {
@@ -2100,8 +2005,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         list.innerHTML = "";
         return;
       }
-      list.innerHTML = ["division","product_lineup","platform","chassis","analysis_type"]
-        .map(key => `<span class="chip ok">${esc(key === "chassis" && context.chassis === null ? "null" : (context[key] || "미선택"))}</span>`)
+      const chipValues = ["division","product_lineup","platform","chassis","analysis_type"]
+        .map(key => key === "chassis" && context.chassis === null ? "null" : (context[key] || "미선택"));
+      if (isRacWindowContext(context)) chipValues.push(scopeLabel(context.analysis_scope));
+      list.innerHTML = chipValues
+        .map(value => `<span class="chip ok">${esc(value)}</span>`)
         .join("");
     }
 
@@ -2139,6 +2047,9 @@ HTML_TEMPLATE = r"""<!doctype html>
         next.taxonomy_version = contextText(productHierarchyPayload().taxonomy_version);
         next.display_path = contextText(leaf.display_path);
       }
+      next.analysis_scope = isRacWindowContext(next)
+        ? (["indoor","outdoor","both"].includes(contextText(next.analysis_scope)) ? next.analysis_scope : "")
+        : "";
       requestContextDraft = next;
       requestState.request_context = {...asObj(requestState.request_context), ...requestContextDraft};
       touchedFields.add(`request_context.${field}`);
@@ -2173,6 +2084,9 @@ HTML_TEMPLATE = r"""<!doctype html>
       next.taxonomy_id = contextText(leaf.taxonomy_id);
       next.taxonomy_version = contextText(productHierarchyPayload().taxonomy_version);
       next.display_path = contextText(leaf.display_path);
+      next.analysis_scope = isRacWindowContext(next)
+        ? (["indoor","outdoor","both"].includes(contextText(next.analysis_scope)) ? next.analysis_scope : "")
+        : "";
       requestContextDraft = next;
       requestState.request_context = {...asObj(requestState.request_context), ...requestContextDraft};
       return collectRequestContextDraft();
@@ -2199,6 +2113,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     function missingContextFields(context=null){
       context = context || collectRequestContextDraft();
       const missing = ["division","product_lineup","platform","analysis_type"].filter(key => !contextText(context[key]));
+      if (isRacWindowContext(context) && !["indoor","outdoor","both"].includes(contextText(context.analysis_scope))) missing.push("analysis_scope");
       if (!contextText(context.taxonomy_id)) missing.push("chassis");
       return missing;
     }
@@ -2248,7 +2163,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       };
       requestState.request_context = {...requestContextDraft};
       hideContextChangeWarning();
-      activePrepMode = "quick";
       prepAssistStarted = true;
       syncEditorFromState();
       pushMessage("assistant", "조합 변경을 다시 진행할 수 있습니다. 기존 조건 입력값은 보존되어 있지만 조합과 맞지 않으면 다음 단계에서 사용되지 않습니다.");
@@ -2316,7 +2230,9 @@ HTML_TEMPLATE = r"""<!doctype html>
       const contextLocked = isContextLocked();
       const context = collectRequestContextDraft();
       const titleValues = [context.division, context.product_lineup, context.platform, context.chassis === null && context.taxonomy_id ? "null" : context.chassis, context.analysis_type].map(contextText);
-      const requestTitle = titleValues.every(Boolean) ? titleValues.join(" / ") : "해석 의뢰를 시작해 주세요.";
+      const baseRequestTitle = titleValues.every(Boolean) ? titleValues.join(" / ") : "해석 의뢰를 시작해 주세요.";
+      const selectedScopeLabel = isRacWindowContext(context) ? scopeLabel(context.analysis_scope) : "";
+      const requestTitle = selectedScopeLabel && baseRequestTitle !== "해석 의뢰를 시작해 주세요." ? `${baseRequestTitle} · ${selectedScopeLabel}` : baseRequestTitle;
       const requestNo = contextText(asObj(requestState.metadata).request_no) || fieldDisplayValue(asObj(requestState.basic_info).request_no) || "-";
       if ($("heroTitle")) $("heroTitle").textContent = requestTitle;
       if ($("requestNoDisplay")) $("requestNoDisplay").textContent = requestNo;
@@ -2335,8 +2251,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       });
       const contextChangeButton = $("contextChangeBtn");
       if (contextChangeButton) contextChangeButton.hidden = !contextLocked;
-      const recommend = $("recommendBtn");
-      if (recommend) recommend.disabled = !contextLocked;
     }
 
     function switchTopTab(tab){
@@ -2561,7 +2475,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (!contextLocked) $("section-basic")?.classList.add("open");
       if (!contextLocked && screenOrder.find(screen => screen.id === activeScreen)?.requiresContext) activeScreen = "SCREEN-01";
       renderScreenNavigation();
-      renderCandidateNotice();
       renderContextChip();
       updateTopChrome();
     }
@@ -2633,7 +2546,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function conditionCardIdentity(state=requestState){
       return asArray(asObj(asObj(state).conditions).condition_sets)
-        .map(card => `${contextText(asObj(card).type)}:${contextText(asObj(card).id)}`)
+        .map(card => `${contextText(asObj(card).analysis_scope)}:${contextText(asObj(card).type)}:${contextText(asObj(card).id)}`)
         .join("|");
     }
 
@@ -2977,11 +2890,17 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function renderConditionFields(){
+      const scopeTabs = $("conditionScopeTabs");
+      const requestedScopes = requestedAnalysisScopes();
+      if (!requestedScopes.includes(activeConditionScope)) activeConditionScope = requestedScopes[0];
+      if (scopeTabs) scopeTabs.innerHTML = scopeTabsHtml("conditions", activeConditionScope);
       if (!isContextLocked()) {
         $("conditionFields").innerHTML = `<div class="empty">조합 확정 후 조건 입력항목을 표시합니다.</div>`;
         return;
       }
-      const cards = asArray(asObj(requestState.conditions).condition_sets);
+      const scoped = requestedScopes[0] !== "";
+      const cards = asArray(asObj(requestState.conditions).condition_sets)
+        .filter(card => !scoped || contextText(asObj(card).analysis_scope) === activeConditionScope);
       const types = uniqueValues(cards.map(card => contextText(asObj(card).type)));
       const fieldsetInputMetadata = new Map(conditionSnapshotGroups().flatMap(group =>
         asArray(asObj(group).fields).map(field => [contextText(asObj(field).key), asObj(field)])
@@ -3116,11 +3035,12 @@ HTML_TEMPLATE = r"""<!doctype html>
       updateTopChrome();
     }
     function collectConditionSets(){
-      let heatExchangerIndex = 0;
-      let operatingIndex = 0;
+      const heatExchangerIndexes = new Map();
+      const operatingIndexes = new Map();
       return asArray(asObj(requestState.conditions).condition_sets).map(raw => {
         const card = JSON.parse(JSON.stringify(raw));
         const id = contextText(card.id);
+        const scope = contextText(card.analysis_scope);
         if (contextText(card.type) === "heat_exchanger") {
           const typeSelect = document.querySelector(`select[data-card-id="${CSS.escape(id)}"][data-heat-exchanger-type]`);
           card.heat_exchanger_type = heatExchangerTypes.includes(typeSelect?.value) ? typeSelect.value : heatExchangerType([card]);
@@ -3140,12 +3060,18 @@ HTML_TEMPLATE = r"""<!doctype html>
             asArray(card.fans).forEach(fan => { fan.values = {fan_rpm: commonRpmInput.value.trim()}; });
           }
           if (modeSelect) card.fan_rpm_mode = ["common", "individual"].includes(modeSelect.value) ? modeSelect.value : "";
-          card.name = `운전 ${++operatingIndex}`;
+          const operatingIndex = (operatingIndexes.get(scope) || 0) + 1;
+          operatingIndexes.set(scope, operatingIndex);
+          card.name = `운전 ${operatingIndex}`;
           card.fan_count = asArray(card.fans).length;
           card.fan_locations = asArray(card.fans).map(fan => contextText(asObj(fan).location));
           card.fan_rpms = asArray(card.fans).map(fan => contextText(asObj(asObj(fan).values).fan_rpm));
         }
-        if (contextText(card.type) === "heat_exchanger") card.fields.name = `사양 ${++heatExchangerIndex}`;
+        if (contextText(card.type) === "heat_exchanger") {
+          const heatExchangerIndex = (heatExchangerIndexes.get(scope) || 0) + 1;
+          heatExchangerIndexes.set(scope, heatExchangerIndex);
+          card.fields.name = `사양 ${heatExchangerIndex}`;
+        }
         return card;
       });
     }
@@ -3267,9 +3193,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       chatHistory = [];
       requestContextDraft = fallbackRequestContext();
       activeTopTab = "write";
-      activePrepMode = "quick";
       prepAssistStarted = false;
-      recommendMode = false;
       lastPlannerActiveFieldId = "";
       lastCaseDeleteNoticeVisible = false;
       caseSourceSummaryExpanded = true;
@@ -3427,7 +3351,9 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function liveCaseDropdownOptions(){
       const matrix = asObj(requestState.case_matrix);
-      const options = {...asObj(matrix.dropdown_options)};
+      const requestedScopes = requestedAnalysisScopes();
+      if (!requestedScopes.includes(activeCaseScope)) activeCaseScope = requestedScopes[0];
+      const options = {...asObj(asObj(matrix.dropdown_options_by_scope)[activeCaseScope] || matrix.dropdown_options)};
       const conditionKeys = asArray(matrix.visible_columns)
         .filter(column => contextText(asObj(column).kind) === "condition")
         .map(column => contextText(asObj(column).key))
@@ -3442,6 +3368,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       let heatExchangerIndex = 0;
       asArray(asObj(requestState.conditions).condition_sets).forEach(rawCard => {
         const card = asObj(rawCard), type = contextText(card.type), fields = asObj(card.fields);
+        if (requestedScopes[0] !== "" && contextText(card.analysis_scope) !== activeCaseScope) return;
         if (type === "operating") {
           add("fan", card.id, `운전 ${++operatingIndex}`);
           return;
@@ -3478,11 +3405,14 @@ HTML_TEMPLATE = r"""<!doctype html>
       return {count, text:values.join(" / ") || "-", missing:mode !== "individual" || fans.some((fan, index) => !contextText(asObj(fan).location) || !rpms[index])};
     }
 
-    function caseSelectionSources(sourceState=requestState){
+    function caseSelectionSources(sourceState=requestState, analysisScope=""){
       const state = asObj(sourceState);
       const geometry = asObj(state.geometry);
       const products = [asObj(geometry.base_product), ...asArray(geometry.comparison_products)];
-      const conditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj);
+      const context = asObj(state.request_context);
+      const scoped = contextText(context.analysis_scope) === "both" || ["indoor","outdoor"].includes(contextText(context.analysis_scope));
+      const conditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj)
+        .filter(card => !scoped || !analysisScope || contextText(card.analysis_scope) === analysisScope);
       return {
         products,
         productsById:new Map(products.map((product, index) => [contextText(product.geometry_id), {product, index}])),
@@ -3650,7 +3580,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     function caseTableHtml(){
       const matrix = asObj(requestState.case_matrix);
       const columns = asArray(matrix.visible_columns);
-      const rows = asArray(matrix.rows);
+      const requestedScopes = requestedAnalysisScopes();
+      const rows = asArray(matrix.rows).filter(row => requestedScopes[0] === "" || contextText(asObj(row).analysis_scope) === activeCaseScope);
       const optionMap = liveCaseDropdownOptions();
       const sources = caseSelectionSources();
       const validation = caseTableValidationPresentation();
@@ -3680,6 +3611,20 @@ HTML_TEMPLATE = r"""<!doctype html>
       return asObj(asObj(asObj(state).review).validator);
     }
 
+    function hasBothCaseScopes(state=requestState){
+      return contextText(asObj(asObj(state).request_context).analysis_scope) === "both";
+    }
+
+    function currentCaseScope(state=requestState){
+      return hasBothCaseScopes(state) && typeof activeCaseScope === "string" ? activeCaseScope : "";
+    }
+
+    function caseScopeKeys(state=requestState){
+      return hasBothCaseScopes(state) ? ["indoor","outdoor"] : [""];
+    }
+
+    function caseScopeLabel(scope){ return {indoor:"실내측",outdoor:"실외측"}[contextText(scope)] || ""; }
+
     function geometryDrawingDuplicateIssues(state=requestState){
       return asArray(caseValidatorState(state).blocking)
         .filter(issue => contextText(asObj(issue).code) === "geometry.product.drawing_no.duplicate");
@@ -3694,35 +3639,45 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function caseDuplicateIssues(state=requestState){
-      return asArray(caseValidatorState(state).blocking)
-        .filter(issue => contextText(asObj(issue).code) === "case_matrix.duplicate");
+      return caseDuplicateIssuesForScope(state, currentCaseScope(state));
     }
 
-    function caseSelectionMissingIssues(state=requestState){
+    function caseDuplicateIssuesForScope(state=requestState, scope=""){
+      const both = hasBothCaseScopes(state);
+      return asArray(caseValidatorState(state).blocking)
+        .filter(issue => contextText(asObj(issue).code) === "case_matrix.duplicate" && (!both || !scope || contextText(asObj(issue).analysis_scope) === scope));
+    }
+
+    function caseSelectionMissingIssues(state=requestState, scope=currentCaseScope(state)){
       const missingCodes = new Set(["case_matrix.rows_missing", "case_matrix.geometry_missing"]);
       asArray(asObj(asObj(state).case_matrix).visible_columns)
         .filter(column => contextText(asObj(column).kind) === "condition")
         .map(column => contextText(asObj(column).key))
         .filter(Boolean)
         .forEach(key => missingCodes.add(`case_matrix.${key}.missing`));
+      const both = hasBothCaseScopes(state);
       return asArray(caseValidatorState(state).blocking)
-        .filter(issue => missingCodes.has(contextText(asObj(issue).code)));
+        .filter(issue => missingCodes.has(contextText(asObj(issue).code)) && (!both || !scope || contextText(asObj(issue).analysis_scope) === scope));
     }
 
-    function caseConfigurationIssues(state=requestState){
-      const missing = new Set(caseSelectionMissingIssues(state));
+    function caseConfigurationIssues(state=requestState, scope=""){
+      const missing = new Set(caseSelectionMissingIssues(state, scope));
+      const both = hasBothCaseScopes(state);
       return asArray(caseValidatorState(state).blocking).filter(rawIssue => {
         const issue = asObj(rawIssue);
+        if (both && scope && contextText(issue.analysis_scope) !== scope) return false;
         return missing.has(rawIssue) || contextText(issue.code) === "case_matrix.duplicate";
       });
     }
 
-    function caseCoverageState(state=requestState){
-      return asObj(caseValidatorState(state).coverage);
+    function caseCoverageState(state=requestState, scope=currentCaseScope(state)){
+      const coverage = asObj(caseValidatorState(state).coverage);
+      if (!hasBothCaseScopes(state) || !scope) return coverage;
+      return asObj(asObj(coverage.by_scope)[scope]);
     }
 
     function caseMatrixBlocksWordExport(state=requestState){
-      return caseDuplicateIssues(state).length > 0 || caseCoverageState(state).complete === false;
+      return caseDuplicateIssuesForScope(state, "").length > 0 || caseCoverageState(state, "").complete === false;
     }
 
     function coverageUnusedGroups(coverage){
@@ -3764,8 +3719,9 @@ HTML_TEMPLATE = r"""<!doctype html>
           const fieldKey = contextText(issue.field_key);
           const label = columnLabels.get(fieldKey);
           if (rowIndex < 0 || !label) return;
-          if (!missingByCase.has(rowIndex)) missingByCase.set(rowIndex, []);
-          const fields = missingByCase.get(rowIndex);
+          const caseNo = Number.parseInt(contextText(issue.case_no), 10) || rowIndex + 1;
+          if (!missingByCase.has(caseNo)) missingByCase.set(caseNo, []);
+          const fields = missingByCase.get(caseNo);
           if (!fields.some(item => item.key === fieldKey)) fields.push({key:fieldKey, label});
           return;
         }
@@ -3773,9 +3729,9 @@ HTML_TEMPLATE = r"""<!doctype html>
         const duplicateOfCaseNo = Number.parseInt(contextText(issue.duplicate_of_case_no), 10);
         if (caseNo > 0 && duplicateOfCaseNo > 0) rows.push(`<p class="coverage-warning-copy">Case ${caseNo}: Case ${duplicateOfCaseNo}과 동일합니다.</p>`);
       });
-      const missingRows = Array.from(missingByCase.entries()).sort(([left], [right]) => left - right).map(([rowIndex, fields]) => {
+      const missingRows = Array.from(missingByCase.entries()).sort(([left], [right]) => left - right).map(([caseNo, fields]) => {
         fields.sort((left, right) => (columnOrder.get(left.key) ?? 0) - (columnOrder.get(right.key) ?? 0));
-        return `<p class="coverage-warning-copy">Case ${rowIndex + 1}: ${esc(fields.map(item => item.label).join(", "))}을 선택해 주세요.</p>`;
+        return `<p class="coverage-warning-copy">Case ${caseNo}: ${esc(fields.map(item => item.label).join(", "))}을 선택해 주세요.</p>`;
       });
       rows.unshift(...missingRows);
       if (!rows.length) return "";
@@ -3786,13 +3742,13 @@ HTML_TEMPLATE = r"""<!doctype html>
     function renderCaseDuplicateWarning(){
       const target = $("caseDuplicateWarning");
       if (!target) return;
-      target.innerHTML = caseConfigurationMessageHtml(caseConfigurationIssues());
+      target.innerHTML = caseConfigurationMessageHtml(caseConfigurationIssues(requestState, currentCaseScope()));
     }
 
     function renderCaseCoverageStatus(){
       const target = $("caseCoverageStatus");
       if (!target) return;
-      const coverage = caseCoverageState();
+      const coverage = caseCoverageState(requestState, currentCaseScope());
       const incomplete = coverage.complete === false;
       target.dataset.coverageComplete = String(coverage.complete);
       target.innerHTML = incomplete
@@ -3806,22 +3762,46 @@ HTML_TEMPLATE = r"""<!doctype html>
       window.requestAnimationFrame(() => document.querySelector('[data-action="toggle-case-source"]')?.focus());
     }
 
+    function switchAnalysisScopeTab(kind, scope){
+      if (!["indoor","outdoor"].includes(scope)) return;
+      if (kind === "conditions") {
+        preserveEditorDraftBeforeRerender();
+        activeConditionScope = scope;
+        renderConditionFields();
+        return;
+      }
+      if (kind === "case") {
+        preserveCaseSelections();
+        activeCaseScope = scope;
+        renderCasePreview();
+      }
+    }
+
     function renderPreviewCaseMatrixStatus(state=requestState, options={}){
       const target = $("previewCoverageWarning");
       if (!target) return;
       const settings = asObj(options);
-      const configurationIssues = Object.prototype.hasOwnProperty.call(settings, "configurationIssues")
-        ? asArray(settings.configurationIssues)
-        : caseConfigurationIssues(state);
-      const coverage = Object.keys(asObj(settings.coverage)).length ? asObj(settings.coverage) : caseCoverageState(state);
       const messages = [];
-      const configurationMessage = caseConfigurationMessageHtml(configurationIssues, state, true);
-      if (configurationMessage) messages.push(`<div class="case-review-message error">${configurationMessage}</div>`);
-      if (coverage.complete === false) messages.push(`<div class="case-review-message warning"><div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 05 Case Matrix에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p><button class="ghost" type="button" data-action="review-case-coverage">05 Case Matrix에서 확인</button></div>`);
+      const scopes = caseScopeKeys(state);
+      scopes.forEach(scope => {
+        const configurationIssues = Object.prototype.hasOwnProperty.call(settings, "configurationIssues")
+          ? asArray(settings.configurationIssues).filter(issue => !scope || contextText(asObj(issue).analysis_scope) === scope)
+          : caseConfigurationIssues(state, scope);
+        const suppliedCoverage = Object.keys(asObj(settings.coverage)).length ? asObj(settings.coverage) : null;
+        const coverage = suppliedCoverage ? (scope ? asObj(asObj(suppliedCoverage.by_scope)[scope]) : suppliedCoverage) : caseCoverageState(state, scope);
+        const scopeHeading = scope ? `<h5 class="preview-scope-heading">${caseScopeLabel(scope)}</h5>` : "";
+        const configurationMessage = caseConfigurationMessageHtml(configurationIssues, state, true);
+        if (configurationMessage) messages.push(`<div class="case-review-message error">${scopeHeading}${configurationMessage}</div>`);
+        if (coverage.complete === false) messages.push(`<div class="case-review-message warning">${scopeHeading}<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 05 Case Matrix에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p><button class="ghost" type="button" data-action="review-case-coverage">05 Case Matrix에서 확인</button></div>`);
+      });
       target.innerHTML = messages.join("");
     }
 
     function renderCasePreview(){
+      const requestedScopes = requestedAnalysisScopes();
+      if (!requestedScopes.includes(activeCaseScope)) activeCaseScope = requestedScopes[0];
+      const scopeTabs = $("caseScopeTabs");
+      if (scopeTabs) scopeTabs.innerHTML = scopeTabsHtml("case", activeCaseScope);
       $("caseCommon").innerHTML = caseImpactNoticeHtml();
       const activeCaseSelect = document.activeElement?.matches?.("select[data-case-field]");
       if (!activeCaseSelect) $("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}`;
@@ -3830,6 +3810,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function focusCaseValidationIssue(issue){
+      const issueScope = contextText(asObj(issue).analysis_scope);
+      if (hasBothAnalysisScopes() && ["indoor","outdoor"].includes(issueScope) && issueScope !== activeCaseScope) {
+        activeCaseScope = issueScope;
+        renderCasePreview();
+      }
       const path = contextText(asObj(issue).path);
       const rowIndex = Number.parseInt((path.match(/case_matrix\.rows\[(\d+)\]/) || [])[1] || "-1", 10);
       const row = asArray(asObj(requestState.case_matrix).rows)[rowIndex];
@@ -3868,7 +3853,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       renderGeometryDrawingDuplicateWarning();
       renderCasePreview();
       renderDocumentPreviewPanel();
-      renderCandidateNotice();
     }
 
     function renderDocumentPreviewPanel(sourceState, previewReceipt){
@@ -3898,49 +3882,62 @@ HTML_TEMPLATE = r"""<!doctype html>
       const productDrawingMissing = !products.length || products.some(product => !contextText(productText(product, "drawing_no")));
       const productDescriptionMissing = products.some((product, index) => index > 0 && !contextText(productDescription(product, true)));
       const productRows = products.length ? products.map((product, index) => `<tr data-preview-product="${esc(product.role || (index ? "comparison" : "base"))}"><td>${esc(index ? `비교 ${index}` : "Base")}</td><td>${esc(productText(product, "drawing_no") || "-")}</td><td>${esc(index ? productDescription(product, true) || "-" : "기존 형상")}</td></tr>`).join("") : `<tr><td colspan="3">등록된 제품이 없습니다.</td></tr>`;
-      const conditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj);
-      const conditionByType = type => conditionSets.filter(row => contextText(row.type) === type);
-      const operatingRows = conditionByType("operating").map((row, index) => {
-        const display = operatingFanDisplay(row), count = display.count;
-        const mode = contextText(row.fan_rpm_mode);
-        const setting = count === 1
-          ? `${display.text} RPM`
-          : mode === "common"
-            ? `${display.text.replace(/^모든 팬\s*/, "모든 팬 동일 · ")} RPM`
-            : `${display.text} RPM`;
-        return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(contextText(row.name) || `운전 ${index + 1}`)}</td><td>${esc(count || "-")}</td><td>${previewTableValue("팬 회전 설정", setting, display.missing)}</td></tr>`;
-      }).join("") || `<tr><td colspan="3">운전 조건이 없습니다.</td></tr>`;
-      const specificationRows = conditionByType("heat_exchanger").map((row, index) => {
-        const fields = asObj(row.fields), type = heatExchangerType([row]);
-        const labels = heatExchangerFieldLabels(type);
-        const name = contextText(fieldDisplayValue(fields.name)) || `사양 ${index + 1}`;
-        const keys = ["tube_diameter", "fin_type", "row_count", "fpi"];
-        const cells = keys.map(key => `<td>${previewTableValue(labels[key] || key, value(fields[key]), isMissing(fields[key]))}</td>`).join("");
-        return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(name)}</td><td>${esc(type || "-")}</td>${cells}</tr>`;
-      }).join("") || `<tr><td colspan="6">열교환기 사양이 없습니다.</td></tr>`;
-      const groupedConditionBody = type => {
-        const fields = asObj(asObj(conditionByType(type)[0]).fields);
-        const items = conditionUnitFields(type)
-          .filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key))
-          .map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])));
-        return items.length ? kvGrid(items) : "";
+      const previewScopes = requestedAnalysisScopes(context);
+      const allConditionSets = asArray(asObj(state.conditions).condition_sets).map(asObj);
+      const conditionsBodyForScope = scope => {
+        const conditionSets = allConditionSets.filter(row => previewScopes[0] === "" || contextText(row.analysis_scope) === scope);
+        const conditionByType = type => conditionSets.filter(row => contextText(row.type) === type);
+        const operatingRows = conditionByType("operating").map((row, index) => {
+          const display = operatingFanDisplay(row), count = display.count;
+          const mode = contextText(row.fan_rpm_mode);
+          const setting = count === 1 ? `${display.text} RPM` : mode === "common" ? `${display.text.replace(/^모든 팬\s*/, "모든 팬 동일 · ")} RPM` : `${display.text} RPM`;
+          return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(contextText(row.name) || `운전 ${index + 1}`)}</td><td>${esc(count || "-")}</td><td>${previewTableValue("팬 회전 설정", setting, display.missing)}</td></tr>`;
+        }).join("") || `<tr><td colspan="3">운전 조건이 없습니다.</td></tr>`;
+        const specificationRows = conditionByType("heat_exchanger").map((row, index) => {
+          const fields = asObj(row.fields), type = heatExchangerType([row]);
+          const labels = heatExchangerFieldLabels(type);
+          const name = contextText(fieldDisplayValue(fields.name)) || `사양 ${index + 1}`;
+          const keys = ["tube_diameter", "fin_type", "row_count", "fpi"];
+          const cells = keys.map(key => `<td>${previewTableValue(labels[key] || key, value(fields[key]), isMissing(fields[key]))}</td>`).join("");
+          return `<tr data-preview-condition-card="${esc(row.id || "")}"><td>${esc(name)}</td><td>${esc(type || "-")}</td>${cells}</tr>`;
+        }).join("") || `<tr><td colspan="6">열교환기 사양이 없습니다.</td></tr>`;
+        const groupedConditionBody = type => {
+          const fields = asObj(asObj(conditionByType(type)[0]).fields);
+          const items = conditionUnitFields(type).filter(([key]) => Object.prototype.hasOwnProperty.call(fields, key)).map(([key, label]) => kv(label, conditionFieldDisplayWithUnit(type, key, fields[key])));
+          return items.length ? kvGrid(items) : "";
+        };
+        const environmentBody = groupedConditionBody("space_environment");
+        const supplyBody = groupedConditionBody("supply_air");
+        const suffix = scope ? `_${scope}` : "";
+        const operatingTable = tableWrap(`<table class="preview-table" data-preview-table="operating_conditions${suffix}"><thead><tr><th></th><th>팬 개수</th><th>팬 회전 설정</th></tr></thead><tbody>${operatingRows}</tbody></table>`);
+        const specificationTable = tableWrap(`<table class="preview-table preview-specification-table" data-preview-table="heat_exchanger_conditions${suffix}"><colgroup><col class="preview-spec-name"><col class="preview-spec-type"><col class="preview-spec-dimension"><col class="preview-spec-fin"><col class="preview-spec-rows"><col class="preview-spec-pitch"></colgroup><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
+        const environmentSections = [environmentBody ? `<div><h5 data-preview-group-title>공간 환경 조건</h5>${environmentBody}</div>` : "", supplyBody ? `<div><h5 data-preview-group-title>취출 공기 조건</h5>${supplyBody}</div>` : ""].filter(Boolean).join("");
+        return `<div class="preview-condition-block"><h5 data-preview-group-title>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5 data-preview-group-title>열교환기 사양</h5>${specificationTable}</div>${environmentSections ? `<div class="preview-condition-pair">${environmentSections}</div>` : ""}`;
       };
-      const environmentBody = groupedConditionBody("space_environment");
-      const supplyBody = groupedConditionBody("supply_air");
-      const operatingTable = tableWrap(`<table class="preview-table" data-preview-table="operating_conditions"><thead><tr><th></th><th>팬 개수</th><th>팬 회전 설정</th></tr></thead><tbody>${operatingRows}</tbody></table>`);
-      const specificationTable = tableWrap(`<table class="preview-table preview-specification-table" data-preview-table="heat_exchanger_conditions"><colgroup><col class="preview-spec-name"><col class="preview-spec-type"><col class="preview-spec-dimension"><col class="preview-spec-fin"><col class="preview-spec-rows"><col class="preview-spec-pitch"></colgroup><thead><tr><th></th><th>HEX Type</th><th>관 직경(Pi) / 채널 폭(Width)</th><th>Fin type</th><th>열 수</th><th>FPI / FPDM</th></tr></thead><tbody>${specificationRows}</tbody></table>`);
-      const environmentSections = [
-        environmentBody ? `<div><h5 data-preview-group-title>공간 환경 조건</h5>${environmentBody}</div>` : "",
-        supplyBody ? `<div><h5 data-preview-group-title>취출 공기 조건</h5>${supplyBody}</div>` : "",
-      ].filter(Boolean).join("");
-      const conditionsBody = `<div class="preview-condition-block"><h5 data-preview-group-title>운전 조건</h5>${operatingTable}</div><div class="preview-condition-block"><h5 data-preview-group-title>열교환기 사양</h5>${specificationTable}</div>${environmentSections ? `<div class="preview-condition-pair">${environmentSections}</div>` : ""}`;
+      const conditionsBody = previewScopes.length > 1
+        ? previewScopes.map(scope => `<div class="preview-scope-group"><h5 class="preview-scope-heading" data-preview-group-title>${scopeLabel(scope)}</h5>${conditionsBodyForScope(scope)}</div>`).join("")
+        : conditionsBodyForScope(previewScopes[0]);
       const matrix = asObj(state.case_matrix);
       const matrixColumns = asArray(matrix.visible_columns).filter(column => asObj(column).key !== "remove");
-      const rawMatrixRows = asArray(matrix.rows);
-      const matrixSources = caseSelectionSources(state);
-      const matrixRows = rawMatrixRows.map(item => { const row = asObj(item), cells = asObj(row.visible_cells), selections = asObj(row.condition_values); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => { const key = contextText(asObj(column).key); if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${esc(cells[key] || "-")}</td>`; const selected = key === "geometry_id" ? row.geometry_id : selections[key]; return `<td class="${caseColumnClass(key)}">${caseReadonlyFieldHtml(key, selected, cells[key], matrixSources)}</td>`; }).join("")}</tr>`; }).join("");
-      const matrixTable = matrixColumns.length && matrixRows ? tableWrap(`<table class="preview-table case-matrix-grid" data-preview-table="case_matrix"><thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th class="${caseColumnClass(key)}">${previewFieldLabel(caseColumnDisplayLabel(row), missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table>`, "case-matrix-wrap") : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
+      const matrixTableForScope = scope => {
+        const rawMatrixRows = asArray(matrix.rows).filter(row => previewScopes[0] === "" || contextText(asObj(row).analysis_scope) === scope);
+        const matrixSources = caseSelectionSources(state);
+        if (scope) {
+          const scopedSources = caseSelectionSources(state, scope);
+          matrixSources.operatingById = scopedSources.operatingById;
+          matrixSources.specificationById = scopedSources.specificationById;
+        }
+        const matrixRows = rawMatrixRows.map(item => { const row = asObj(item), cells = asObj(row.visible_cells), selections = asObj(row.condition_values); return `<tr data-preview-case="${esc(row.case_id || "")}">${matrixColumns.map(column => { const key = contextText(asObj(column).key); if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${esc(cells[key] || "-")}</td>`; const selected = key === "geometry_id" ? row.geometry_id : selections[key]; return `<td class="${caseColumnClass(key)}">${caseReadonlyFieldHtml(key, selected, cells[key], matrixSources)}</td>`; }).join("")}</tr>`; }).join("");
+        const tableOpen = scope
+          ? `<table class="preview-table case-matrix-grid" data-preview-table="case_matrix_${scope}">`
+          : `<table class="preview-table case-matrix-grid" data-preview-table="case_matrix">`;
+        return matrixColumns.length && matrixRows ? tableWrap(`${tableOpen}<thead><tr>${matrixColumns.map(column => { const row = asObj(column), key = contextText(row.key), missing = rawMatrixRows.some(item => !contextText(asObj(asObj(item).visible_cells)[key])); return `<th class="${caseColumnClass(key)}">${previewFieldLabel(caseColumnDisplayLabel(row), missing)}</th>`; }).join("")}</tr></thead><tbody>${matrixRows}</tbody></table>`, "case-matrix-wrap") : `<div class="empty" data-preview-matrix-empty>${missingIcon()}<span>Case: 생성된 Case가 없습니다.</span></div>`;
+      };
+      const matrixTable = previewScopes.length > 1
+        ? previewScopes.map(scope => `<div class="preview-scope-group"><h5 class="preview-scope-heading" data-preview-group-title>${scopeLabel(scope)}</h5>${matrixTableForScope(scope)}</div>`).join("")
+        : matrixTableForScope(previewScopes[0]);
       const requestFields = [kv("의뢰 유형", overview.request_type), kv("프로젝트명(PMS)", overview.project_name), kv("개발 등급", overview.development_grade), kv("NPI 단계", overview.npi_stage), kv("모델명(Model Suffix)", overview.model_suffix), kv("희망 완료일", overview.desired_completion_date), kv("해석유형", context.analysis_type)];
+      if (isRacWindowContext(context)) requestFields.push(kv("해석 범위", scopeLabel(context.analysis_scope)));
       const narrative = `<div class="preview-review-narrative">${kv("해석을 요청하게 된 배경", overview.request_description)}${kv("해석으로 확인하고 싶은 내용", overview.additional_result_request)}</div>`;
       panel.innerHTML = `<div class="preview-doc" data-preview-document="current-state">
         ${section("requester", "의뢰자 정보", kvGrid([kv("사업부", basic.division), kv("부서", basic.department), kv("요청자", basic.requester_name), kv("직급", basic.requester_role)]))}
@@ -3959,23 +3956,6 @@ HTML_TEMPLATE = r"""<!doctype html>
         orchestratorPanelState.previewRenderedRequestId = "";
         orchestratorPanelState.previewRenderedRequestVersion = null;
       }
-    }
-
-    function renderCandidateNotice(){
-      const candidate = asObj(requestState.candidate_conditions || {});
-      const count = candidate.count ?? countCandidateRows();
-      const el = $("candidateNotice");
-      if (count > 0) {
-        el.style.display = "none";
-        el.innerHTML = "";
-      } else {
-        el.style.display = "none";
-        el.innerHTML = "";
-      }
-    }
-
-    function countCandidateRows(){
-      return asArray(asObj(requestState.conditions).fields).reduce((sum, field) => sum + asArray(field.values).filter(row => asObj(row).source === "ai_suggested").length, 0);
     }
 
     function defaultChatHistory(){
@@ -4142,7 +4122,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       const conversationId = orchestratorPanelState.conversationId;
       orchestratorPanelState.conversationId = "";
       orchestratorPanelState.dirty = true;
-      recommendMode = false;
       lastPlannerActiveFieldId = "";
       chatHistory = [];
       syncChatMetadata();
@@ -4210,13 +4189,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       });
     }
 
-    function renderRecommendations(recommendations){
-      const html = `<div>${esc("AI 추천을 선택하면 해석유형만 확정하고, 조건 추천은 별도로 받을 수 있습니다.")}</div><div class="rec-list">${
-        asArray(recommendations).map((item,index) => `<button data-recommend-choice="${esc(item.analysis_type)}">${index+1}. ${esc(item.analysis_type)} · Confidence ${esc(item.confidence)}<br><small>${esc(item.reason || "")}</small></button>`).join("")
-      }</div>`;
-      pushMessage("assistant", "", html);
-    }
-
     function renderCandidateMessage(candidateConditions){
       const items = asArray(asObj(candidateConditions).items);
       if (!items.length) return;
@@ -4279,7 +4251,6 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     async function runChatQuickAction(actionId){
       const action = String(actionId || "");
-      recommendMode = false;
       if (action === "condition_recommend") {
         await requestConditionRecommendation();
         return;
@@ -4292,33 +4263,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (!text) return;
       $("chatInput").value = text;
       await sendChatMessage();
-    }
-
-    async function requestRecommendationFromChat(text){
-      pushMessage("assistant", "해석유형 추천은 h3_v0에서 비활성화되어 있습니다. 해석유형을 직접 선택해 주세요.");
-      recommendMode = false;
-      return;
-      const loading = showLoadingFor("AI가 알맞는 해석유형을 찾고 있습니다.");
-      const data = await postJson("/api/analysis-type/recommend", {message:text, state:collectState()});
-      await loading;
-      renderRecommendations(data.recommendations);
-      recommendMode = false;
-    }
-
-    async function selectAnalysisType(analysisType){
-      if (!analysisType) return;
-      const loading = showLoadingFor("해석유형을 확정하고 다음 입력 단계를 정리하고 있습니다.");
-      const data = await postJson("/api/analysis-type/select", {analysis_type:analysisType, state:collectState()});
-      await loading;
-      adoptStateFromResponse(data);
-      syncEditorFromState();
-      $("section-basic")?.classList.remove("open");
-      ["section-geometry","section-conditions","section-case"].forEach(id => $(id)?.classList.remove("open"));
-      $("section-overview")?.classList.add("open");
-      activeTopTab = "write";
-      updateTopChrome();
-      pushMessage("assistant", data.assistant || `${analysisType}을 선택했습니다.`);
-      if (asObj(data.action_proposal).status === "pending") renderProposalMessage(data.action_proposal, "AI가 자주 쓰이는 조건을 추천해드릴까요?");
     }
 
     function orchestratorMessage(role, content, detail=""){
@@ -4797,10 +4741,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       let minLoading = Promise.resolve();
       try{
         setOrchestratorLoading(true);
-        if (recommendMode) {
-          await requestRecommendationFromChat(text);
-          return;
-        }
         stopLoading = startLoadingMessage("답변 생성 중입니다.");
         minLoading = delay(1000);
         const conversationId = await createOrchestratorConversation();
@@ -4968,11 +4908,16 @@ HTML_TEMPLATE = r"""<!doctype html>
       const state = collectState();
       const matrix = asObj(state.case_matrix);
       const rows = asArray(matrix.rows);
+      const analysisScope = typeof activeCaseScope === "string" ? activeCaseScope : "";
+      const contextScope = contextText(asObj(state.request_context).analysis_scope);
+      const scoped = contextScope === "both" || ["indoor","outdoor"].includes(contextScope);
+      const targetScope = scoped ? (analysisScope || (contextScope === "both" ? "indoor" : contextScope)) : "";
+      const scopedRows = rows.filter(row => !scoped || contextText(asObj(row).analysis_scope) === targetScope);
       if (action === "add") {
         lastCaseDeleteNoticeVisible = false;
-        rows.push({case_id:`case_${Date.now()}`, geometry_id:"", auto_geometry_id:"", condition_values:{}});
+        rows.push({case_id:`${targetScope ? `${targetScope}_` : ""}case_${Date.now()}`, ...(scoped ? {analysis_scope:targetScope} : {}), geometry_id:"", auto_geometry_id:"", condition_values:{}});
       } else if (action === "remove") {
-        if (rows.length <= 1) {
+        if (scopedRows.length <= 1) {
           lastCaseDeleteNoticeVisible = true;
           renderCasePreview();
           return;
@@ -5093,11 +5038,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       $("wordExportSlotBtn").addEventListener("click", () => {
         runWordExportFromPreview().catch(err => console.error(err));
       });
-      $("recommendBtn").addEventListener("click", () => {
-        recommendMode = true;
-        pushMessage("assistant", "제품군과 검토하고 싶은 내용을 입력해 주세요. 예: RAC 제품군에서 압력 손실을 보고 싶습니다.");
-        $("chatInput").focus();
-      });
       $("sendBtn").addEventListener("click", sendChatMessage);
       $("chatInput").addEventListener("keydown", event => {
         if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
@@ -5133,23 +5073,15 @@ HTML_TEMPLATE = r"""<!doctype html>
       document.body.addEventListener("click", event => {
         const retryGuidance = event.target.closest("#retryAnalysisResultGuidance");
         if (retryGuidance) { refreshAnalysisResultGuidance(); return; }
+        const scopeTab = event.target.closest("button[data-scope-tab][data-analysis-scope]");
+        if (scopeTab) { switchAnalysisScopeTab(scopeTab.dataset.scopeTab || "", scopeTab.dataset.analysisScope || ""); return; }
+        const scopeChoice = event.target.closest("#analysisScopeField button[data-analysis-scope]");
+        if (scopeChoice) { updateRequestContextDraft("analysis_scope", scopeChoice.dataset.analysisScope || "indoor"); return; }
         const stageAssist = event.target.closest("button[data-stage-assist-prompt]");
         if (stageAssist) { fillStageAssistPrompt(stageAssist.dataset.stageAssistPrompt || stageAssist.textContent || ""); return; }
         const prepStart = event.target.closest("#prepStartBtn");
         if (prepStart) {
           confirmRequestContext().catch(err => pushMessage("assistant", `조합 확정 실패: ${err.message}`));
-          return;
-        }
-        const prepMode = event.target.closest("button[data-prep-mode]");
-        if (prepMode) {
-          activePrepMode = prepMode.dataset.prepMode || "quick";
-          prepAssistStarted = true;
-          renderRequestPrepCard();
-          return;
-        }
-        const prepChoice = event.target.closest("button[data-context-choice]");
-        if (prepChoice) {
-          updateRequestContextDraft(prepChoice.dataset.contextChoice || "", prepChoice.dataset.contextValue || "");
           return;
         }
         const dropdownRestore = event.target.closest("button[data-dropdown-restore-path]");
@@ -5158,8 +5090,6 @@ HTML_TEMPLATE = r"""<!doctype html>
         if (proposalRefresh) { fillStageAssistPrompt(proposalRefresh.dataset.chatProposalRefresh || ""); return; }
         const quickAction = event.target.closest("button[data-chat-quick-action]");
         if (quickAction) { runChatQuickAction(quickAction.dataset.chatQuickAction || "").catch(err => pushMessage("assistant", `빠른 실행 실패: ${err.message}`)); return; }
-        const rec = event.target.closest("button[data-recommend-choice]");
-        if (rec) { selectAnalysisType(rec.dataset.recommendChoice).catch(err => pushMessage("assistant", `추천 선택 실패: ${err.message}`)); return; }
         const screenAction = event.target.closest("button[data-screen-action]");
         if (screenAction) { navigateScreen(screenAction.dataset.screenAction || "SCREEN-01"); return; }
         const screen = event.target.closest(".screen-map-item[data-screen]");
@@ -5189,10 +5119,10 @@ HTML_TEMPLATE = r"""<!doctype html>
           preserveEditorDraftBeforeRerender();
           const type = button.dataset.cardType;
           const cards = collectConditionSets();
-          const base = cards.find(card => contextText(asObj(card).type) === type);
+          const base = cards.find(card => contextText(asObj(card).type) === type && (!hasBothAnalysisScopes() || contextText(asObj(card).analysis_scope) === activeConditionScope));
           if (!base) return;
           const card = JSON.parse(JSON.stringify(base));
-          const number = cards.filter(item => contextText(asObj(item).type) === type).length + 1;
+          const number = cards.filter(item => contextText(asObj(item).type) === type && contextText(asObj(item).analysis_scope) === contextText(card.analysis_scope)).length + 1;
           do { card.id = newConditionCardId(type); }
           while (cards.some(item => contextText(asObj(item).id) === card.id));
           card.is_default = false;
@@ -5228,13 +5158,13 @@ HTML_TEMPLATE = r"""<!doctype html>
             window.requestAnimationFrame(() => document.querySelector(`[data-condition-card="${CSS.escape(cardId)}"] input:not([disabled]), [data-condition-card="${CSS.escape(cardId)}"] select:not([disabled])`)?.focus());
             schedulePreviewRefresh(); return;
           }
-          const typeCards = cards.filter(card => contextText(asObj(card).type) === contextText(asObj(target).type));
+          const typeCards = cards.filter(card => contextText(asObj(card).type) === contextText(asObj(target).type) && contextText(asObj(card).analysis_scope) === contextText(asObj(target).analysis_scope));
           const targetIndex = typeCards.indexOf(target);
           clearHeatExchangerCustomFields(target.id, heatExchangerCascadeKeys);
           fanCountCustomCards.delete(contextText(target.id));
           if (expandedFanCardId === contextText(target.id)) expandedFanCardId = "";
           const remaining = cards.filter(card => contextText(asObj(card).id) !== cardId);
-          const remainingTypeCards = remaining.filter(card => contextText(asObj(card).type) === contextText(asObj(target).type));
+          const remainingTypeCards = remaining.filter(card => contextText(asObj(card).type) === contextText(asObj(target).type) && contextText(asObj(card).analysis_scope) === contextText(asObj(target).analysis_scope));
           const focusCard = remainingTypeCards[Math.min(targetIndex, remainingTypeCards.length - 1)];
           requestState.conditions = {...asObj(requestState.conditions), condition_sets:remaining}; syncEditorFromState();
           if (focusCard) window.requestAnimationFrame(() => document.querySelector(`[data-condition-card="${CSS.escape(focusCard.id)}"] input:not([disabled]), [data-condition-card="${CSS.escape(focusCard.id)}"] select:not([disabled])`)?.focus());

@@ -18,6 +18,10 @@ ANALYSIS_TYPE_HEX_PROFILE = "열교환기 유속 프로파일"
 ANALYSIS_TYPE_AIRFLOW_PATTERN = "기류 패턴"
 ANALYSIS_TYPE_AIR_VOLUME = "풍량"
 HEAT_EXCHANGER_TYPES = ("Fin&Tube", "Micro-Channel")
+ANALYSIS_SCOPE_INDOOR = "indoor"
+ANALYSIS_SCOPE_OUTDOOR = "outdoor"
+ANALYSIS_SCOPE_BOTH = "both"
+ANALYSIS_SCOPE_VALUES = (ANALYSIS_SCOPE_INDOOR, ANALYSIS_SCOPE_OUTDOOR, ANALYSIS_SCOPE_BOTH)
 _CONDITION_CARD_ID_RE = re.compile(r"^[a-z][a-z0-9_]{1,95}$")
 
 ANALYSIS_TYPE_ALIASES = {
@@ -109,6 +113,29 @@ def _context(context: Mapping[str, Any] | None) -> Mapping[str, Any]:
     return context.get("request_context", {}) if isinstance(context, Mapping) and isinstance(context.get("request_context"), Mapping) else (context or {})
 
 
+def is_rac_window_context(request_context: Mapping[str, Any] | None = None) -> bool:
+    context = _context(request_context)
+    return all(
+        _clean(context.get(key)).casefold() == value.casefold()
+        for key, value in (("division", "RAC"), ("product_lineup", "Window"), ("platform", "Window"))
+    )
+
+
+def normalize_analysis_scope(value: Any, request_context: Mapping[str, Any] | None = None) -> str:
+    if not is_rac_window_context(request_context):
+        return ""
+    scope = _clean(value).lower()
+    return scope if scope in ANALYSIS_SCOPE_VALUES else ANALYSIS_SCOPE_INDOOR
+
+
+def analysis_scopes_for_context(request_context: Mapping[str, Any] | None = None) -> tuple[str, ...]:
+    context = _context(request_context)
+    scope = normalize_analysis_scope(context.get("analysis_scope"), context)
+    if scope == ANALYSIS_SCOPE_BOTH:
+        return (ANALYSIS_SCOPE_INDOOR, ANALYSIS_SCOPE_OUTDOOR)
+    return (scope,) if scope else ("",)
+
+
 def _analysis_type(value: Any) -> str:
     value = _clean(value)
     return ANALYSIS_TYPE_ALIASES.get(value, value if value in _REQUIRED_BY_TYPE else ANALYSIS_TYPE_DEW)
@@ -168,16 +195,7 @@ def make_condition_card(
 
 
 def default_condition_sets(request_context: Mapping[str, Any] | None = None) -> list[dict[str, Any]]:
-    fieldset = build_condition_fieldset(request_context)
-    cards = []
-    for group in fieldset["groups"]:
-        if not group["active"]:
-            continue
-        card = make_condition_card(group["key"], 1)
-        active_fields = {field["key"] for field in group["fields"] if field["active"]}
-        card["fields"] = {key: value for key, value in card["fields"].items() if key in active_fields}
-        cards.append(card)
-    return cards
+    return sanitize_condition_sets([], request_context)
 
 
 def sanitize_condition_sets(raw: Any, request_context: Mapping[str, Any] | None = None) -> list[dict[str, Any]]:
@@ -189,75 +207,87 @@ def sanitize_condition_sets(raw: Any, request_context: Mapping[str, Any] | None 
         for group in fieldset["groups"]
         if group["active"]
     }
+    scopes = analysis_scopes_for_context(request_context)
     source = raw if isinstance(raw, list) else []
-    by_type: dict[str, list[Mapping[str, Any]]] = {key: [] for key in active}
+    by_scope_type: dict[tuple[str, str], list[Mapping[str, Any]]] = {
+        (scope, key): [] for scope in scopes for key in active
+    }
     for card in source:
-        if isinstance(card, Mapping) and _clean(card.get("type")) in active:
-            by_type[_clean(card.get("type"))].append(card)
+        if not isinstance(card, Mapping) or _clean(card.get("type")) not in active:
+            continue
+        card_scope = _clean(card.get("analysis_scope")).lower()
+        if card_scope in {ANALYSIS_SCOPE_INDOOR, ANALYSIS_SCOPE_OUTDOOR} and card_scope not in scopes:
+            continue
+        if card_scope not in scopes:
+            card_scope = scopes[0]
+        by_scope_type[(card_scope, _clean(card.get("type")))].append(card)
     result = []
     seen_ids: set[str] = set()
-    for card_type in (item["key"] for item in CARD_TEMPLATES if item["key"] in active):
-        has_source_cards = bool(by_type[card_type])
-        cards = by_type[card_type] or [{}]
-        for index, raw_card in enumerate(cards, 1):
-            raw_id = _clean(raw_card.get("id"))
-            if is_valid_condition_card_id(raw_id, card_type) and raw_id not in seen_ids:
-                card_id = raw_id
-            elif not has_source_cards and index == 1:
-                card_id = f"{card_type}_1"
-            else:
-                card_id = new_condition_card_id(card_type)
-                while card_id in seen_ids:
+    for scope in scopes:
+        for card_type in (item["key"] for item in CARD_TEMPLATES if item["key"] in active):
+            has_source_cards = bool(by_scope_type[(scope, card_type)])
+            cards = by_scope_type[(scope, card_type)] or [{}]
+            for index, raw_card in enumerate(cards, 1):
+                raw_id = _clean(raw_card.get("id"))
+                if is_valid_condition_card_id(raw_id, card_type) and raw_id not in seen_ids:
+                    card_id = raw_id
+                elif not has_source_cards and index == 1 and f"{card_type}_1" not in seen_ids:
+                    card_id = f"{card_type}_1"
+                else:
                     card_id = new_condition_card_id(card_type)
-            seen_ids.add(card_id)
-            card = make_condition_card(card_type, index, templates[card_type], card_id=card_id)
-            card["fields"] = {key: value for key, value in card["fields"].items() if key in active_fields[card_type]}
-            raw_fields = raw_card.get("fields") if isinstance(raw_card.get("fields"), Mapping) else {}
-            for key in card["fields"]:
-                value = raw_fields.get(key, "")
-                value = value.get("value", "") if isinstance(value, Mapping) else value
-                text = _clean(value)
-                card["fields"][key] = {"value": text, "status": "provided" if text else "missing", "source": "user", "display_value": text}
-            if card_type == "heat_exchanger":
-                spec = f"사양 {index}"
-                card["fields"]["name"] = {"value": spec, "status": "provided", "source": "system", "display_value": spec}
-                heat_exchanger_type = _clean(raw_card.get("heat_exchanger_type"))
-                if heat_exchanger_type not in HEAT_EXCHANGER_TYPES:
-                    tube_diameter = _clean(card["fields"]["tube_diameter"].get("value"))
-                    heat_exchanger_type = heat_exchanger_type_from_tube_diameter(tube_diameter)
-                card["heat_exchanger_type"] = heat_exchanger_type
-                if heat_exchanger_type == "Micro-Channel":
-                    card["fields"]["fin_type"] = {"value": "Flat", "status": "provided", "source": "user", "display_value": "Flat"}
-            if card_type == "operating":
-                card["name"] = f"운전 {index}"
-                fan_rpm_mode = _clean(raw_card.get("fan_rpm_mode"))
-                card["fan_rpm_mode"] = fan_rpm_mode if fan_rpm_mode in {"common", "individual"} else ""
-                fans = raw_card.get("fans") if isinstance(raw_card.get("fans"), list) else []
-                if not fans and isinstance(raw_card.get("fan_rpms"), list):
-                    fans = [
-                        {"id": f"fan_{fan_index}", "name": "", "location": "", "running": True, "values": {"fan_rpm": rpm}}
-                        for fan_index, rpm in enumerate(raw_card["fan_rpms"], 1)
-                    ]
-                card["fans"] = []
-                for fan_index, fan in enumerate(fans or [{}], 1):
-                    fan = fan if isinstance(fan, Mapping) else {}
-                    values = fan.get("values") if isinstance(fan.get("values"), Mapping) else {}
-                    rpm = _clean(values.get("fan_rpm"))
-                    if not rpm and (fan.get("running") is False or _clean(fan.get("status")).lower() == "stopped"):
-                        rpm = "0"
-                    card["fans"].append({
-                        "id": _clean(fan.get("id")) or f"fan_{fan_index}",
-                        "name": _clean(fan.get("name")),
-                        "location": _clean(fan.get("location")),
-                        "running": True,
-                        "values": {"fan_rpm": rpm},
-                    })
-                card["fan_count"] = len(card["fans"])
-                if card["fan_count"] == 1:
-                    card["fan_rpm_mode"] = ""
-                card["fan_locations"] = [fan["location"] for fan in card["fans"]]
-                card["fan_rpms"] = [fan["values"]["fan_rpm"] for fan in card["fans"]]
-            result.append(card)
+                    while card_id in seen_ids:
+                        card_id = new_condition_card_id(card_type)
+                seen_ids.add(card_id)
+                card = make_condition_card(card_type, index, templates[card_type], card_id=card_id)
+                if scope:
+                    card["analysis_scope"] = scope
+                card["fields"] = {key: value for key, value in card["fields"].items() if key in active_fields[card_type]}
+                raw_fields = raw_card.get("fields") if isinstance(raw_card.get("fields"), Mapping) else {}
+                for key in card["fields"]:
+                    value = raw_fields.get(key, "")
+                    value = value.get("value", "") if isinstance(value, Mapping) else value
+                    text = _clean(value)
+                    card["fields"][key] = {"value": text, "status": "provided" if text else "missing", "source": "user", "display_value": text}
+                if card_type == "heat_exchanger":
+                    spec = f"사양 {index}"
+                    card["fields"]["name"] = {"value": spec, "status": "provided", "source": "system", "display_value": spec}
+                    heat_exchanger_type = _clean(raw_card.get("heat_exchanger_type"))
+                    if heat_exchanger_type not in HEAT_EXCHANGER_TYPES:
+                        tube_diameter = _clean(card["fields"]["tube_diameter"].get("value"))
+                        heat_exchanger_type = heat_exchanger_type_from_tube_diameter(tube_diameter)
+                    card["heat_exchanger_type"] = heat_exchanger_type
+                    if heat_exchanger_type == "Micro-Channel":
+                        card["fields"]["fin_type"] = {"value": "Flat", "status": "provided", "source": "user", "display_value": "Flat"}
+                if card_type == "operating":
+                    card["name"] = f"운전 {index}"
+                    fan_rpm_mode = _clean(raw_card.get("fan_rpm_mode"))
+                    card["fan_rpm_mode"] = fan_rpm_mode if fan_rpm_mode in {"common", "individual"} else ""
+                    fans = raw_card.get("fans") if isinstance(raw_card.get("fans"), list) else []
+                    if not fans and isinstance(raw_card.get("fan_rpms"), list):
+                        fans = [
+                            {"id": f"fan_{fan_index}", "name": "", "location": "", "running": True, "values": {"fan_rpm": rpm}}
+                            for fan_index, rpm in enumerate(raw_card["fan_rpms"], 1)
+                        ]
+                    card["fans"] = []
+                    for fan_index, fan in enumerate(fans or [{}], 1):
+                        fan = fan if isinstance(fan, Mapping) else {}
+                        values = fan.get("values") if isinstance(fan.get("values"), Mapping) else {}
+                        rpm = _clean(values.get("fan_rpm"))
+                        if not rpm and (fan.get("running") is False or _clean(fan.get("status")).lower() == "stopped"):
+                            rpm = "0"
+                        card["fans"].append({
+                            "id": _clean(fan.get("id")) or f"fan_{fan_index}",
+                            "name": _clean(fan.get("name")),
+                            "location": _clean(fan.get("location")),
+                            "running": True,
+                            "values": {"fan_rpm": rpm},
+                        })
+                    card["fan_count"] = len(card["fans"])
+                    if card["fan_count"] == 1:
+                        card["fan_rpm_mode"] = ""
+                    card["fan_locations"] = [fan["location"] for fan in card["fans"]]
+                    card["fan_rpms"] = [fan["values"]["fan_rpm"] for fan in card["fans"]]
+                result.append(card)
     return result
 
 
@@ -332,5 +362,5 @@ def get_active_condition_fields(state: Mapping[str, Any] | None) -> list[dict[st
                 }
             else:
                 rows = [value]
-            result.append({**meta, **extra, "key": f"{card['id']}.{key}", "field_key": key, "card_id": card["id"], "values": rows, "required": card["type"] in required})
+            result.append({**meta, **extra, "key": f"{card['id']}.{key}", "field_key": key, "card_id": card["id"], "analysis_scope": _clean(card.get("analysis_scope")), "values": rows, "required": card["type"] in required})
     return result

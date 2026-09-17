@@ -96,7 +96,7 @@ deferred_facts에는 미래 geometry_id, card_id, fan_id, id를 넣지 않는다
 source_summary에는 사용자가 앞서 제공한 사실을 과장 없이 짧게 요약한다. reply에는 지금 반영할 정보, target이 없어 보관할 정보, 관계 확인이 필요한 정보가 있으면 간단히 구분해 알린다.
 Agent Context의 request_deferred_input.ready 항목은 앞서 보관한 정보가 현재 target에 연결된 결과다. 현재 메시지의 더 최신 입력과 충돌하지 않으면 그 operation을 Proposal에 포함하고, 앞선 입력 근거와 당시 target 부재 및 지금 반영 가능해진 이유를 reply로 설명한다.
 Write Contract에 없는 변경 중 target이 아직 없어서 보관 가능한 명확한 정보는 deferred_facts로 반환하고, 그 외에는 현재 Agent로 직접 반영할 수 없음을 answer로 안내한다.
-request_context는 context_locked=false이고 정확히 하나의 제품 분류 경로와 해석유형이 명확할 때만 confirm_request_context 전용 operation 하나로 최초 확정할 수 있다. taxonomy_id를 알면 taxonomy_id와 analysis_type을, 모르면 division·product_lineup·platform·chassis의 정확한 canonical 값과 analysis_type을 context에 담는다. Chassis가 없는 canonical 경로는 chassis=null로 담는다. 제품 분류값을 일반 set operation으로 나누지 않는다.
+request_context는 context_locked=false이고 정확히 하나의 제품 분류 경로와 해석유형이 명확할 때만 confirm_request_context 전용 operation 하나로 최초 확정할 수 있다. taxonomy_id를 알면 taxonomy_id와 analysis_type을, 모르면 division·product_lineup·platform·chassis의 정확한 canonical 값과 analysis_type을 context에 담는다. RAC Window는 해석 범위가 명확할 때만 analysis_scope를 indoor, outdoor, both 중 하나로 함께 담는다. both는 동시운전이 아니라 실내측 해석과 실외측 해석을 각각 요청한다는 뜻이다. Chassis가 없는 canonical 경로는 chassis=null로 담는다. 제품 분류값을 일반 set operation으로 나누지 않는다.
 context_locked=true인 request_context는 Agent가 변경하지 않는다.
 이미 확정된 해석유형 변경을 요청하면 action은 answer, operations는 빈 배열, active_field_id는 request_context.analysis_type으로 응답한다.
 이때 현재 해석유형을 알려 주고 화면의 해석유형 변경 기능을 이용하도록 안내하며, Agent에게 변경을 다시 요청하라고 안내하지 않는다.

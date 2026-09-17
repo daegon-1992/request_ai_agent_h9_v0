@@ -50,6 +50,7 @@ def build_submission_contract(
             "visible_columns": deepcopy(_as_list(case_matrix.get("visible_columns"))),
             "rows": deepcopy(_as_list(case_matrix.get("rows"))),
             "dropdown_options": deepcopy(_as_mapping(case_matrix.get("dropdown_options"))),
+            "dropdown_options_by_scope": deepcopy(_as_mapping(case_matrix.get("dropdown_options_by_scope"))),
             "source_inputs": deepcopy(_as_mapping(case_matrix.get("source_inputs"))),
         },
         "draft_document": deepcopy(dict(draft_document)),

@@ -49,10 +49,12 @@ def _kv(label: str, value: Any) -> dict[str, str]:
     return {"label": label, "value": _clean(value) or "-"}
 
 
-def _condition_items(conditions: Mapping[str, Any]) -> list[dict[str, Any]]:
+def _condition_items(conditions: Mapping[str, Any], analysis_scope: str = "") -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for field in _as_list(conditions.get("fields")):
         if not isinstance(field, Mapping):
+            continue
+        if analysis_scope and _clean(field.get("analysis_scope")) != analysis_scope:
             continue
         if field.get("value_type") == "checkbox" and field.get("active") is False:
             values = _row_values([row for row in _as_list(field.get("values")) if isinstance(row, Mapping) and row.get("status") in {"none", "unknown", "skipped"}])
@@ -88,11 +90,33 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
     basic = _as_mapping(state.get("basic_info"))
     metadata = _as_mapping(state.get("metadata"))
     overview = _as_mapping(state.get("analysis_overview"))
+    context = _as_mapping(state.get("request_context"))
     geometry = _as_mapping(state.get("geometry"))
     conditions = _as_mapping(state.get("conditions"))
     case_matrix = _as_mapping(state.get("case_matrix"))
     validation = _as_mapping(_as_mapping(state.get("review")).get("validator"))
     summary = _as_mapping(validation.get("summary"))
+
+    scope = _clean(context.get("analysis_scope"))
+    scope_labels = {"indoor": "실내측", "outdoor": "실외측", "both": "실내·실외 모두"}
+    scope_keys = ["indoor", "outdoor"] if scope == "both" else ([scope] if scope in {"indoor", "outdoor"} else [])
+    overview_items = [
+        _kv("해석 유형", _value(overview, "analysis_type") or context.get("analysis_type")),
+        _kv("프로젝트명", _value(overview, "project_name")),
+        _kv("개발 등급", _value(overview, "grade")),
+        _kv("NPI 단계", _value(overview, "npi_stage")),
+        _kv("PMS 제품군", _display_field(overview.get("pms_group"))),
+        _kv("플랫폼", _value(overview, "platform")),
+        _kv("샷시명", _value(overview, "chassis_name")),
+        _kv("의뢰 유형", _value(overview, "request_type")),
+        _kv("희망 완료일", _value(overview, "due_date")),
+        _kv("배경", _value(overview, "background")),
+        _kv("목적", _value(overview, "purpose")),
+        _kv("목표", _value(overview, "goal")),
+        _kv("요청 산출물", _value(overview, "deliverables")),
+    ]
+    if scope in scope_labels:
+        overview_items.append(_kv("해석 범위", scope_labels[scope]))
 
     sections = [
         {
@@ -109,21 +133,7 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
         {
             "key": "analysis_overview",
             "title": "해석 개요",
-            "items": [
-                _kv("해석 유형", _value(overview, "analysis_type")),
-                _kv("프로젝트명", _value(overview, "project_name")),
-                _kv("개발 등급", _value(overview, "grade")),
-                _kv("NPI 단계", _value(overview, "npi_stage")),
-                _kv("PMS 제품군", _display_field(overview.get("pms_group"))),
-                _kv("플랫폼", _value(overview, "platform")),
-                _kv("샷시명", _value(overview, "chassis_name")),
-                _kv("의뢰 유형", _value(overview, "request_type")),
-                _kv("희망 완료일", _value(overview, "due_date")),
-                _kv("배경", _value(overview, "background")),
-                _kv("목적", _value(overview, "purpose")),
-                _kv("목표", _value(overview, "goal")),
-                _kv("요청 산출물", _value(overview, "deliverables")),
-            ],
+            "items": overview_items,
         },
         {
             "key": "geometry",
@@ -139,6 +149,10 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
             "key": "conditions",
             "title": "해석조건",
             "items": _condition_items(conditions),
+            "groups": [
+                {"analysis_scope": item, "label": scope_labels[item], "items": _condition_items(conditions, item)}
+                for item in scope_keys
+            ],
         },
     ]
     case_rows = [
@@ -146,6 +160,7 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
             "case_id": _clean(case.get("case_id")),
             "display_case_no": index,
             "visible_cells": dict(_as_mapping(case.get("visible_cells"))),
+            "analysis_scope": _clean(case.get("analysis_scope")),
         }
         for index, case in enumerate(_as_list(case_matrix.get("rows")), start=1)
         if isinstance(case, Mapping)
@@ -161,6 +176,13 @@ def build_request_preview(raw_state: Mapping[str, Any]) -> dict[str, Any]:
             "visible_columns": case_matrix.get("visible_columns", []),
             "rows": case_rows,
             "source_inputs": case_matrix.get("source_inputs", {}),
+            "by_scope": {
+                item: {
+                    "label": scope_labels[item],
+                    "rows": [row for row in case_rows if row.get("analysis_scope") == item],
+                }
+                for item in scope_keys
+            },
         },
         "validation_summary": summary,
         "markdown": markdown,

@@ -116,6 +116,7 @@ REQUEST_CONTEXT_FIELD_DEFS = (
     {"key": "chassis", "label": "Chassis", "required": False},
     {"key": "display_path", "label": "제품 분류 경로", "required": False},
     {"key": "analysis_type", "label": "해석 유형", "required": False},
+    {"key": "analysis_scope", "label": "해석 범위", "required": False},
     {"key": "operation_mode", "label": "운전 모드", "required": False},
     {"key": "context_locked", "label": "Context 확정 여부", "required": False, "value_type": "boolean"},
     {"key": "condition_fieldset_key", "label": "조건 fieldset key", "required": False},

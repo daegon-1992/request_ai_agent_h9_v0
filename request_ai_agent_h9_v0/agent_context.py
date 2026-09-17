@@ -23,6 +23,7 @@ _REQUEST_CONTEXT_USER_KEYS = (
     "chassis",
     "display_path",
     "analysis_type",
+    "analysis_scope",
     "operation_mode",
     "context_locked",
 )
@@ -48,7 +49,7 @@ def _project_request_context(state: Mapping[str, Any]) -> dict[str, Any]:
     return {
         key: deepcopy(request_context[key])
         for key in _REQUEST_CONTEXT_USER_KEYS
-        if key in request_context
+        if key in request_context and (key != "analysis_scope" or bool(request_context[key]))
     }
 
 
@@ -65,7 +66,7 @@ def _project_case_rows(state: Mapping[str, Any]) -> list[dict[str, Any]]:
         canonical_rows.append(
             {
                 key: deepcopy(row[key])
-                for key in ("case_id", "geometry_id", "condition_values")
+                for key in ("case_id", "analysis_scope", "geometry_id", "condition_values")
                 if key in row
             }
         )
