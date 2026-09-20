@@ -3338,7 +3338,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       clearCaseConfigurationWarning();
       renderScreenNavigation();
       orchestratorPanelState.dirty = true;
-      classifyCaseImpact(collectState());
       invalidatePendingPreviewRefresh();
       const scheduledRevision = previewStateRevision;
       previewRefreshTimer = window.setTimeout(() => {
