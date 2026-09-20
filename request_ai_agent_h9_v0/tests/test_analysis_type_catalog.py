@@ -223,19 +223,16 @@ def test_temperature_none_menu_is_not_clipped_by_environment_cards():
     assert 'overflow:visible' in section_style
 
 
-def test_scheduled_analysis_types_are_disabled_and_labeled_in_both_selectors():
+def test_scheduled_analysis_types_are_disabled_and_labeled_in_quick_selector():
     assert 'const disabledAnalysisTypes = ["기류도달거리","PDB","실사용 해석","집진해석(먼지거동)","PCB발열","다상유동"]' in HTML_TEMPLATE
-    assert 'disabledAnalysisTypeReason, " (예정)", true' in HTML_TEMPLATE
     assert 'disabledAnalysisTypes, " (예정)", disabledAnalysisTypeLockPrefix' in HTML_TEMPLATE
+    assert '${disabledSet.has(value) ? "disabled" : ""}' in HTML_TEMPLATE
 
 
-def test_scheduled_analysis_types_reuse_the_disabled_step_lock_icon():
-    lock_svg = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg>'
-    assert f'<span class="screen-map-lock" aria-hidden="true">{lock_svg}</span>' in HTML_TEMPLATE
-    assert f'<span class="prep-choice-lock" aria-hidden="true">{lock_svg}</span>' in HTML_TEMPLATE
-    assert '.prep-choice-lock svg{width:12px;height:12px;fill:none;stroke:currentColor;' in HTML_TEMPLATE
+def test_scheduled_analysis_types_use_the_quick_select_lock_label():
     assert r'const disabledAnalysisTypeLockPrefix = "\u{1F512}\uFE0E ";' in HTML_TEMPLATE
     assert '${disabledPrefix}${displayValue}${disabledSuffix}' in HTML_TEMPLATE
+    assert 'renderPrepSelect("quickAnalysisTypeSelect", prepAnalysisTypes, context.analysis_type, "해석유형 선택", false, disabledAnalysisTypes, " (예정)", disabledAnalysisTypeLockPrefix);' in HTML_TEMPLATE
 
 
 def test_api_accepts_active_types_and_rejects_scheduled_or_removed_types():

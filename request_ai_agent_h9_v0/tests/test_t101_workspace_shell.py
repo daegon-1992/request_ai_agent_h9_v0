@@ -104,7 +104,7 @@ def test_guided_workspace_shell_preserves_the_six_screen_map_and_existing_sectio
         ("SCREEN-03", "해석 제품", "section-geometry"),
         ("SCREEN-04", "해석 조건", "section-conditions"),
         ("SCREEN-05", "Case Matrix", "section-case"),
-        ("SCREEN-06", "전체 확인", "documentPreviewPanel"),
+        ("SCREEN-06", "최종 검토", "documentPreviewPanel"),
     )
 
     positions = []
@@ -132,7 +132,7 @@ def test_user_facing_screen_text_uses_navigation_names_without_internal_ids():
         ("SCREEN-03", "03", "해석 제품"),
         ("SCREEN-04", "04", "해석 조건"),
         ("SCREEN-05", "05", "Case Matrix"),
-        ("SCREEN-06", "06", "전체 확인"),
+        ("SCREEN-06", "06", "최종 검토"),
     )
 
     for screen_id, number, label in navigation:
@@ -152,41 +152,6 @@ def test_word_cta_is_only_in_the_screen_six_preview_workspace():
     screen_six_start = HTML_TEMPLATE.index('data-screen="SCREEN-06"')
     word_cta = HTML_TEMPLATE.index('id="wordExportSlotBtn"')
     assert word_cta > screen_six_start
-
-
-def test_screen_one_guidance_preserves_copy_and_uses_subtle_emphasis():
-    expected_copy = (
-        "요청자 소속이 아니라, 해석 대상 제품을 기준으로 선택합니다."
-        "제품 분류를 선택한 후 수행할 해석유형을 지정합니다."
-    )
-    guidance = re.search(
-        r'<p class="prep-guidance">(?P<content>.*?)</p>',
-        HTML_TEMPLATE,
-        flags=re.DOTALL,
-    )
-    responsive = re.search(
-        r"@media \(max-width:1180px\)\{(?P<content>.*?)\n\s*\}",
-        HTML_TEMPLATE,
-        flags=re.DOTALL,
-    )
-
-    assert '<h3 class="visually-hidden">해석 대상 제품 선택</h3>' in HTML_TEMPLATE
-    assert 'class="prep-info-icon"' in HTML_TEMPLATE
-    assert guidance is not None
-    assert re.sub(r"<[^>]+>", "", guidance.group("content")) == expected_copy
-    assert HTML_TEMPLATE.count('class="prep-guidance-emphasis"') == 3
-    assert 'class="prep-guidance-line prep-guidance-next"' in guidance.group("content")
-    assert "border:1px solid var(--line-strong)" in HTML_TEMPLATE
-    assert "background:#F7F7F7" in HTML_TEMPLATE
-    assert "border-left:2px solid var(--line)" not in HTML_TEMPLATE
-    assert ".prep-guidance-line:first-child{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}" in HTML_TEMPLATE
-    assert ".prep-guidance-next{margin-top:4px;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}" in HTML_TEMPLATE
-    assert ".prep-guidance-next .prep-guidance-emphasis{color:#55585B;font-weight:400}" in HTML_TEMPLATE
-    assert ".prep-guidance-emphasis{color:var(--ink);font-weight:600}" in HTML_TEMPLATE
-    assert responsive is not None
-    assert ".prep-quick-groups" in responsive.group("content")
-    assert "grid-template-columns:1fr" in responsive.group("content")
-    assert ".prep-actions{justify-content:flex-start}" in responsive.group("content")
 
 
 def test_screen_one_uses_single_row_product_classification_and_analysis_detail():

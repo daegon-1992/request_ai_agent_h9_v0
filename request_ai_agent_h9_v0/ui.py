@@ -158,6 +158,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .rag-toggle input{width:auto}
     .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
     .top-actions button{min-height:36px;padding:7px 14px;border-radius:var(--ui-radius-control)}
+    .header-request-preview{margin-left:8px;min-height:32px;padding:5px 10px;font-size:12px}
     .top-actions #newRequestBtn{height:36px;min-height:36px;padding:0 15px;border:0;border-radius:6px;background:#34373E;color:#fff;font-size:13px;font-weight:600}
     .top-actions #newRequestBtn:hover:not(:disabled){background:#2F3033;border-color:#2F3033}
     .layout{
@@ -554,6 +555,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-validation-status.error{color:var(--ui-error)}
     .case-validation-status.warning{color:var(--ui-warning-text)}
     .case-validation-status.ok{color:#3F7E51}
+    .case-validation-status.pending{color:#55585B}
     .case-matrix-toolbar>[data-action="add-case"]{height:36px;min-height:36px;padding:0 11px;border:0;border-radius:7px;background:#34373E;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
     .case-select-field{display:grid;width:100%;min-width:0;gap:2px;align-content:start}
     .case-select-field select{display:block;width:100%;min-width:0}
@@ -562,7 +564,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .case-select-summary[hidden]{display:none}
     .case-number{width:54px;color:#45484B;font-size:14px;font-weight:600;text-align:center}
     .case-remove-cell{width:64px;text-align:center}
-    .geometry-drawing-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
+    .geometry-drawing-warning:empty,.geometry-cad-warning:empty,.condition-duplicate-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}
     .case-review-message{display:grid;gap:7px;position:relative;margin-top:10px;padding:8px 10px;border-radius:8px;color:#242424;font-size:12px;line-height:1.4}
     .case-review-message.error{border:1px solid var(--ui-error);background:var(--ui-error-bg)}
     .case-review-message.warning{border:1px solid var(--ui-warning-border);background:var(--ui-warning-bg)}
@@ -606,6 +608,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .inline-issue{display:none;margin-top:4px;font-size:11px;line-height:1.35}
     .field-touched .inline-issue{display:block}
     .field-highlight{outline:2px solid rgba(52,55,62,.18);outline-offset:3px;border-radius:var(--ui-radius-panel)}
+    .required-field-highlight{outline:0;border-color:#E7A1A1;box-shadow:0 0 0 2px rgba(220,38,38,.10),0 2px 5px rgba(220,38,38,.08);border-radius:var(--ui-radius-control)}
+    .analysis-scope-field .direct-choice button.required-field-highlight{border-color:#E7A1A1;box-shadow:0 0 0 2px rgba(220,38,38,.10),0 2px 5px rgba(220,38,38,.08)}
     .draft-output{margin-top:10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:10px;white-space:pre-wrap;font-size:12px;line-height:1.5}
     .preview-doc{display:grid;gap:10px}
     .preview-section{border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:10px}
@@ -692,6 +696,22 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
     .submit-dialog strong{display:block;font-size:20px;color:var(--ink);margin-bottom:14px}
     .submit-modal[hidden]{display:none}
+    .request-preview-modal{align-items:stretch;padding:32px}
+    .request-preview-dialog{display:grid;grid-template-rows:auto minmax(0,1fr);width:min(1120px,100%);max-height:calc(100vh - 64px);padding:0;text-align:left}
+    .request-preview-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid var(--line)}
+    .request-preview-dialog-head strong{margin:0;font-size:18px}
+    .request-preview-dialog-body{overflow-y:auto;padding:22px}
+    .request-preview-dialog-body .case-review-message{gap:5px;margin-top:8px;padding:9px 10px;border-radius:8px;font-size:12px}
+    .request-preview-dialog-body .coverage-warning-title{font-size:12px}
+    .request-preview-dialog-body .coverage-warning-copy{font-size:11px;line-height:1.45}
+    .request-preview-dialog-body .preview-field-missing{color:inherit}
+    .request-preview-dialog-body .preview-table-value.preview-field-missing{color:#5F646C}
+    .request-preview-dialog-body .request-preview-case-errors{gap:8px;margin-top:12px;padding:12px 14px}
+    .request-preview-dialog-body .request-preview-case-errors>.coverage-warning-head{padding-bottom:7px;border-bottom:1px solid #F1C8C8}
+    .request-preview-dialog-body .request-preview-case-error-scope{display:grid;gap:4px}
+    .request-preview-dialog-body .request-preview-case-error-scope+.request-preview-case-error-scope{padding-top:8px;border-top:1px solid #F4DADA}
+    .request-preview-dialog-body .request-preview-case-errors .request-preview-case-error-scope>.coverage-warning-head{display:none}
+    .request-preview-dialog-body .request-preview-case-errors .preview-scope-heading{margin:0;color:#242424;font-size:12px;font-weight:600;line-height:1.4}
     .context-change-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
     @media (max-width:1180px){
       .condition-grid,.heat-exchanger-grid,.review-grid,.prep-quick-groups,.condition-primary-grid,.condition-environment-grid{grid-template-columns:1fr}
@@ -779,6 +799,8 @@ HTML_TEMPLATE = r"""<!doctype html>
     .workspace-shell .workspace-form :is(input,textarea,select):hover:not(:disabled){border-color:var(--ui-control-hover);box-shadow:0 1px 3px rgba(17,24,39,.05)}
     .workspace-shell .workspace-form :is(input,textarea,select):disabled{border-color:var(--ui-disabled-border);background-color:var(--ui-disabled-bg);color:#9A9EA5;opacity:1}
     .workspace-shell .workspace-form input:focus-visible,.workspace-shell .workspace-form select:focus-visible,.workspace-shell .workspace-form textarea:focus-visible{border-color:var(--ui-control-focus);outline:0;box-shadow:0 0 0 2px rgba(52,55,62,.10),0 1px 3px rgba(17,24,39,.05)}
+    .workspace-shell .workspace-form :is(input,textarea,select).required-field-highlight,
+    .workspace-shell .workspace-form :is(input,textarea,select).required-field-highlight:focus-visible{border-color:#E7A1A1;outline:0;box-shadow:0 0 0 2px rgba(220,38,38,.12),0 2px 5px rgba(220,38,38,.10)}
     .workspace-shell .workspace-form select{
       appearance:none;-webkit-appearance:none;height:40px;min-height:40px;padding:0 38px 0 10px;
       border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background-color:#fff;
@@ -1073,6 +1095,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       <div class="header-request-summary" aria-label="현재 의뢰 정보">
         <h2 class="header-request-title" id="heroTitle">해석 의뢰를 시작해 주세요.</h2>
         <p class="header-request-number" id="requestNoDisplay">-</p>
+        <button class="ghost header-request-preview" id="requestPreviewBtn" type="button" aria-haspopup="dialog" aria-controls="requestPreviewModal">의뢰서 미리보기</button>
       </div>
     </div>
     <div class="top-actions" aria-label="request actions">
@@ -1092,7 +1115,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           <span class="screen-map-item" data-screen="SCREEN-03" data-step-number="03"><span class="screen-map-number">03</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 제품</span></span></span>
           <span class="screen-map-item" data-screen="SCREEN-04" data-step-number="04"><span class="screen-map-number">04</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>해석 조건</span></span></span>
           <span class="screen-map-item" data-screen="SCREEN-05" data-step-number="05"><span class="screen-map-number">05</span><span class="screen-map-label"><span class="screen-map-lock" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"></rect><path d="M5 7V5a3 3 0 0 1 6 0v2"></path></svg></span><span>Case Matrix</span></span></span>
-          <span class="screen-map-item" data-screen="SCREEN-06" data-step-number="06"><span class="screen-map-number">06</span><span class="screen-map-label"><span>전체 확인</span></span></span>
+          <span class="screen-map-item" data-screen="SCREEN-06" data-step-number="06"><span class="screen-map-number">06</span><span class="screen-map-label"><span>최종 검토</span></span></span>
         </div>
         <div class="screen-navigation-status" id="screenNavigationStatus" role="status" aria-live="polite"></div>
       </nav>
@@ -1248,6 +1271,7 @@ HTML_TEMPLATE = r"""<!doctype html>
                 <div class="row-list" id="productRows"></div>
               </div>
               <div class="geometry-drawing-warning case-review-message error" id="geometryDrawingDuplicateWarning" aria-live="polite"></div>
+              <div class="geometry-cad-warning case-review-message warning" id="geometryCadWarning" aria-live="polite"></div>
             </div>
           </section>
           </div>
@@ -1262,7 +1286,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           <h2 class="screen-heading" id="screen04Heading"><span>해석 조건</span></h2>
           <p class="screen-description">각 해석 조건의 첫 번째 조건은 <strong>Base 조건</strong>이며, 우측의 <strong>추가(+)</strong> 버튼으로 추가한 조건은 <strong>비교 조건</strong>으로 사용됩니다.</p>
           <section class="section open" id="section-conditions" data-section="conditions">
-            <div class="section-body"><div id="conditionScopeTabs"></div><div id="conditionFields"></div></div>
+            <div class="section-body"><div id="conditionScopeTabs"></div><div id="conditionFields"></div><div class="condition-duplicate-warning case-review-message error" id="conditionDuplicateWarning" aria-live="polite"></div></div>
           </section>
           </div>
           <div class="screen-action-bar" aria-label="해석 조건 단계 이동">
@@ -1284,13 +1308,13 @@ HTML_TEMPLATE = r"""<!doctype html>
               <div id="caseCommon"></div>
               <div id="caseMatrix"></div>
               <div class="case-duplicate-warning case-review-message error" id="caseDuplicateWarning" aria-live="polite"></div>
-              <div class="case-coverage-status case-review-message warning" id="caseCoverageStatus" aria-live="polite"></div>
+              <div class="case-coverage-status case-review-message error" id="caseCoverageStatus" aria-live="polite"></div>
             </div>
           </section>
           </div>
           <div class="screen-action-bar" aria-label="Case Matrix 단계 이동">
             <button class="ghost" type="button" data-screen-action="SCREEN-04">이전: 해석 조건</button>
-            <button class="primary" id="caseConfirmNextBtn" type="button" data-action="confirm-case-configuration">다음: 전체 확인</button>
+            <button class="primary" id="caseConfirmNextBtn" type="button" data-action="confirm-case-configuration">다음: 최종 검토</button>
           </div>
           </section>
 
@@ -1300,8 +1324,8 @@ HTML_TEMPLATE = r"""<!doctype html>
           <div class="workspace-form">
             <div class="screen-group" data-screen="SCREEN-06" aria-labelledby="screen06Heading">
               <div class="screen-scroll-content">
-              <h2 class="screen-heading" id="screen06Heading"><span>전체 확인</span></h2>
-              <p class="screen-description">입력한 의뢰 내용을 확인한 뒤 Word 의뢰서를 생성합니다.</p>
+              <h2 class="screen-heading" id="screen06Heading"><span>최종 검토</span></h2>
+              <p class="screen-description">제출하기 전에 작성한 해석 의뢰 내용을 최종 확인합니다.</p>
               <section class="section open" id="section-preview" data-section="preview">
                 <div class="section-head">
                   <div class="section-title"><h3>의뢰서 미리보기</h3></div>
@@ -1364,6 +1388,19 @@ HTML_TEMPLATE = r"""<!doctype html>
       <p class="subtitle">한 운전 조건에는 Fan을 최대 10개까지 설정할 수 있습니다.<br>10개를 초과하는 조건이 필요한 경우 관리자에게 문의해 주세요.<br><br>홍승도 책임연구원<br><a href="mailto:sedo.hong@lge.com">sedo.hong@lge.com</a></p>
       <div class="context-change-actions">
         <button class="primary" id="fanLimitConfirm" type="button">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-modal request-preview-modal" id="requestPreviewModal" hidden role="dialog" aria-modal="true" aria-labelledby="requestPreviewTitle">
+    <div class="submit-dialog request-preview-dialog">
+      <div class="request-preview-dialog-head">
+        <strong id="requestPreviewTitle">의뢰서 미리보기</strong>
+        <button class="ghost" id="requestPreviewCloseBtn" type="button">닫기</button>
+      </div>
+      <div class="request-preview-dialog-body">
+        <div id="requestPreviewModalPanel"></div>
+        <div id="requestPreviewModalCoverageWarning"></div>
       </div>
     </div>
   </div>
@@ -1434,7 +1471,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       {id:"SCREEN-03", headingId:"screen03Heading", tab:"write", requiresContext:true},
       {id:"SCREEN-04", headingId:"screen04Heading", tab:"write", requiresContext:true},
       {id:"SCREEN-05", headingId:"screen05Heading", tab:"write", requiresContext:true},
-      {id:"SCREEN-06", headingId:"screen06Heading", tab:"preview", requiresContext:false},
+      {id:"SCREEN-06", headingId:"screen06Heading", tab:"preview", requiresContext:true},
     ];
     const analysisScopeLabels = {indoor:"실내측", outdoor:"실외측", both:"실내·실외 모두"};
     const operationModeOptions = ["실내", "실외", "동시운전"];
@@ -1460,6 +1497,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     let requestContextDraft = {};
     let activeConditionScope = "indoor";
     let activeCaseScope = "indoor";
+    let outdoorCaseMatrixViewed = false;
     let prepAssistStarted = false;
     const stageAssistConfigs = {
       start: {
@@ -2122,9 +2160,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       const context = syncQuickPrepSelectionsToDraft();
       const missing = missingContextFields(context);
       if (missing.length) {
-        prepAssistStarted = true;
-        pushMessage("assistant", "Division, Product Line-up, Platform, Chassis, 해석유형을 모두 선택해 주세요.");
-        renderRequestPrepCard();
+        const screen = screenOrder.find(item => item.id === "SCREEN-01") || screenOrder[0];
+        const control = missingRequiredControl("SCREEN-01");
+        focusRequiredControl(screen, control);
+        if (control?.id === "analysisScopeField") control.querySelectorAll("button[data-analysis-scope]").forEach(button => button.classList.add("required-field-highlight"));
+        else if (control) control.classList.add("required-field-highlight");
         return;
       }
       const data = await postJson("/api/request-context/confirm", {state:collectContextConfirmState(context), request_context:context});
@@ -2329,7 +2369,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       }
       if (wordRequiredWarning) wordRequiredWarning.hidden = firstIncompleteIndex < 0;
       setScreenNavigationStatus(firstIncomplete
-        ? `현재 화면: ${userScreenName(active.id)}. ${userScreenName(firstIncomplete.screen.id)}의 필수 입력을 완료하면 이후 단계를 열 수 있습니다. ${userScreenName(reviewScreen.id)}은 항상 열 수 있습니다.`
+        ? `현재 화면: ${userScreenName(active.id)}. ${userScreenName(firstIncomplete.screen.id)}의 필수 입력을 완료하면 이후 단계를 열 수 있습니다.`
         : `현재 화면: ${userScreenName(active.id)}`);
     }
 
@@ -2358,9 +2398,14 @@ HTML_TEMPLATE = r"""<!doctype html>
           chassis: $("quickChassisSelect"),
           analysis_type: $("quickAnalysisTypeSelect"),
         };
-        return ["division", "product_lineup", "platform", "chassis", "analysis_type"]
+        const missingControl = ["division", "product_lineup", "platform", "chassis", "analysis_type"]
           .map(key => key === "chassis" ? (!contextText(context.taxonomy_id) ? controls[key] : null) : (!contextText(context[key]) ? controls[key] : null))
-          .find(Boolean) || $("prepStartBtn");
+          .find(Boolean);
+        if (missingControl) return missingControl;
+        if (isRacWindowContext(context) && !["indoor", "outdoor", "both"].includes(contextText(context.analysis_scope))) {
+          return $("analysisScopeField");
+        }
+        return $("prepStartBtn");
       }
       if (screenId === "SCREEN-02") {
         const paths = [
@@ -2393,6 +2438,48 @@ HTML_TEMPLATE = r"""<!doctype html>
       return null;
     }
 
+    function conditionValidationIssues(state=requestState){
+      return asArray(caseValidatorState(state).blocking)
+        .filter(issue => contextText(asObj(issue).section) === "conditions");
+    }
+
+    function conditionDuplicateIssues(state=requestState){
+      return conditionValidationIssues(state)
+        .filter(issue => contextText(asObj(issue).code) === "conditions.duplicate");
+    }
+
+    function renderConditionDuplicateWarning(){
+      const target = $("conditionDuplicateWarning");
+      if (!target) return;
+      const issues = conditionDuplicateIssues();
+      target.innerHTML = issues.length
+        ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⊗</span><strong class="coverage-warning-title">오류 · 동일한 해석 조건이 있습니다.</strong></div>${issues.map(issue => `<p class="coverage-warning-copy">${esc(contextText(asObj(issue).field_label))} 조건이 중복되었습니다.</p>`).join("")}`
+        : "";
+    }
+
+    function focusConditionValidationIssue(issue){
+      const scope = contextText(asObj(issue).analysis_scope);
+      if (hasBothAnalysisScopes() && ["indoor", "outdoor"].includes(scope) && scope !== activeConditionScope) {
+        preserveEditorDraftBeforeRerender();
+        activeConditionScope = scope;
+        renderConditionFields();
+      }
+      const control = revealMissingFanControl(missingRequiredControl("SCREEN-04")) || $("section-conditions");
+      if (control !== $("section-conditions")) control.classList.add("required-field-highlight");
+      if (control?.scrollIntoView) control.scrollIntoView({behavior:"smooth", block:"center"});
+      if (control?.focus) control.focus();
+    }
+
+    async function confirmConditionsBeforeCaseMatrix(){
+      await refreshPreview();
+      const issues = conditionValidationIssues();
+      if (issues.length) {
+        focusConditionValidationIssue(issues[0]);
+        return;
+      }
+      navigateScreen("SCREEN-05");
+    }
+
     function revealMissingFanControl(control){
       const detail = control?.closest?.("[data-fan-detail-card]");
       if (!detail?.hidden) return control;
@@ -2408,6 +2495,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function blockingScreenError(screenId){
       if (screenId === "SCREEN-03" && geometryDrawingDuplicateIssues().length) return $("geometryDrawingDuplicateWarning");
+      if (screenId === "SCREEN-04" && conditionDuplicateIssues().length) return $("conditionDuplicateWarning");
       if (screenId === "SCREEN-05" && caseConfigurationIssues().length) return $("caseDuplicateWarning");
       return null;
     }
@@ -2421,9 +2509,17 @@ HTML_TEMPLATE = r"""<!doctype html>
         ? `${userScreenName(screen.id)}의 오류를 수정한 뒤 다음 단계로 이동할 수 있습니다.`
         : `${userScreenName(screen.id)}의 필수 입력을 완료한 뒤 다음 단계로 이동할 수 있습니다.`);
       const target = screen.id === "SCREEN-04" ? revealMissingFanControl(control) || $(screen.headingId) : control || $(screen.headingId);
+      const focusTarget = target?.id === "analysisScopeField"
+        ? target.querySelector("button[data-analysis-scope]") || target
+        : target;
       if (isError && target && !target.hasAttribute("tabindex")) target.tabIndex = -1;
+      if (!isError && control && target) {
+        if (target.id === "analysisScopeField") target.querySelectorAll("button[data-analysis-scope]").forEach(button => button.classList.add("required-field-highlight"));
+        else target.classList.add("required-field-highlight");
+      }
       target?.scrollIntoView({behavior:"smooth", block:"center"});
-      target?.focus?.({preventScroll:true});
+      if (target?.id === "analysisScopeField") focusTarget?.focus?.({preventScroll:true});
+      else target?.focus?.({preventScroll:true});
       if (target?.validity && !target.validity.valid) target.reportValidity?.();
     }
 
@@ -2447,16 +2543,23 @@ HTML_TEMPLATE = r"""<!doctype html>
       }
       const currentIndex = screenOrder.findIndex(item => item.id === activeScreen);
       const targetIndex = screenOrder.findIndex(item => item.id === screen.id);
-      if (!options.bypassRequiredGate && screen.id !== "SCREEN-06" && targetIndex > currentIndex) {
+      if (!options.bypassRequiredGate && targetIndex > currentIndex) {
         const first = firstIncompleteScreenBefore(screen);
         if (first) {
           focusRequiredControl(first.screen, first.control);
           return false;
         }
       }
+      if (typeof completeCaseImpactReviewOnLeave === "function") completeCaseImpactReviewOnLeave(screen.id);
       activeScreen = screen.id;
       activeTopTab = screen.tab;
       renderScreenNavigation();
+      if (screen.id === "SCREEN-05" && typeof caseImpactBaseline !== "undefined" && !caseImpactBaseline) {
+        resetCaseImpactBaseline();
+      }
+      if (screen.id === "SCREEN-05" && typeof recordCaseImpactReviewMatrixRender === "function") {
+        recordCaseImpactReviewMatrixRender();
+      }
       if (options.focus !== false) focusScreenHeading(screen);
       return true;
     }
@@ -3104,13 +3207,21 @@ HTML_TEMPLATE = r"""<!doctype html>
         const row = JSON.parse(JSON.stringify(raw));
         const id = contextText(row.case_id);
         const geometry = document.querySelector(`select[data-case-row-id="${CSS.escape(id)}"][data-case-field="geometry_id"]`);
-        if (geometry) row.geometry_id = geometry.value;
+        const visibleCells = {...asObj(row.visible_cells)};
+        if (geometry) {
+          row.geometry_id = geometry.value;
+          visibleCells.geometry_id = contextText(geometry.selectedOptions?.[0]?.textContent);
+        }
         const values = {...asObj(row.condition_values)};
         document.querySelectorAll(`select[data-case-row-id="${CSS.escape(id)}"][data-case-field]`).forEach(select => {
           const key = select.dataset.caseField;
-          if (key && key !== "geometry_id") values[key] = select.value;
+          if (key && key !== "geometry_id") {
+            values[key] = select.value;
+            visibleCells[key] = contextText(select.selectedOptions?.[0]?.textContent);
+          }
         });
         row.condition_values = values;
+        row.visible_cells = visibleCells;
         return row;
       });
     }
@@ -3118,7 +3229,11 @@ HTML_TEMPLATE = r"""<!doctype html>
     function preserveCaseSelections(changedSelect=null){
       const matrix = asObj(requestState.case_matrix);
       requestState = {...requestState, case_matrix:{...matrix, rows:collectCaseRows()}};
+      if (typeof resolveCaseImpactSelections === "function") resolveCaseImpactSelections();
+      clearCaseConfigurationWarning();
       if (changedSelect) updateCaseSelectSummary(changedSelect);
+      caseValidationPending = true;
+      renderCaseValidationStatus();
       lastCaseDeleteNoticeVisible = false;
       document.querySelector("[data-last-case-delete-notice]")?.remove();
       schedulePreviewRefresh();
@@ -3197,8 +3312,9 @@ HTML_TEMPLATE = r"""<!doctype html>
       lastPlannerActiveFieldId = "";
       lastCaseDeleteNoticeVisible = false;
       caseSourceSummaryExpanded = true;
+      outdoorCaseMatrixViewed = false;
       adoptStateFromResponse(data);
-      resetCaseImpactBaseline();
+      resetCaseImpactBaseline({deferUntilMatrixRender:true});
       restoreChatHistoryFromState();
       syncEditorFromState();
     }
@@ -3219,6 +3335,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function schedulePreviewRefresh(){
+      clearCaseConfigurationWarning();
       renderScreenNavigation();
       orchestratorPanelState.dirty = true;
       classifyCaseImpact(collectState());
@@ -3231,13 +3348,21 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     async function refreshPreview(requestedRevision=previewStateRevision){
-      const data = await postState("/api/preview");
-      if (requestedRevision !== previewStateRevision) return false;
-      const previousConditionIdentity = conditionCardIdentity();
-      adoptStateFromResponse(data);
-      if (previousConditionIdentity !== conditionCardIdentity()) renderConditionFields();
-      renderDerivedPanels();
-      return true;
+      try {
+        const data = await postState("/api/preview");
+        if (requestedRevision !== previewStateRevision) return false;
+        const previousConditionIdentity = conditionCardIdentity();
+        adoptStateFromResponse(data);
+        classifyCaseImpact(requestState);
+        if (previousConditionIdentity !== conditionCardIdentity()) renderConditionFields();
+        renderDerivedPanels();
+        return true;
+      } finally {
+        if (requestedRevision === previewStateRevision) {
+          caseValidationPending = false;
+          renderCaseValidationStatus();
+        }
+      }
     }
 
     const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";
@@ -3245,8 +3370,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     let caseImpactBaseline = null;
     let caseImpactSideState = {status:"", reasons:[]};
     let caseConfigurationWarning = "";
+    let caseConfigurationWarningTimer = null;
     let lastCaseDeleteNoticeVisible = false;
     let caseSourceSummaryExpanded = true;
+    let caseValidationPending = false;
 
     function sourceFieldValue(value){
       return contextText(asObj(value).value ?? value);
@@ -3254,69 +3381,221 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function caseImpactSources(state){
       const geometry = new Map();
+      const matrix = asObj(asObj(state).case_matrix);
+      const optionSets = [asObj(matrix.dropdown_options), ...Object.values(asObj(matrix.dropdown_options_by_scope)).map(asObj)];
+      const validValues = key => new Set(optionSets.flatMap(options => asArray(options[key]).map(item => contextText(asObj(item).value))).filter(Boolean));
+      const validGeometryIds = validValues("geometry_id");
+      const validConditionIds = new Set(asArray(matrix.visible_columns)
+        .filter(column => contextText(asObj(column).kind) === "condition")
+        .flatMap(column => [...validValues(contextText(asObj(column).key))]));
       const allProducts = [asObj(asObj(state).geometry).base_product, ...asArray(asObj(asObj(state).geometry).comparison_products)];
       allProducts.forEach(product => {
         const row = asObj(product), id = contextText(row.geometry_id);
-        if (id) geometry.set(id, sourceFieldValue(row.drawing_no));
+        if (id && validGeometryIds.has(id)) geometry.set(id, sourceFieldValue(row.drawing_no));
       });
       const conditions = new Map();
+      const conditionScopes = new Map();
       asArray(asObj(asObj(state).conditions).condition_sets).forEach(card => {
         const row = asObj(card), cardId = contextText(row.id);
+        if (!validConditionIds.has(cardId)) return;
+        if (cardId) conditionScopes.set(cardId, contextText(row.analysis_scope));
         Object.entries(asObj(row.fields)).forEach(([key, value]) => conditions.set(`${cardId}:${key}`, sourceFieldValue(value)));
         asArray(row.fans).forEach((fan, index) => conditions.set(`${cardId}:fan_${index + 1}_rpm`, sourceFieldValue(asObj(fan).values?.fan_rpm)));
       });
-      return {geometry, conditions};
+      return {geometry, conditions, conditionScopes};
     }
 
-    function resetCaseImpactBaseline(){
-      caseImpactBaseline = {sources:caseImpactSources(requestState), rows:asArray(asObj(requestState.case_matrix).rows).map(row => JSON.parse(JSON.stringify(row)))};
+    function resetCaseImpactBaseline(options={}){
+      caseImpactBaseline = options.deferUntilMatrixRender
+        ? null
+        : {sources:caseImpactSources(requestState), rows:asArray(asObj(requestState.case_matrix).rows).map(row => JSON.parse(JSON.stringify(row)))};
       caseImpactSideState = {status:"", reasons:[]};
+      clearCaseConfigurationWarning();
+    }
+
+    function clearCaseConfigurationWarning(){
       caseConfigurationWarning = "";
+      if (caseConfigurationWarningTimer !== null) {
+        window.clearTimeout(caseConfigurationWarningTimer);
+        caseConfigurationWarningTimer = null;
+      }
+    }
+
+    function showCaseConfigurationInfo(){
+      clearCaseConfigurationWarning();
+      caseConfigurationWarning = "현재 입력된 해석 제품과 조건으로 구성할 수 있는 모든 Case 조합이 이미 추가되어 있습니다.";
+      caseConfigurationWarningTimer = window.setTimeout(() => {
+        caseConfigurationWarning = "";
+        caseConfigurationWarningTimer = null;
+        renderCasePreview();
+      }, 4000);
     }
 
     function hasConditionReference(rows, value){
       return rows.some(row => Object.values(asObj(row).condition_values).some(item => contextText(item) === value));
     }
 
+    function conditionImpactScope(sources, key){
+      const cardId = contextText(key).split(":", 1)[0];
+      const scopes = sources?.conditionScopes;
+      const scope = scopes instanceof Map ? contextText(scopes.get(cardId)) : "";
+      return ["indoor","outdoor"].includes(scope) ? scope : "";
+    }
+
     function classifyCaseImpact(state){
       if (!caseImpactBaseline) return false;
-      const current = caseImpactSources(state), baseline = caseImpactBaseline.sources, rows = caseImpactBaseline.rows;
+      const current = caseImpactSources(state), baseline = caseImpactBaseline.sources;
+      const rows = asArray(asObj(state.case_matrix).rows).length ? asArray(asObj(state.case_matrix).rows) : caseImpactBaseline.rows;
       const rebuildReasons = [], reviewReasons = [];
+      const changedConditionScopes = new Set();
+      let commonSourceChanged = false;
+      const impactedCaseIds = new Set();
+      const invalidSelections = new Map();
+      const invalidSelectionValue = (row, key) => {
+        const invalid = asObj(asObj(row).invalid_selection_values)[key];
+        return contextText(invalid.value ?? invalid);
+      };
+      const selectionValue = (row, key) => {
+        const item = asObj(row);
+        const selected = key === "geometry_id" ? item.geometry_id : asObj(item.condition_values)[key];
+        return contextText(selected) || invalidSelectionValue(item, key);
+      };
+      const conditionSelectionValues = row => {
+        const item = asObj(row), values = Object.values(asObj(item.condition_values)).map(contextText);
+        Object.entries(asObj(item.invalid_selection_values)).forEach(([key, value]) => {
+          if (key !== "geometry_id") values.push(contextText(asObj(value).value ?? value));
+        });
+        return values;
+      };
+      const impactedRows = predicate => rows.filter(row => predicate(asObj(row)));
+      const markImpacted = impacted => impacted.forEach(row => {
+        const caseId = contextText(asObj(row).case_id);
+        if (caseId) impactedCaseIds.add(caseId);
+      });
+      const markInvalid = (impacted, key) => impacted.forEach(row => {
+        const item = asObj(row), caseId = contextText(item.case_id);
+        const value = selectionValue(item, key);
+        if (!caseId || !value) return;
+        const label = contextText(asObj(item.visible_cells)[key]) || contextText(asObj(asObj(item.invalid_selection_values)[key]).label);
+        invalidSelections.set(`${caseId}:${key}`, {caseId, key, value, label});
+      });
+      const markInvalidCondition = (impacted, cardId) => impacted.forEach(row => {
+        const item = asObj(row);
+        const keys = new Set([...Object.keys(asObj(item.condition_values)), ...Object.keys(asObj(item.invalid_selection_values))]);
+        keys.forEach(key => {
+          if (key !== "geometry_id" && selectionValue(item, key) === cardId) markInvalid([item], key);
+        });
+      });
       baseline.geometry.forEach((drawingNo, id) => {
-        const referenced = rows.some(row => contextText(asObj(row).geometry_id) === id);
+        const impacted = impactedRows(row => selectionValue(row, "geometry_id") === id);
+        const referenced = impacted.length > 0;
         if (!current.geometry.has(id)) {
-          (referenced ? rebuildReasons : reviewReasons).push(`geometry:${id}:deleted`);
+          if (referenced) {
+            rebuildReasons.push(`geometry:${id}:deleted`);
+            markImpacted(impacted);
+            markInvalid(impacted, "geometry_id");
+          }
+          commonSourceChanged = true;
         } else if (current.geometry.get(id) !== drawingNo) {
-          (referenced ? rebuildReasons : reviewReasons).push(`geometry:${id}:identifier_changed`);
-          if (!current.geometry.get(id) && referenced) rebuildReasons.push(`geometry:${id}:required_value_invalid`);
+          if (referenced) markImpacted(impacted);
+          if (!current.geometry.get(id) && referenced) {
+            rebuildReasons.push(`geometry:${id}:identifier_changed`);
+            rebuildReasons.push(`geometry:${id}:required_value_invalid`);
+            markInvalid(impacted, "geometry_id");
+          } else if (referenced) reviewReasons.push(`geometry:${id}:identifier_changed`);
+          commonSourceChanged = true;
         }
       });
-      current.geometry.forEach((_drawingNo, id) => { if (!baseline.geometry.has(id)) reviewReasons.push(`geometry:${id}:added`); });
       baseline.conditions.forEach((value, key) => {
         const cardId = contextText(key).split(":", 1)[0];
-        const referenced = (value && hasConditionReference(rows, value)) || (cardId && hasConditionReference(rows, cardId));
+        const impacted = impactedRows(row => conditionSelectionValues(row).some(item => item === value || item === cardId));
+        const referenced = impacted.length > 0;
         if (!current.conditions.has(key)) {
-          (referenced ? rebuildReasons : reviewReasons).push(`condition:${key}:deleted`);
+          if (referenced) {
+            rebuildReasons.push(`condition:${key}:deleted`);
+            markImpacted(impacted);
+            markInvalidCondition(impacted, cardId);
+          }
+          const scope = conditionImpactScope(baseline, key);
+          if (scope) changedConditionScopes.add(scope);
         } else if (current.conditions.get(key) !== value) {
-          (referenced ? rebuildReasons : reviewReasons).push(`condition:${key}:identifier_changed`);
-          if (!current.conditions.get(key) && referenced) rebuildReasons.push(`condition:${key}:required_value_invalid`);
+          if (referenced) markImpacted(impacted);
+          if (!current.conditions.get(key) && referenced) {
+            rebuildReasons.push(`condition:${key}:identifier_changed`);
+            rebuildReasons.push(`condition:${key}:required_value_invalid`);
+            markInvalidCondition(impacted, cardId);
+          } else if (referenced) reviewReasons.push(`condition:${key}:identifier_changed`);
+          const scope = conditionImpactScope(current, key) || conditionImpactScope(baseline, key);
+          if (scope) changedConditionScopes.add(scope);
         }
       });
-      current.conditions.forEach((_value, key) => { if (!baseline.conditions.has(key)) reviewReasons.push(`condition:${key}:added`); });
+      const reviewKey = JSON.stringify({
+        reasons:reviewReasons,
+        impactedCaseIds:[...impactedCaseIds],
+        geometry:[...current.geometry],
+        conditions:[...current.conditions],
+      });
+      const previousImpact = asObj(caseImpactSideState);
+      const sameReview = contextText(previousImpact.status) === CASE_REVIEW_REQUIRED
+        && contextText(previousImpact.reviewKey) === reviewKey;
+      const renderedReviewScopes = sameReview ? asArray(previousImpact.renderedScopes) : [];
       caseImpactSideState = rebuildReasons.length
-        ? {status:CASE_REBUILD_REQUIRED, reasons:rebuildReasons}
-        : reviewReasons.length ? {status:CASE_REVIEW_REQUIRED, reasons:reviewReasons} : {status:"", reasons:[]};
-      return Boolean(caseImpactSideState.status);
+        ? {status:CASE_REBUILD_REQUIRED, reasons:rebuildReasons, impactedCaseIds:[...impactedCaseIds], invalidSelections:[...invalidSelections.values()]}
+        : reviewReasons.length ? {status:CASE_REVIEW_REQUIRED, reasons:reviewReasons, impactedCaseIds:[...impactedCaseIds], invalidSelections:[], reviewKey, renderedScopes:renderedReviewScopes} : {status:"", reasons:[]};
+      const caseImpactDetected = Boolean(caseImpactSideState.status);
+      if (caseImpactDetected && !sameReview) {
+        outdoorCaseMatrixViewed = false;
+        if (hasBothAnalysisScopes()) {
+          activeCaseScope = !commonSourceChanged && changedConditionScopes.size === 1
+            ? Array.from(changedConditionScopes)[0]
+            : "indoor";
+        }
+      }
+      return caseImpactDetected;
     }
 
     function caseImpactNoticeHtml(){
-      const notices = [];
-      if (caseImpactSideState.status === CASE_REBUILD_REQUIRED) {
-        const message = "참조된 소스가 삭제·식별값 변경·필수값 무효화되었습니다. Case 행은 자동으로 변경하지 않았습니다.";
-        notices.push(`<div class="case-impact-notice" data-case-impact-status="${CASE_REBUILD_REQUIRED}"><strong>${CASE_REBUILD_REQUIRED}</strong><span>${message}</span></div>`);
+      return "";
+    }
+
+    function unresolvedCaseImpactSelections(rows=asArray(asObj(requestState.case_matrix).rows)){
+      return asArray(caseImpactSideState.invalidSelections).filter(raw => {
+        const item = asObj(raw), row = rows.find(candidate => contextText(asObj(candidate).case_id) === contextText(item.caseId));
+        if (!row) return false;
+        const value = contextText(item.key) === "geometry_id"
+          ? contextText(asObj(row).geometry_id)
+          : contextText(asObj(asObj(row).condition_values)[contextText(item.key)]);
+        return !value;
+      });
+    }
+
+    function resolveCaseImpactSelections(){
+      if (caseImpactSideState.status !== CASE_REBUILD_REQUIRED) return;
+      const remaining = unresolvedCaseImpactSelections();
+      if (remaining.length) {
+        caseImpactSideState = {...caseImpactSideState, invalidSelections:remaining};
+        return;
       }
-      if (caseConfigurationWarning) notices.push(`<div class="case-impact-notice" data-case-configuration-warning><strong>Case 구성 확인</strong><span>${caseConfigurationWarning}</span></div>`);
-      return notices.join("");
+      resetCaseImpactBaseline();
+    }
+
+    function caseImpactPreviousSelection(rowId, key, selected){
+      if (contextText(selected)) return "";
+      const entry = caseImpactSideState.status === CASE_REBUILD_REQUIRED && asArray(caseImpactSideState.invalidSelections).find(item => {
+        const source = asObj(item);
+        return contextText(source.caseId) === contextText(rowId) && contextText(source.key) === contextText(key);
+      });
+      if (entry) {
+        const label = contextText(asObj(entry).label);
+        if (label) return label;
+      }
+      const row = asArray(asObj(requestState.case_matrix).rows).find(item => contextText(asObj(item).case_id) === contextText(rowId));
+      return contextText(asObj(asObj(asObj(row).invalid_selection_values)[key]).label);
+    }
+
+    function caseConfigurationInfoHtml(){
+      if (!caseConfigurationWarning) return "";
+      return `<div class="geometry-policy-guidance case-configuration-info" data-case-configuration-warning role="status"><span class="prep-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5h.01"></path></svg></span><div class="geometry-policy-copy"><strong class="geometry-policy-heading">추가 가능한 Case가 없습니다.</strong><p class="geometry-policy-body">${esc(caseConfigurationWarning)}</p></div></div>`;
     }
 
     function conditionUnitFields(type){
@@ -3353,40 +3632,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const matrix = asObj(requestState.case_matrix);
       const requestedScopes = requestedAnalysisScopes();
       if (!requestedScopes.includes(activeCaseScope)) activeCaseScope = requestedScopes[0];
-      const options = {...asObj(asObj(matrix.dropdown_options_by_scope)[activeCaseScope] || matrix.dropdown_options)};
-      const conditionKeys = asArray(matrix.visible_columns)
-        .filter(column => contextText(asObj(column).kind) === "condition")
-        .map(column => contextText(asObj(column).key))
-        .filter(Boolean);
-      conditionKeys.forEach(key => { options[key] = []; });
-      const add = (key, rawValue, rawLabel=rawValue) => {
-        const value = contextText(rawValue);
-        if (!value || !conditionKeys.includes(key) || asArray(options[key]).some(item => contextText(asObj(item).value) === value)) return;
-        options[key].push({value, label:contextText(rawLabel) || value});
-      };
-      let operatingIndex = 0;
-      let heatExchangerIndex = 0;
-      asArray(asObj(requestState.conditions).condition_sets).forEach(rawCard => {
-        const card = asObj(rawCard), type = contextText(card.type), fields = asObj(card.fields);
-        if (requestedScopes[0] !== "" && contextText(card.analysis_scope) !== activeCaseScope) return;
-        if (type === "operating") {
-          add("fan", card.id, `운전 ${++operatingIndex}`);
-          return;
-        }
-        if (type === "heat_exchanger") {
-          add("heat_exchanger", card.id, `사양 ${++heatExchangerIndex}`);
-          return;
-        }
-        if (type === "space_environment" || type === "supply_air") {
-          const label = caseGroupedConditionLabel(type, fields);
-          if (label) add(type, card.id, label);
-          return;
-        }
-        conditionKeys.forEach(key => {
-          if (Object.prototype.hasOwnProperty.call(fields, key)) add(key, fieldDisplayValue(fields[key]));
-        });
-      });
-      return options;
+      return asObj(asObj(matrix.dropdown_options_by_scope)[activeCaseScope] || matrix.dropdown_options);
     }
 
     function operatingFanDisplay(rawCard){
@@ -3498,16 +3744,18 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function caseSelectFieldHtml(rowId, key, selected, options, sources){
       const selectedValue = contextText(selected);
+      const previousSelection = caseImpactPreviousSelection(rowId, key, selectedValue);
       let selectedPresentation = {label:"선택", summary:""};
-      const optionHtml = asArray(options).map(option => {
+      const optionHtml = [`<option value="" disabled hidden ${selectedValue ? "" : "selected"}>[선택 필요]</option>`, ...asArray(options).map(option => {
         const item = asObj(option), value = contextText(item.value);
         const presentation = caseSelectionPresentation(key, value, item.label || value, sources);
         if (value === selectedValue) selectedPresentation = presentation;
         return `<option value="${esc(value)}" ${value === selectedValue ? "selected" : ""}>${esc(presentation.label)}</option>`;
-      }).join("");
+      })].join("");
       const supportsSummary = key !== "geometry_id";
-      const summaryHtml = supportsSummary ? caseSelectionSummaryHtml(selectedPresentation.summary) : "";
-      return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}"><option value="">선택</option>${optionHtml}</select>${summaryHtml}</div>`;
+      const summaryHtml = supportsSummary ? caseSelectionSummaryHtml(previousSelection ? `기존 값: ${previousSelection}` : selectedPresentation.summary)
+        : previousSelection ? caseSelectionSummaryHtml(`기존 값: ${previousSelection}`) : "";
+      return `<div class="case-select-field"><select data-case-row-id="${esc(rowId)}" data-case-field="${esc(key)}">${optionHtml}</select>${summaryHtml}</div>`;
     }
 
     function caseSelectionSummaryHtml(summary){
@@ -3554,15 +3802,28 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function caseTableValidationPresentation(){
+      if (caseValidationPending) return {text:"확인 중…", tone:"pending"};
       const missingCount = caseSelectionMissingIssues().length;
       const duplicateCount = caseDuplicateIssues().length;
+      const scopeBlockCount = caseConfigurationIssues().filter(issue => contextText(asObj(issue).code) === "case_matrix.scope_geometry_missing").length;
       const coverage = caseCoverageState();
       const parts = [];
       if (missingCount) parts.push(`미선택 항목 ${missingCount}건`);
       if (duplicateCount) parts.push(`중복 Case ${duplicateCount}건`);
+      if (scopeBlockCount) parts.push(`scope Case 누락 ${scopeBlockCount}건`);
       if (coverage.complete === false) parts.push("미사용 입력값 있음");
-      else if (!missingCount && !duplicateCount && coverage.complete === true) parts.push("검증 완료");
-      return {text:parts.join(" · "), tone:missingCount || duplicateCount ? "error" : coverage.complete === false ? "warning" : coverage.complete === true ? "ok" : ""};
+      const hasError = missingCount || duplicateCount || scopeBlockCount || coverage.complete === false;
+      if (!hasError && caseImpactReviewRequiredForScope()) parts.push("⚠ 확인 필요");
+      else if (!hasError && coverage.complete === true) parts.push("검증 완료");
+      return {text:parts.join(" · "), tone:hasError ? "error" : caseImpactReviewRequiredForScope() ? "warning" : coverage.complete === true ? "ok" : ""};
+    }
+
+    function renderCaseValidationStatus(){
+      const target = $("caseMatrix")?.querySelector(".case-validation-status");
+      if (!target) return;
+      const validation = caseTableValidationPresentation();
+      target.textContent = validation.text;
+      target.className = `case-validation-status ${validation.tone}`;
     }
 
     function caseColumnDisplayLabel(column){
@@ -3595,7 +3856,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         const row = asObj(raw), id = contextText(row.case_id), values = asObj(row.condition_values);
         return `<tr data-case-row="${esc(id)}">${columns.map(column => {
           const item = asObj(column), key = contextText(item.key);
-          if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${index + 1}</td>`;
+          if (key === "case_no") return `<td class="case-number ${caseColumnClass(key)}">${index + 1}${caseImpactReviewRequiredForCase(row) ? `<span class="case-validation-status warning">⚠ 확인 필요</span>` : ""}</td>`;
           if (key === "remove") return `<td class="case-remove-cell ${caseColumnClass(key)}"><button class="condition-row-action remove" type="button" data-action="remove-case" data-case-id="${esc(id)}" title="Case ${index + 1} 삭제" aria-label="Case ${index + 1} 삭제">−</button></td>`;
           const selected = key === "geometry_id" ? row.geometry_id : values[key];
           return `<td class="${caseColumnClass(key)}">${caseSelectFieldHtml(id, key, selected, optionMap[key], sources)}</td>`;
@@ -3625,6 +3886,21 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function caseScopeLabel(scope){ return {indoor:"실내측",outdoor:"실외측"}[contextText(scope)] || ""; }
 
+    function caseImpactReviewRequiredForCase(row){
+      const impact = typeof caseImpactSideState === "undefined" ? {} : asObj(caseImpactSideState);
+      return contextText(impact.status) === "CASE_REVIEW_REQUIRED"
+        && asArray(impact.impactedCaseIds).includes(contextText(asObj(row).case_id));
+    }
+
+    function caseImpactReviewRequiredForScope(scope=currentCaseScope()){
+      const impact = typeof caseImpactSideState === "undefined" ? {} : asObj(caseImpactSideState);
+      if (contextText(impact.status) !== "CASE_REVIEW_REQUIRED") return false;
+      return asArray(asObj(requestState.case_matrix).rows).some(row => {
+        const item = asObj(row);
+        return (!scope || contextText(item.analysis_scope) === scope) && caseImpactReviewRequiredForCase(item);
+      });
+    }
+
     function geometryDrawingDuplicateIssues(state=requestState){
       return asArray(caseValidatorState(state).blocking)
         .filter(issue => contextText(asObj(issue).code) === "geometry.product.drawing_no.duplicate");
@@ -3635,6 +3911,15 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (!target) return;
       target.innerHTML = geometryDrawingDuplicateIssues().length
         ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path></svg></span><strong class="coverage-warning-title">오류 · 해석 제품을 확인해 주세요.</strong></div><p class="coverage-warning-copy">이미 입력된 도면번호입니다.<br>형상이나 조립 상태가 다른 경우에는 다른 도면번호를 입력해 주세요.<br>필요 시 임시 도면번호를 사용할 수 있습니다.</p>`
+        : "";
+    }
+
+    function renderGeometryCadWarning(){
+      const target = $("geometryCadWarning");
+      if (!target) return;
+      const comparisons = asArray(asObj(requestState.geometry).comparison_products);
+      target.innerHTML = comparisons.length
+        ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">CAD 반영 상태를 다시 확인해 주세요.</strong></div><p class="coverage-warning-copy">베인 각도, 부품 위치, 조립 상태, 형상 변경 등 해석에 필요한 사항이 입력한 총조립도 CAD에 반영되어 있어야 합니다.</p>`
         : "";
     }
 
@@ -3666,7 +3951,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       return asArray(caseValidatorState(state).blocking).filter(rawIssue => {
         const issue = asObj(rawIssue);
         if (both && scope && contextText(issue.analysis_scope) !== scope) return false;
-        return missing.has(rawIssue) || contextText(issue.code) === "case_matrix.duplicate";
+        return missing.has(rawIssue)
+          || ["case_matrix.duplicate", "case_matrix.scope_geometry_missing"].includes(contextText(issue.code));
       });
     }
 
@@ -3713,6 +3999,14 @@ HTML_TEMPLATE = r"""<!doctype html>
           rows.push(`<p class="coverage-warning-copy">Case를 1개 이상 추가해 주세요.</p>`);
           return;
         }
+        if (code === "case_matrix.unused_option") {
+          rows.push(`<p class="coverage-warning-copy">${esc(contextText(issue.field_label) || contextText(issue.option_label))}이(가) 어떤 Case에도 선택되지 않았습니다.</p>`);
+          return;
+        }
+        if (code === "case_matrix.scope_geometry_missing") {
+          rows.push(`<p class="coverage-warning-copy">${esc(contextText(issue.message))}</p>`);
+          return;
+        }
         if (code !== "case_matrix.duplicate") {
           const path = contextText(issue.path);
           const rowIndex = Number.parseInt((path.match(/case_matrix\.rows\[(\d+)\]/) || [])[1] || "-1", 10);
@@ -3742,7 +4036,15 @@ HTML_TEMPLATE = r"""<!doctype html>
     function renderCaseDuplicateWarning(){
       const target = $("caseDuplicateWarning");
       if (!target) return;
-      target.innerHTML = caseConfigurationMessageHtml(caseConfigurationIssues(requestState, currentCaseScope()));
+      const issues = caseConfigurationIssues(requestState, currentCaseScope());
+      const coverageBlocked = caseCoverageState(requestState, currentCaseScope()).complete === false;
+      const reviewRequired = !issues.length && !coverageBlocked && caseImpactReviewRequiredForScope();
+      target.className = `case-duplicate-warning case-review-message ${reviewRequired ? "warning" : "error"}`;
+      target.innerHTML = issues.length
+        ? caseConfigurationMessageHtml(issues)
+        : reviewRequired
+          ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요</strong></div><p class="coverage-warning-copy">입력값 변경으로 영향을 받은 Case가 있습니다.<br>표시된 Case 구성을 다시 확인해 주세요.</p>`
+          : "";
     }
 
     function renderCaseCoverageStatus(){
@@ -3752,7 +4054,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const incomplete = coverage.complete === false;
       target.dataset.coverageComplete = String(coverage.complete);
       target.innerHTML = incomplete
-        ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 Case에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p>`
+        ? `<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">오류 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 Case에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p>`
         : "";
     }
 
@@ -3777,10 +4079,49 @@ HTML_TEMPLATE = r"""<!doctype html>
       }
     }
 
+    function requiresOutdoorCaseMatrixView(){
+      return hasBothAnalysisScopes();
+    }
+
+    function recordOutdoorCaseMatrixView(){
+      if (activeScreen === "SCREEN-05" && requiresOutdoorCaseMatrixView() && activeCaseScope === "outdoor") {
+        outdoorCaseMatrixViewed = true;
+      }
+    }
+
+    function caseImpactReviewScopes(){
+      const impact = asObj(caseImpactSideState);
+      if (contextText(impact.status) !== CASE_REVIEW_REQUIRED) return [];
+      const impactedIds = new Set(asArray(impact.impactedCaseIds).map(contextText));
+      return [...new Set(asArray(asObj(requestState.case_matrix).rows)
+        .filter(row => impactedIds.has(contextText(asObj(row).case_id)))
+        .map(row => contextText(asObj(row).analysis_scope))
+        .filter(scope => scope === "" || ["indoor", "outdoor"].includes(scope)))];
+    }
+
+    function recordCaseImpactReviewMatrixRender(){
+      if (activeScreen !== "SCREEN-05" || typeof caseImpactSideState === "undefined") return;
+      const scope = (typeof currentCaseScope === "function" ? currentCaseScope() : "") || requestedAnalysisScopes()[0] || "";
+      if (typeof caseImpactReviewRequiredForScope !== "function" || !caseImpactReviewRequiredForScope(scope)) return;
+      const impact = asObj(caseImpactSideState);
+      const renderedScopes = new Set(asArray(impact.renderedScopes));
+      renderedScopes.add(scope);
+      caseImpactSideState = {...impact, renderedScopes:[...renderedScopes]};
+    }
+
+    function completeCaseImpactReviewOnLeave(screenId){
+      if (activeScreen !== "SCREEN-05" || !["SCREEN-01", "SCREEN-02", "SCREEN-03", "SCREEN-04", "SCREEN-06"].includes(screenId)) return;
+      const impact = asObj(caseImpactSideState);
+      const requiredScopes = caseImpactReviewScopes();
+      if (contextText(impact.status) !== CASE_REVIEW_REQUIRED || !requiredScopes.length) return;
+      const renderedScopes = new Set(asArray(impact.renderedScopes));
+      if (requiredScopes.every(scope => renderedScopes.has(scope))) resetCaseImpactBaseline();
+    }
+
     function renderPreviewCaseMatrixStatus(state=requestState, options={}){
-      const target = $("previewCoverageWarning");
-      if (!target) return;
       const settings = asObj(options);
+      const target = settings.target || $("previewCoverageWarning");
+      if (!target) return;
       const messages = [];
       const scopes = caseScopeKeys(state);
       scopes.forEach(scope => {
@@ -3790,11 +4131,29 @@ HTML_TEMPLATE = r"""<!doctype html>
         const suppliedCoverage = Object.keys(asObj(settings.coverage)).length ? asObj(settings.coverage) : null;
         const coverage = suppliedCoverage ? (scope ? asObj(asObj(suppliedCoverage.by_scope)[scope]) : suppliedCoverage) : caseCoverageState(state, scope);
         const scopeHeading = scope ? `<h5 class="preview-scope-heading">${caseScopeLabel(scope)}</h5>` : "";
-        const configurationMessage = caseConfigurationMessageHtml(configurationIssues, state, true);
+        const configurationMessage = caseConfigurationMessageHtml(configurationIssues, state);
         if (configurationMessage) messages.push(`<div class="case-review-message error">${scopeHeading}${configurationMessage}</div>`);
-        if (coverage.complete === false) messages.push(`<div class="case-review-message warning">${scopeHeading}<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 05 Case Matrix에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p><button class="ghost" type="button" data-action="review-case-coverage">05 Case Matrix에서 확인</button></div>`);
+        if (coverage.complete === false) messages.push(`<div class="case-review-message error">${scopeHeading}<div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">오류 · Case에 사용되지 않은 항목이 있습니다.</strong></div>${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 05 Case Matrix에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p></div>`);
       });
       target.innerHTML = messages.join("");
+    }
+
+    function renderCompactPreviewCaseMatrixStatus(state=requestState, target){
+      if (!target) return;
+      const groups = [];
+      caseScopeKeys(state).forEach(scope => {
+        const configurationMessage = caseConfigurationMessageHtml(caseConfigurationIssues(state, scope), state);
+        const coverage = caseCoverageState(state, scope);
+        const coverageMessage = coverage.complete === false
+          ? `${coverageUnusedItemsHtml(coverage)}<p class="coverage-warning-copy">사용할 항목은 05 Case Matrix에서 선택하고, 필요하지 않은 항목은 입력 화면에서 삭제해 주세요.</p>`
+          : "";
+        if (!configurationMessage && !coverageMessage) return;
+        const scopeHeading = scope ? `<h5 class="preview-scope-heading">${caseScopeLabel(scope)}</h5>` : "";
+        groups.push(`<section class="request-preview-case-error-scope">${scopeHeading}${configurationMessage}${coverageMessage}</section>`);
+      });
+      target.innerHTML = groups.length
+        ? `<div class="case-review-message error request-preview-case-errors"><div class="coverage-warning-head"><span class="coverage-warning-icon" aria-hidden="true">⊗</span><strong class="coverage-warning-title">오류 · Case 구성을 확인해 주세요.</strong></div>${groups.join("")}</div>`
+        : "";
     }
 
     function renderCasePreview(){
@@ -3804,7 +4163,12 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (scopeTabs) scopeTabs.innerHTML = scopeTabsHtml("case", activeCaseScope);
       $("caseCommon").innerHTML = caseImpactNoticeHtml();
       const activeCaseSelect = document.activeElement?.matches?.("select[data-case-field]");
-      if (!activeCaseSelect) $("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}`;
+      if (!activeCaseSelect) $("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}${caseConfigurationInfoHtml()}`;
+      if (!activeCaseSelect) {
+        if (activeScreen === "SCREEN-05" && typeof caseImpactBaseline !== "undefined" && !caseImpactBaseline) resetCaseImpactBaseline();
+        recordCaseImpactReviewMatrixRender();
+        recordOutdoorCaseMatrixView();
+      }
       renderCaseDuplicateWarning();
       renderCaseCoverageStatus();
     }
@@ -3812,8 +4176,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     function focusCaseValidationIssue(issue){
       const issueScope = contextText(asObj(issue).analysis_scope);
       if (hasBothAnalysisScopes() && ["indoor","outdoor"].includes(issueScope) && issueScope !== activeCaseScope) {
-        activeCaseScope = issueScope;
-        renderCasePreview();
+        switchAnalysisScopeTab("case", issueScope);
       }
       const path = contextText(asObj(issue).path);
       const rowIndex = Number.parseInt((path.match(/case_matrix\.rows\[(\d+)\]/) || [])[1] || "-1", 10);
@@ -3821,13 +4184,24 @@ HTML_TEMPLATE = r"""<!doctype html>
       const fieldKey = contextText(asObj(issue).field_key) || (path.endsWith(".geometry_id") ? "geometry_id" : "");
       const target = row && fieldKey
         ? document.querySelector(`select[data-case-row-id="${CSS.escape(contextText(asObj(row).case_id))}"][data-case-field="${CSS.escape(fieldKey)}"]`)
-        : document.querySelector('[data-action="add-case"]');
+        : row ? document.querySelector(`tr[data-case-row="${CSS.escape(contextText(asObj(row).case_id))}"]`)
+        : $("caseDuplicateWarning");
       (target || $("section-case"))?.scrollIntoView({behavior:"smooth", block:"center"});
       if (target) {
-        target.classList.add("field-highlight");
-        target.focus();
-        window.setTimeout(() => target.classList.remove("field-highlight"), 1800);
+        if (row && fieldKey) {
+          target.classList.add("required-field-highlight");
+          target.focus();
+        }
       }
+    }
+
+    function focusCaseCoverageIssue(){
+      const coverage = asObj(caseValidatorState().coverage);
+      const scope = hasBothAnalysisScopes()
+        ? ["indoor","outdoor"].find(item => asObj(asObj(coverage.by_scope)[item]).complete === false) || ""
+        : "";
+      if (scope && scope !== activeCaseScope) switchAnalysisScopeTab("case", scope);
+      $("caseCoverageStatus")?.scrollIntoView({behavior:"smooth", block:"center"});
     }
 
     async function confirmCaseConfiguration(){
@@ -3836,11 +4210,20 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (action) action.disabled = true;
       try {
         await refreshPreview();
-        resetCaseImpactBaseline();
+        const unresolvedSelections = typeof unresolvedCaseImpactSelections === "function" && unresolvedCaseImpactSelections().length;
+        const reviewPending = typeof caseImpactSideState !== "undefined"
+          && contextText(asObj(caseImpactSideState).status) === "CASE_REVIEW_REQUIRED";
+        if (!unresolvedSelections && !reviewPending) resetCaseImpactBaseline();
         renderCasePreview();
         const blockingIssues = caseConfigurationIssues();
-        if (blockingIssues.length) {
-          focusCaseValidationIssue(blockingIssues[0]);
+        const coverageBlocked = asObj(asObj(asObj(requestState).review).validator).coverage?.complete === false;
+        if (blockingIssues.length || coverageBlocked) {
+          if (blockingIssues.length) focusCaseValidationIssue(blockingIssues[0]);
+          else focusCaseCoverageIssue();
+          return;
+        }
+        if (requiresOutdoorCaseMatrixView() && !outdoorCaseMatrixViewed) {
+          switchAnalysisScopeTab("case", "outdoor");
           return;
         }
         navigateScreen("SCREEN-06");
@@ -3851,14 +4234,17 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function renderDerivedPanels(){
       renderGeometryDrawingDuplicateWarning();
+      renderGeometryCadWarning();
+      renderConditionDuplicateWarning();
       renderCasePreview();
       renderDocumentPreviewPanel();
     }
 
-    function renderDocumentPreviewPanel(sourceState, previewReceipt){
-      const panel = $("documentPreviewPanel");
+    function renderDocumentPreviewPanel(sourceState, previewReceipt, targetPanel){
+      const panel = targetPanel || $("documentPreviewPanel");
       if (!panel) return;
       const state = asObj(sourceState === undefined ? requestState : sourceState);
+      const compactMissingPresentation = panel === $("requestPreviewModalPanel");
       const rawValue = field => field && typeof field === "object" ? fieldDisplayValue(field, "") : String(field ?? "").trim();
       const value = field => contextText(rawValue(field)) || "-";
       const isMissing = field => !contextText(rawValue(field));
@@ -3866,15 +4252,17 @@ HTML_TEMPLATE = r"""<!doctype html>
       const previewFieldLabel = (label, missing, attributes="") => `<span class="preview-field-label${missing ? " preview-field-missing" : ""}" ${attributes}>${missing ? missingIcon() : ""}<span>${esc(label)}</span></span>`;
       const previewTableValue = (label, displayValue, missing=false) => {
         const text = contextText(displayValue) || "-";
-        return `<span class="preview-table-value${missing ? " preview-field-missing" : ""}" data-preview-missing="${missing}" aria-label="${esc(`${label}: ${text}`)}">${missing ? missingIcon() : ""}<span>${esc(text)}</span></span>`;
+        const presentation = missing && compactMissingPresentation ? "미입력" : text;
+        return `<span class="preview-table-value${missing ? " preview-field-missing" : ""}" data-preview-missing="${missing}" aria-label="${esc(`${label}: ${presentation}`)}">${missing ? missingIcon() : ""}<span>${esc(presentation)}</span></span>`;
       };
       const kv = (label, field) => {
         const missing = isMissing(field);
-        return `<div class="preview-kv" data-preview-field="${esc(label)}" data-preview-missing="${missing}">${previewFieldLabel(label, missing, "data-preview-label")}<span data-preview-value>${esc(value(field))}</span></div>`;
+        const presentation = missing && compactMissingPresentation ? "미입력" : value(field);
+        return `<div class="preview-kv" data-preview-field="${esc(label)}" data-preview-missing="${missing}">${previewFieldLabel(label, missing, "data-preview-label")}<span data-preview-value>${esc(presentation)}</span></div>`;
       };
       const kvGrid = items => `<div class="preview-kv-grid">${items.join("")}</div>`;
       const tableWrap = (table, className="") => `<div class="preview-table-wrap${className ? ` ${className}` : ""}">${table}</div>`;
-      const section = (key, title, body) => `<section class="preview-section" id="preview-section-${esc(key)}" data-preview-section="${esc(key)}"><h4 data-preview-section-title>${esc(title)}</h4>${body}</section>`;
+      const section = (key, title, body) => `<section class="preview-section" data-preview-section="${esc(key)}"><h4 data-preview-section-title>${esc(title)}</h4>${body}</section>`;
       const basic = asObj(state.basic_info);
       const overview = asObj(state.analysis_overview);
       const context = asObj(state.request_context);
@@ -3946,7 +4334,8 @@ HTML_TEMPLATE = r"""<!doctype html>
         ${section("conditions", "해석 조건", conditionsBody)}
         ${section("case-matrix", "Case Matrix", matrixTable)}
       </div>`;
-      renderPreviewCaseMatrixStatus(state);
+      if (compactMissingPresentation) renderCompactPreviewCaseMatrixStatus(state, $("requestPreviewModalCoverageWarning"));
+      else renderPreviewCaseMatrixStatus(state, {target: $("previewCoverageWarning")});
       const renderedDocument = panel.querySelector('[data-preview-document="current-state"]');
       const receipt = asObj(previewReceipt);
       if (renderedDocument && receipt.requestId && Number.isFinite(receipt.requestVersion)) {
@@ -3956,6 +4345,23 @@ HTML_TEMPLATE = r"""<!doctype html>
         orchestratorPanelState.previewRenderedRequestId = "";
         orchestratorPanelState.previewRenderedRequestVersion = null;
       }
+    }
+
+    function openRequestPreview(){
+      const modal = $("requestPreviewModal");
+      const panel = $("requestPreviewModalPanel");
+      if (!modal || !panel) return;
+      requestState = collectState();
+      renderDocumentPreviewPanel(requestState, undefined, panel);
+      modal.hidden = false;
+      $("requestPreviewCloseBtn")?.focus();
+    }
+
+    function closeRequestPreview(){
+      const modal = $("requestPreviewModal");
+      if (!modal || modal.hidden) return;
+      modal.hidden = true;
+      $("requestPreviewBtn")?.focus();
     }
 
     function defaultChatHistory(){
@@ -4869,6 +5275,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function mutateRows(listName, action, index){
       if (listName !== "comparison_products") return;
+      clearCaseConfigurationWarning();
       const products = collectProductCards();
       const baseProduct = products.find(product => product.role === "base") || asObj(requestState.geometry).base_product;
       const state = {...requestState, geometry:{...asObj(requestState.geometry), base_product:baseProduct, comparison_products:products.filter(product => product.role === "comparison")}};
@@ -4889,10 +5296,12 @@ HTML_TEMPLATE = r"""<!doctype html>
           : '[data-action="add-comparison"]';
       }
       requestState = {...state, geometry:{...asObj(state.geometry), comparison_products:values}};
+      renderGeometryCadWarning();
       if (focusSelector) window.requestAnimationFrame(() => document.querySelector(focusSelector)?.focus());
       schedulePreviewRefresh();
     }
     function mutateConditionValues(fieldKey, action, index){
+      clearCaseConfigurationWarning();
       const state = collectState();
       const field = asArray(state.conditions.fields).find(item => item.key === fieldKey);
       if (!field) return;
@@ -4902,6 +5311,41 @@ HTML_TEMPLATE = r"""<!doctype html>
       requestState = state;
       renderConditionFields();
       schedulePreviewRefresh();
+    }
+
+    function firstAvailableCaseCombination(matrix, rows, targetScope, scoped){
+      const optionsByScope = asObj(matrix.dropdown_options_by_scope);
+      const options = asObj(scoped ? optionsByScope[targetScope] : matrix.dropdown_options);
+      const conditionKeys = asArray(matrix.visible_columns)
+        .filter(column => contextText(asObj(column).kind) === "condition")
+        .map(column => contextText(asObj(column).key))
+        .filter(Boolean);
+      const optionValues = key => asArray(options[key]).map(option => contextText(asObj(option).value)).filter(Boolean);
+      const fields = ["geometry_id", ...conditionKeys];
+      const valuesByField = new Map(fields.map(key => [key, optionValues(key)]));
+      if (fields.some(key => !valuesByField.get(key).length)) return null;
+      const existing = new Set(
+        rows.filter(row => !scoped || contextText(asObj(row).analysis_scope) === targetScope)
+          .map(row => {
+            const item = asObj(row), values = asObj(item.condition_values);
+            return [contextText(item.geometry_id), ...conditionKeys.map(key => contextText(values[key]))].join("\u001f");
+          })
+      );
+      const selected = {};
+      const choose = index => {
+        if (index === fields.length) {
+          const signature = fields.map(key => selected[key]).join("\u001f");
+          return existing.has(signature) ? null : {...selected};
+        }
+        const key = fields[index];
+        for (const value of valuesByField.get(key)) {
+          selected[key] = value;
+          const result = choose(index + 1);
+          if (result) return result;
+        }
+        return null;
+      };
+      return choose(0);
     }
 
     function mutateCaseRows(action, caseId=""){
@@ -4915,7 +5359,16 @@ HTML_TEMPLATE = r"""<!doctype html>
       const scopedRows = rows.filter(row => !scoped || contextText(asObj(row).analysis_scope) === targetScope);
       if (action === "add") {
         lastCaseDeleteNoticeVisible = false;
-        rows.push({case_id:`${targetScope ? `${targetScope}_` : ""}case_${Date.now()}`, ...(scoped ? {analysis_scope:targetScope} : {}), geometry_id:"", auto_geometry_id:"", condition_values:{}});
+        const combination = firstAvailableCaseCombination(matrix, rows, targetScope, scoped);
+        if (!combination) {
+          showCaseConfigurationInfo();
+          renderCasePreview();
+          return;
+        }
+        clearCaseConfigurationWarning();
+        const values = {};
+        Object.entries(combination).forEach(([key, value]) => { if (key !== "geometry_id") values[key] = value; });
+        rows.push({case_id:`${targetScope ? `${targetScope}_` : ""}case_${Date.now()}`, ...(scoped ? {analysis_scope:targetScope} : {}), geometry_id:combination.geometry_id, auto_geometry_id:"", condition_values:values});
       } else if (action === "remove") {
         if (scopedRows.length <= 1) {
           lastCaseDeleteNoticeVisible = true;
@@ -4930,6 +5383,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         return;
       }
       requestState = {...state, case_matrix:{...matrix, rows}};
+      caseValidationPending = true;
       renderCasePreview();
       schedulePreviewRefresh();
     }
@@ -5032,6 +5486,11 @@ HTML_TEMPLATE = r"""<!doctype html>
       $("newRequestBtn").addEventListener("click", () => {
         startNewRequest().catch(err => pushMessage("assistant", `새 의뢰 시작 실패: ${err.message}`));
       });
+      $("requestPreviewBtn").addEventListener("click", openRequestPreview);
+      $("requestPreviewCloseBtn").addEventListener("click", closeRequestPreview);
+      $("requestPreviewModal").addEventListener("click", event => {
+        if (event.target === event.currentTarget) closeRequestPreview();
+      });
       $("agentClearBtn").addEventListener("click", clearAgentConversation);
       $("agentHideBtn").addEventListener("click", () => setAgentOpen(false));
       $("agentOpenBtn").addEventListener("click", () => setAgentOpen(true));
@@ -5053,6 +5512,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         if (agentOpen && $("agentDock")?.contains(event.target)) lastAgentFocus = event.target;
       });
       document.body.addEventListener("keydown", event => {
+        if (!$("requestPreviewModal")?.hidden && event.key === "Escape") {
+          event.preventDefault();
+          closeRequestPreview();
+          return;
+        }
         if (!$("fanLimitModal")?.hidden) {
           if (event.key === "Tab") {
             event.preventDefault();
@@ -5068,7 +5532,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         const screen = event.target.closest(".screen-map-item[data-screen]");
         if (!screen || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
-        if (screen.getAttribute("aria-disabled") !== "true") navigateScreen(screen.dataset.screen || "SCREEN-01");
+        if (screen.getAttribute("aria-disabled") !== "true") {
+          const targetScreen = screen.dataset.screen || "SCREEN-01";
+          if (targetScreen === "SCREEN-05") confirmConditionsBeforeCaseMatrix().catch(err => pushMessage("assistant", `조건 검증 실패: ${err.message}`));
+          else navigateScreen(targetScreen);
+        }
       });
       document.body.addEventListener("click", event => {
         const retryGuidance = event.target.closest("#retryAnalysisResultGuidance");
@@ -5076,7 +5544,11 @@ HTML_TEMPLATE = r"""<!doctype html>
         const scopeTab = event.target.closest("button[data-scope-tab][data-analysis-scope]");
         if (scopeTab) { switchAnalysisScopeTab(scopeTab.dataset.scopeTab || "", scopeTab.dataset.analysisScope || ""); return; }
         const scopeChoice = event.target.closest("#analysisScopeField button[data-analysis-scope]");
-        if (scopeChoice) { updateRequestContextDraft("analysis_scope", scopeChoice.dataset.analysisScope || "indoor"); return; }
+        if (scopeChoice) {
+          document.querySelectorAll("#analysisScopeField .required-field-highlight").forEach(control => control.classList.remove("required-field-highlight"));
+          $("analysisScopeField")?.classList.remove("required-field-highlight");
+          updateRequestContextDraft("analysis_scope", scopeChoice.dataset.analysisScope || "indoor"); return;
+        }
         const stageAssist = event.target.closest("button[data-stage-assist-prompt]");
         if (stageAssist) { fillStageAssistPrompt(stageAssist.dataset.stageAssistPrompt || stageAssist.textContent || ""); return; }
         const prepStart = event.target.closest("#prepStartBtn");
@@ -5091,9 +5563,17 @@ HTML_TEMPLATE = r"""<!doctype html>
         const quickAction = event.target.closest("button[data-chat-quick-action]");
         if (quickAction) { runChatQuickAction(quickAction.dataset.chatQuickAction || "").catch(err => pushMessage("assistant", `빠른 실행 실패: ${err.message}`)); return; }
         const screenAction = event.target.closest("button[data-screen-action]");
-        if (screenAction) { navigateScreen(screenAction.dataset.screenAction || "SCREEN-01"); return; }
+        if (screenAction) {
+          const targetScreen = screenAction.dataset.screenAction || "SCREEN-01";
+          if (targetScreen === "SCREEN-05") { confirmConditionsBeforeCaseMatrix().catch(err => pushMessage("assistant", `조건 검증 실패: ${err.message}`)); return; }
+          navigateScreen(targetScreen); return;
+        }
         const screen = event.target.closest(".screen-map-item[data-screen]");
-        if (screen && screen.getAttribute("aria-disabled") !== "true") { navigateScreen(screen.dataset.screen || "SCREEN-01"); return; }
+        if (screen && screen.getAttribute("aria-disabled") !== "true") {
+          const targetScreen = screen.dataset.screen || "SCREEN-01";
+          if (targetScreen === "SCREEN-05") { confirmConditionsBeforeCaseMatrix().catch(err => pushMessage("assistant", `조건 검증 실패: ${err.message}`)); return; }
+          navigateScreen(targetScreen); return;
+        }
         const issue = event.target.closest("button[data-issue-jump]");
         if (issue) { jumpToIssue(issue.dataset.section || "", issue.dataset.field || ""); return; }
         const toggle = event.target.closest("[data-toggle-section]");
@@ -5173,6 +5653,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         if (action === "add-condition-value" || action === "remove-condition-value") mutateConditionValues(button.dataset.fieldKey, action === "add-condition-value" ? "add" : "remove", Number.parseInt(button.dataset.index || "0",10));
       });
       $("formView").addEventListener("input", event => {
+        if (event.target.matches("input, textarea, select")) event.target.classList.remove("required-field-highlight");
         if (event.target.matches("input, textarea, select") && !event.target.matches("select[data-case-field]")) {
           const path = event.target.dataset.path || event.target.dataset.conditionKey || event.target.dataset.productField || event.target.dataset.rowList || event.target.dataset.cardField || "";
           if (path) touchedFields.add(path);
@@ -5180,6 +5661,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         }
       });
       $("formView").addEventListener("change", event => {
+        if (event.target.matches("input, textarea, select")) event.target.classList.remove("required-field-highlight");
         if (event.target.matches("input, textarea, select")) renderScreenNavigation();
         if (event.target.matches("select[data-case-field]")) preserveCaseSelections(event.target);
         else if (event.target.matches('[data-product-field="drawing_no"]')) schedulePreviewRefresh();
@@ -5207,7 +5689,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const res = await fetch("/api/bootstrap");
       const data = await res.json();
       adoptStateFromResponse(data);
-      resetCaseImpactBaseline();
+      resetCaseImpactBaseline({deferUntilMatrixRender:true});
       schema = data.schema || {};
       heatExchangerCatalog = asArray(asObj(data.heat_exchanger_catalog).rows);
       activeTopTab = "write";

@@ -7,7 +7,7 @@ import re
 from typing import Any, Mapping
 
 from .condition_fields import clean_text
-from .condition_fieldsets import analysis_scopes_for_context, get_active_condition_fields
+from .condition_fieldsets import analysis_scopes_for_context, get_active_condition_fields, is_rac_window_context
 from .constants import (
     FIELD_STATUS_PROVIDED,
     SECTION_ANALYSIS_OVERVIEW,
@@ -340,6 +340,7 @@ def _validate_conditions(result: ValidationResult, state: Mapping[str, Any]) -> 
             field_label=label,
             message=f"Required analysis condition is missing: {label}.",
             action="Add at least one provided condition value.",
+            analysis_scope=clean_text(field.get("analysis_scope")),
         )
 
 
@@ -359,7 +360,10 @@ def _validate_conditions(result: ValidationResult, state: Mapping[str, Any]) -> 
             field_label=label,
             message=f"A conditionally required analysis condition is missing: {label}.",
             action="Add at least one provided condition value from this conditional group.",
+            analysis_scope=clean_text(representative.get("analysis_scope")),
         )
+
+    _validate_duplicate_conditions(result, conditions, fields)
 
     if not any(_provided_value_count(field.get("values")) for field in fields):
         _add_issue(
@@ -371,6 +375,69 @@ def _validate_conditions(result: ValidationResult, state: Mapping[str, Any]) -> 
             message="No provided analysis condition values are available.",
             action="Add condition values for the analysis request.",
         )
+
+
+def _validate_duplicate_conditions(
+    result: ValidationResult,
+    conditions: Mapping[str, Any],
+    fields: list[dict[str, Any]],
+) -> None:
+    """Block equal active condition cards within the same type and scope."""
+
+    cards = [
+        _as_mapping(card)
+        for card in _as_list(conditions.get("condition_sets"))
+        if clean_text(_as_mapping(card).get("id"))
+    ]
+    cards_by_id = {clean_text(card.get("id")): card for card in cards}
+    fields_by_card: dict[str, list[dict[str, Any]]] = {}
+    for field in fields:
+        card_id = clean_text(field.get("card_id"))
+        if card_id:
+            fields_by_card.setdefault(card_id, []).append(field)
+
+    seen: dict[tuple[str, str, tuple[tuple[str, tuple[str, ...]], ...]], str] = {}
+    for card_id, card_fields in fields_by_card.items():
+        card = cards_by_id.get(card_id, {})
+        card_type = clean_text(card.get("type"))
+        if not card_type:
+            continue
+        signature_fields: list[tuple[str, tuple[str, ...]]] = []
+        complete = True
+        for field in sorted(card_fields, key=lambda item: clean_text(item.get("field_key"))):
+            field_key = clean_text(field.get("field_key"))
+            if not field_key or field_key == "name":
+                continue
+            rows = _as_list(field.get("values"))
+            values = tuple(clean_text(field_value(row)) for row in rows)
+            if not values or any(not _field_is_provided(row) for row in rows):
+                complete = False
+                break
+            signature_fields.append((field_key, values))
+        if not complete or not signature_fields:
+            continue
+        if card_type == "heat_exchanger":
+            signature_fields.append(("heat_exchanger_type", (clean_text(card.get("heat_exchanger_type")),)))
+        scope = clean_text(card.get("analysis_scope"))
+        signature = (scope, card_type, tuple(signature_fields))
+        duplicate_of = seen.get(signature)
+        if duplicate_of is None:
+            seen[signature] = card_id
+            continue
+        label = clean_text(card.get("name")) or clean_text(card.get("label")) or card_type
+        _add_issue(
+            result,
+            SEVERITY_BLOCKING,
+            code="conditions.duplicate",
+            section=SECTION_CONDITIONS,
+            path="conditions.condition_sets",
+            field_key=card_id,
+            field_label=label,
+            message=f"Duplicate analysis condition: {label}.",
+            action="Keep one condition card for the same active analysis values.",
+            analysis_scope=scope,
+        )
+        result[SEVERITY_BLOCKING][-1]["duplicate_of_card_id"] = duplicate_of
 
 
 def _validate_case_matrix(result: ValidationResult, state: Mapping[str, Any]) -> None:
@@ -469,9 +536,77 @@ def _validate_case_matrix(result: ValidationResult, state: Mapping[str, Any]) ->
                 continue
             seen_signatures[signature] = case_no
 
+    _validate_rac_window_both_geometry_scope_coverage(result, state, matrix)
+
+
+def _validate_rac_window_both_geometry_scope_coverage(
+    result: ValidationResult,
+    state: Mapping[str, Any],
+    matrix: Mapping[str, Any],
+) -> None:
+    """Require every current RAC Window geometry in both requested scope matrices."""
+
+    context = _as_mapping(state.get(SECTION_REQUEST_CONTEXT))
+    if not is_rac_window_context(context) or clean_text(context.get("analysis_scope")).lower() != "both":
+        return
+
+    options_by_scope = _as_mapping(matrix.get("dropdown_options_by_scope"))
+    rows = _as_list(matrix.get("rows"))
+    scopes = ("indoor", "outdoor")
+    scope_labels = {"indoor": "실내측", "outdoor": "실외측"}
+
+    geometry_options = _as_list(_as_mapping(options_by_scope.get(scopes[0])).get("geometry_id"))
+    geometry = _as_mapping(state.get(SECTION_GEOMETRY))
+    products = [_as_mapping(geometry.get("base_product")), *[_as_mapping(item) for item in _as_list(geometry.get("comparison_products"))]]
+    drawing_by_geometry_id = {
+        clean_text(product.get("geometry_id")): clean_text(field_value(product.get("drawing_no")))
+        for product in products
+        if clean_text(product.get("geometry_id"))
+    }
+    current_geometries = [
+        (
+            clean_text(_as_mapping(item).get("value")),
+            drawing_by_geometry_id.get(clean_text(_as_mapping(item).get("value"))) or clean_text(_as_mapping(item).get("label")),
+        )
+        for item in geometry_options
+        if clean_text(_as_mapping(item).get("value"))
+    ]
+    if not current_geometries:
+        return
+
+    used_by_scope = {
+        scope: {
+            clean_text(_as_mapping(row).get("geometry_id"))
+            for row in rows
+            if clean_text(_as_mapping(row).get("analysis_scope")).lower() == scope
+            and clean_text(_as_mapping(row).get("geometry_id"))
+        }
+        for scope in scopes
+    }
+
+    for geometry_id, geometry_label in current_geometries:
+        for scope in scopes:
+            if geometry_id in used_by_scope[scope]:
+                continue
+            label = geometry_label or geometry_id
+            scope_label = scope_labels[scope]
+            _add_issue(
+                result,
+                SEVERITY_BLOCKING,
+                code="case_matrix.scope_geometry_missing",
+                section=SECTION_CASE_MATRIX,
+                path="case_matrix.rows",
+                field_key="geometry_id",
+                field_label=label,
+                message=f"{label}의 {scope_label} Case가 구성되지 않았습니다.",
+                action="실내·실외 모두 해석을 요청하려면 각 해석 제품에 실내측과 실외측 Case를 각각 1개 이상 구성해 주세요.",
+                analysis_scope=scope,
+            )
+            result[SEVERITY_BLOCKING][-1]["geometry_id"] = geometry_id
+
 
 def _case_matrix_coverage_single(matrix: Mapping[str, Any]) -> dict[str, Any]:
-    """Report unused current Matrix options without changing blocking readiness."""
+    """Report unused current Matrix options for the Case Matrix blocking gate."""
 
     source = _as_mapping(matrix)
     columns = [_as_mapping(column) for column in _as_list(source.get("visible_columns"))]
@@ -559,6 +694,33 @@ def case_matrix_coverage(matrix: Mapping[str, Any], request_context: Mapping[str
     }
 
 
+def _validate_case_matrix_coverage(result: ValidationResult, coverage: Mapping[str, Any]) -> None:
+    """Promote each unused current Case option to the existing blocking result."""
+
+    for raw_item in _as_list(coverage.get("unused_items")):
+        item = _as_mapping(raw_item)
+        column_key = clean_text(item.get("column_key"))
+        option_label = clean_text(item.get("option_label")) or clean_text(item.get("value"))
+        display_label = clean_text(item.get("display_label")) or option_label
+        if not column_key or not option_label:
+            continue
+        kind = clean_text(item.get("kind"))
+        _add_issue(
+            result,
+            SEVERITY_BLOCKING,
+            code="case_matrix.unused_option",
+            section=SECTION_CASE_MATRIX,
+            path="case_matrix.rows",
+            field_key=column_key,
+            field_label=display_label,
+            message=f"{display_label} 항목이 어떤 Case에도 사용되지 않았습니다.",
+            action="Case에 사용하거나, 사용하지 않을 값이면 기존 입력에서 제거해 주세요.",
+            analysis_scope=clean_text(item.get("analysis_scope")),
+        )
+        result[SEVERITY_BLOCKING][-1]["option_kind"] = kind
+        result[SEVERITY_BLOCKING][-1]["option_label"] = option_label
+
+
 def validate_state(source: Mapping[str, Any]) -> ValidationResult:
     """Validate structured state and derived axes without using chat logs."""
 
@@ -593,6 +755,7 @@ def validate_state(source: Mapping[str, Any]) -> ValidationResult:
     _validate_case_matrix(result, state)
     matrix = _as_mapping(state.get(SECTION_CASE_MATRIX))
     result["coverage"] = case_matrix_coverage(matrix, state)
+    _validate_case_matrix_coverage(result, _as_mapping(result["coverage"]))
     case_count = len(_as_list(matrix.get("rows")))
     can_submit = len(result[SEVERITY_BLOCKING]) == 0 and case_count > 0
 

@@ -91,6 +91,13 @@ def test_scope_change_does_not_merge_other_side_conditions_or_cases():
 def test_both_scopes_keep_condition_options_cases_and_duplicate_validation_independent():
     state = _confirm_window("both")
     state["geometry"]["base_product"]["drawing_no"] = make_field("WINDOW-001")
+    for card in state["conditions"]["condition_sets"]:
+        if card["type"] == "operating":
+            card["fans"][0]["values"]["fan_rpm"] = "900"
+        else:
+            for key, field in card["fields"].items():
+                if key != "name":
+                    field["value"] = "1"
     state = sanitize_state(state)
 
     cards = state["conditions"]["condition_sets"]
@@ -208,3 +215,95 @@ def test_word_export_keeps_indoor_and_outdoor_case_tables_separate():
     assert xml.count("실외측") == 2
     assert "900 RPM" in xml
     assert "1100 RPM" in xml
+
+
+def _add_comparison_geometry(state: dict, *, geometry_id: str = "comparison_scope_001", drawing_no: str = "WINDOW-002") -> dict:
+    state = deepcopy(state)
+    state["geometry"]["comparison_products"].append(
+        {
+            "geometry_id": geometry_id,
+            "role": "comparison",
+            "drawing_no": make_field(drawing_no),
+            "display_name": "",
+            "difference_from_base": "",
+        }
+    )
+    return sanitize_state(state)
+
+
+def test_both_scope_requires_every_geometry_in_indoor_and_outdoor_case_matrices():
+    state = _confirm_window("both")
+    state["geometry"]["base_product"]["drawing_no"] = make_field("WINDOW-001")
+    state = _add_comparison_geometry(state)
+
+    comparison_id = state["geometry"]["comparison_products"][0]["geometry_id"]
+    state["case_matrix"]["rows"] = [
+        row
+        for row in state["case_matrix"]["rows"]
+        if not (row["analysis_scope"] == "outdoor" and row["geometry_id"] == comparison_id)
+    ]
+
+    validated = state_with_validation(state)
+    issues = [
+        issue
+        for issue in validated["review"]["validator"]["blocking"]
+        if issue["code"] == "case_matrix.scope_geometry_missing"
+    ]
+
+    assert [(issue["analysis_scope"], issue["geometry_id"], issue["field_label"]) for issue in issues] == [
+        ("outdoor", comparison_id, "WINDOW-002")
+    ]
+    assert validated["review"]["submission"]["can_submit"] is False
+
+
+def test_both_scope_allows_different_case_counts_when_every_geometry_exists_on_both_sides():
+    state = _confirm_window("both")
+    state["geometry"]["base_product"]["drawing_no"] = make_field("WINDOW-001")
+    state = _add_comparison_geometry(state)
+
+    indoor = next(row for row in state["case_matrix"]["rows"] if row["analysis_scope"] == "indoor")
+    extra = deepcopy(indoor)
+    extra.update({"case_id": "indoor_extra_count", "auto_geometry_id": ""})
+    extra["condition_values"] = dict(extra["condition_values"])
+    first_key = next(iter(extra["condition_values"]), "")
+    options = state["case_matrix"]["dropdown_options_by_scope"]["indoor"].get(first_key, [])
+    if len(options) > 1:
+        extra["condition_values"][first_key] = options[1]["value"]
+    else:
+        extra["geometry_id"] = state["geometry"]["comparison_products"][0]["geometry_id"]
+    state["case_matrix"]["rows"].append(extra)
+
+    validated = state_with_validation(state)
+    issues = [
+        issue
+        for issue in validated["review"]["validator"]["blocking"]
+        if issue["code"] == "case_matrix.scope_geometry_missing"
+    ]
+
+    assert issues == []
+    indoor_count = sum(row["analysis_scope"] == "indoor" for row in validated["case_matrix"]["rows"])
+    outdoor_count = sum(row["analysis_scope"] == "outdoor" for row in validated["case_matrix"]["rows"])
+    assert indoor_count != outdoor_count
+
+
+def test_single_scope_does_not_apply_both_geometry_scope_coverage_rule():
+    state = _confirm_window("indoor")
+    state["geometry"]["base_product"]["drawing_no"] = make_field("WINDOW-001")
+    state = _add_comparison_geometry(state)
+
+    validated = state_with_validation(state)
+    assert not any(
+        issue["code"] == "case_matrix.scope_geometry_missing"
+        for issue in validated["review"]["validator"]["blocking"]
+    )
+
+
+def test_screen_four_gate_applies_to_bottom_and_workflow_navigation_for_every_scope():
+    gate_start = HTML_TEMPLATE.index("async function confirmConditionsBeforeCaseMatrix()")
+    gate_end = HTML_TEMPLATE.index("function revealMissingFanControl", gate_start)
+    gate = HTML_TEMPLATE[gate_start:gate_end]
+
+    assert 'await refreshPreview();' in gate
+    assert 'const issues = conditionValidationIssues();' in gate
+    assert 'if (!hasBothAnalysisScopes())' not in gate
+    assert HTML_TEMPLATE.count('if (targetScreen === "SCREEN-05")') == 3

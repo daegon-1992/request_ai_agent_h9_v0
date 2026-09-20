@@ -121,14 +121,17 @@ def test_coverage_is_complete_without_a_cartesian_product_when_every_value_is_us
     assert len(matrix["rows"]) == 3
 
 
-def test_coverage_does_not_change_existing_blocking_or_can_submit_meaning():
+def test_unused_case_options_are_blocking_and_prevent_submission():
     state = _state_with_unused_operation()
     validation = validate_state(state)
 
     assert validation["coverage"]["complete"] is False
     assert [item["option_label"] for item in validation["coverage"]["unused_items"]] == ["운전 2"]
-    assert validation["blocking"] == []
-    assert validation["summary"]["can_submit"] is True
+    assert [issue["code"] for issue in validation["blocking"]] == ["case_matrix.unused_option"]
+    assert validation["blocking"][0]["field_key"] == "fan"
+    assert validation["blocking"][0]["message"].endswith("항목이 어떤 Case에도 사용되지 않았습니다.")
+    assert validation["blocking"][0]["action"] == "Case에 사용하거나, 사용하지 않을 값이면 기존 입력에서 제거해 주세요."
+    assert validation["summary"]["can_submit"] is False
     assert validation["summary"]["warning_count"] == 0
 
 
@@ -155,7 +158,7 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     assert "border-radius:10px" in case_review_css
     assert "box-shadow:none" in case_review_css
     assert "min-height" not in case_review_css
-    assert '.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}' in HTML_TEMPLATE
+    assert '.geometry-drawing-warning:empty,.geometry-cad-warning:empty,.condition-duplicate-warning:empty,.case-duplicate-warning:empty,.case-coverage-status:empty,#previewCoverageWarning:empty{display:none}' in HTML_TEMPLATE
     assert f'{feedback_scope}.case-review-message:empty{{display:none}}' in HTML_TEMPLATE
     assert preview < preview_warning < word_button
     assert f'{feedback_scope}.case-review-message.error{{border:1px solid var(--ui-error);background:var(--ui-error-bg)}}' in HTML_TEMPLATE
@@ -168,19 +171,24 @@ def test_case_and_preview_status_ui_unifies_case_errors_and_keeps_coverage_separ
     assert f'{feedback_scope}.coverage-warning-title{{color:var(--ink);font-size:15px;font-weight:600;line-height:1.55}}' in HTML_TEMPLATE
     assert f'{feedback_scope}.coverage-warning-copy{{margin:0;color:#55585B;font-size:13px;font-weight:400;line-height:1.55}}' in HTML_TEMPLATE
     assert '<strong class="coverage-warning-title">오류 · Case 구성을 확인해 주세요.</strong>' in HTML_TEMPLATE
-    assert '<strong class="coverage-warning-title">확인 필요 · Case에 사용되지 않은 항목이 있습니다.</strong>' in HTML_TEMPLATE
+    assert '<strong class="coverage-warning-title">오류 · Case에 사용되지 않은 항목이 있습니다.</strong>' in HTML_TEMPLATE
     assert '<circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6M15 9l-6 6"></path>' in HTML_TEMPLATE
     assert '<span class="coverage-warning-icon" aria-hidden="true">⚠</span><strong class="coverage-warning-title">' in HTML_TEMPLATE
-    assert 'data-action="review-case-coverage"' in HTML_TEMPLATE
+    assert "caseConfigurationMessageHtml(configurationIssues, state);" in HTML_TEMPLATE
+    assert 'function caseConfigurationInfoHtml()' in HTML_TEMPLATE
+    assert 'geometry-policy-guidance case-configuration-info" data-case-configuration-warning role="status"' in HTML_TEMPLATE
+    assert 'geometry-policy-heading">추가 가능한 Case가 없습니다.' in HTML_TEMPLATE
+    assert 'geometry-policy-body">${esc(caseConfigurationWarning)}</p>' in HTML_TEMPLATE
+    assert '`${caseSourceReferenceHtml()}${caseTableHtml()}${caseConfigurationInfoHtml()}`' in HTML_TEMPLATE
     assert 'navigateScreen("SCREEN-05")' in HTML_TEMPLATE
     assert "const blockingIssues = caseConfigurationIssues();" in confirmation
-    assert "if (blockingIssues.length)" in confirmation
+    assert "if (blockingIssues.length || coverageBlocked)" in confirmation
     assert "focusCaseValidationIssue(blockingIssues[0]);" in confirmation
     assert 'navigateScreen("SCREEN-06")' in confirmation
-    assert "coverage" not in confirmation
+    assert "coverageBlocked" in confirmation
     assert "wordButton.disabled = wordExportInProgress || firstIncompleteIndex >= 0 || caseMatrixExportBlocked" in HTML_TEMPLATE
     assert "const caseMatrixExportBlocked = caseMatrixBlocksWordExport();" in HTML_TEMPLATE
-    assert 'screen.id !== "SCREEN-06"' in HTML_TEMPLATE
+    assert 'screen.id !== "SCREEN-06"' not in HTML_TEMPLATE
 
 
 def test_screen_five_uses_flat_case_section_and_compact_matrix_contracts():
@@ -473,8 +481,8 @@ process.stdout.write(JSON.stringify({{bothHtml, missingHtml:target.innerHTML}}))
     assert "오류 · Case 구성을 확인해 주세요." in rendered["bothHtml"]
     assert "Case 1: 형상, 운전을 선택해 주세요." in rendered["bothHtml"]
     assert "Case 3: Case 2과 동일합니다." in rendered["bothHtml"]
-    assert "확인 필요 · Case에 사용되지 않은 항목이 있습니다." in rendered["bothHtml"]
-    assert "05 Case Matrix에서 확인" in rendered["bothHtml"]
+    assert "오류 · Case에 사용되지 않은 항목이 있습니다." in rendered["bothHtml"]
+    assert "05 Case Matrix에서 확인" not in rendered["bothHtml"]
     assert rendered["missingHtml"] == ""
 
 
@@ -507,7 +515,7 @@ process.stdout.write(JSON.stringify({{duplicate, coverage, missing, selectionMis
     }
 
 
-def test_case_next_blocks_configuration_errors_but_allows_coverage_warning_review():
+def test_case_next_blocks_configuration_errors_and_unused_case_options():
     start = HTML_TEMPLATE.index("async function confirmCaseConfiguration()")
     end = HTML_TEMPLATE.index("function renderDerivedPanels()", start)
     confirmation = HTML_TEMPLATE[start:end]
@@ -526,6 +534,7 @@ def test_case_next_blocks_configuration_errors_but_allows_coverage_warning_revie
   const resetCaseImpactBaseline = () => {{}};
   const caseConfigurationIssues = () => requestState.review.validator.blocking;
   const focusCaseValidationIssue = () => {{ focusedIssues += 1; }};
+  const focusCaseCoverageIssue = () => {{ focusedIssues += 1; }};
   const navigateScreen = screen => {{ nextScreen = screen; }};
   {confirmation}
   requestState.review.validator.blocking = [{{section:"case_matrix", code:"case_matrix.duplicate", case_no:2, duplicate_of_case_no:1}}];
@@ -536,7 +545,7 @@ def test_case_next_blocks_configuration_errors_but_allows_coverage_warning_revie
   await confirmCaseConfiguration();
   const missingScreen = nextScreen;
   nextScreen = "";
-  requestState.review.validator = {{blocking:[], coverage:{{complete:false}}}};
+  requestState.review.validator = {{blocking:[{{section:"case_matrix", code:"case_matrix.unused_option", field_label:"운전 2"}}], coverage:{{complete:false}}}};
   await confirmCaseConfiguration();
   process.stdout.write(JSON.stringify({{duplicateScreen, missingScreen, warningScreen:nextScreen, focusedIssues}}));
 }})().catch(error => {{ console.error(error); process.exit(1); }});
@@ -549,15 +558,17 @@ def test_case_next_blocks_configuration_errors_but_allows_coverage_warning_revie
     assert json.loads(result.stdout) == {
         "duplicateScreen": "",
         "missingScreen": "",
-        "warningScreen": "SCREEN-06",
-        "focusedIssues": 2,
+        "warningScreen": "",
+        "focusedIssues": 3,
     }
 
 
 def test_last_case_delete_uses_local_notice_and_case_manipulations_clear_it():
+    combination_start = HTML_TEMPLATE.index("function firstAvailableCaseCombination")
     mutate_start = HTML_TEMPLATE.index('function mutateCaseRows(action, caseId="")')
     mutate_end = HTML_TEMPLATE.index("function jumpToIssue", mutate_start)
     mutate = HTML_TEMPLATE[mutate_start:mutate_end]
+    combination = HTML_TEMPLATE[combination_start:mutate_start]
     preserve_start = HTML_TEMPLATE.index("function preserveCaseSelections(changedSelect=null)")
     preserve_end = HTML_TEMPLATE.index("function collectState()", preserve_start)
     preserve = HTML_TEMPLATE[preserve_start:preserve_end]
@@ -565,8 +576,15 @@ def test_last_case_delete_uses_local_notice_and_case_manipulations_clear_it():
 const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
 const asArray = value => Array.isArray(value) ? value : [];
 const contextText = value => String(value ?? "").trim();
-let requestState = {{case_matrix:{{rows:[{{case_id:"case_1", geometry_id:"g1", condition_values:{{}}}}]}}}};
+let requestState = {{case_matrix:{{
+  visible_columns:[{{key:"geometry_id", kind:"geometry"}}, {{key:"fan", kind:"condition"}}],
+  dropdown_options:{{geometry_id:[{{value:"g1"}}], fan:[{{value:"f1"}}, {{value:"f2"}}]}},
+  rows:[{{case_id:"case_1", geometry_id:"g1", condition_values:{{fan:"f1"}}}}]
+}}}};
 let lastCaseDeleteNoticeVisible = false;
+let caseConfigurationWarning = "";
+let caseConfigurationWarningTimer = null;
+let caseValidationPending = false;
 let removedNotices = 0;
 let scheduled = 0;
 const rendered = [];
@@ -574,9 +592,13 @@ const document = {{querySelector:() => ({{remove:() => {{ removedNotices += 1; }
 const collectState = () => requestState;
 const collectCaseRows = () => asArray(asObj(requestState.case_matrix).rows);
 const renderCasePreview = () => {{ rendered.push(lastCaseDeleteNoticeVisible); }};
+const renderCaseValidationStatus = () => {{}};
 const schedulePreviewRefresh = () => {{ scheduled += 1; }};
+const clearCaseConfigurationWarning = () => {{ caseConfigurationWarning = ""; caseConfigurationWarningTimer = null; }};
+const showCaseConfigurationInfo = () => {{ caseConfigurationWarning = "현재 입력된 해석 제품과 조건으로 구성할 수 있는 모든 Case 조합이 이미 추가되어 있습니다."; }};
 Date.now = () => 123;
 {preserve}
+{combination}
 {mutate}
 mutateCaseRows("remove", "case_1");
 const blocked = {{rowCount:requestState.case_matrix.rows.length, notice:lastCaseDeleteNoticeVisible}};
@@ -605,6 +627,49 @@ process.stdout.write(JSON.stringify({{blocked, added, removed, selectedNotice:la
     assert 'notify("최소 1개 Case는 유지해야 합니다.")' not in mutate
     assert "마지막 Case는 삭제할 수 없습니다." in HTML_TEMPLATE
     assert "해석을 위해 최소 1개의 Case가 필요합니다." in HTML_TEMPLATE
+
+
+def test_add_case_uses_first_available_combination_without_creating_a_duplicate():
+    combination_start = HTML_TEMPLATE.index("function firstAvailableCaseCombination")
+    mutate_start = HTML_TEMPLATE.index('function mutateCaseRows(action, caseId="")')
+    mutate_end = HTML_TEMPLATE.index("function jumpToIssue", mutate_start)
+    combination = HTML_TEMPLATE[combination_start:mutate_start]
+    mutate = HTML_TEMPLATE[mutate_start:mutate_end]
+    script = f"""
+const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+const asArray = value => Array.isArray(value) ? value : [];
+const contextText = value => String(value ?? "").trim();
+let requestState = {{case_matrix:{{
+  visible_columns:[{{key:"geometry_id", kind:"geometry"}}, {{key:"fan", kind:"condition"}}],
+  dropdown_options:{{geometry_id:[{{value:"g1"}}], fan:[{{value:"f1"}}, {{value:"f2"}}]}},
+  rows:[{{case_id:"case_1", geometry_id:"g1", condition_values:{{fan:"f1"}}}}]
+}}}};
+let lastCaseDeleteNoticeVisible = false;
+let caseConfigurationWarning = "";
+let caseConfigurationWarningTimer = null;
+let caseValidationPending = false;
+const document = {{querySelector:() => null}};
+const collectState = () => requestState;
+const renderCasePreview = () => {{}};
+const schedulePreviewRefresh = () => {{}};
+const clearCaseConfigurationWarning = () => {{ caseConfigurationWarning = ""; caseConfigurationWarningTimer = null; }};
+const showCaseConfigurationInfo = () => {{ caseConfigurationWarning = "현재 입력된 해석 제품과 조건으로 구성할 수 있는 모든 Case 조합이 이미 추가되어 있습니다."; }};
+Date.now = () => 123;
+{combination}
+{mutate}
+mutateCaseRows("add");
+const added = requestState.case_matrix.rows.map(row => [row.geometry_id, row.condition_values.fan]);
+mutateCaseRows("add");
+process.stdout.write(JSON.stringify({{added, rowCount:requestState.case_matrix.rows.length, warning:caseConfigurationWarning}}));
+"""
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, encoding="utf-8", check=False)
+
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout) == {
+        "added": [["g1", "f1"], ["g1", "f2"]],
+        "rowCount": 2,
+        "warning": "현재 입력된 해석 제품과 조건으로 구성할 수 있는 모든 Case 조합이 이미 추가되어 있습니다.",
+    }
 
 
 def test_coverage_ui_groups_multiple_unused_options_by_column_key():
@@ -785,21 +850,31 @@ def test_word_api_blocks_missing_case_selections_before_docx_generation(monkeypa
     row = state["case_matrix"]["rows"][0]
     row["geometry_id"] = ""
     row["auto_geometry_id"] = ""
-    row["condition_values"][condition_key] = ""
     monkeypatch.setattr(app_module, "build_word_docx", forbidden_docx)
 
-    response = create_app().test_client().post(
+    geometry_missing_response = create_app().test_client().post(
         "/api/export/word",
         json={"state": state, "sections": []},
     )
+    assert geometry_missing_response.status_code == 409
+    assert geometry_missing_response.get_json()["error"] == "case_matrix_selection_missing"
+    assert {
+        issue["code"] for issue in geometry_missing_response.get_json()["issues"]
+    } == {"case_matrix.geometry_missing"}
 
-    assert response.status_code == 409
-    payload = response.get_json()
-    assert payload["error"] == "case_matrix_selection_missing"
-    assert {issue["code"] for issue in payload["issues"]} >= {
-        "case_matrix.geometry_missing",
-        f"case_matrix.{condition_key}.missing",
-    }
+    condition_missing_state = _complete_state()
+    condition_missing_row = condition_missing_state["case_matrix"]["rows"][0]
+    condition_missing_row["auto_geometry_id"] = ""
+    condition_missing_row["condition_values"][condition_key] = ""
+    condition_missing_response = create_app().test_client().post(
+        "/api/export/word",
+        json={"state": condition_missing_state, "sections": []},
+    )
+    assert condition_missing_response.status_code == 409
+    assert condition_missing_response.get_json()["error"] == "case_matrix_selection_missing"
+    assert {
+        issue["code"] for issue in condition_missing_response.get_json()["issues"]
+    } == {"case_matrix.fan.missing"}
 
     rows_missing_state = _complete_state()
     rows_missing_state["case_matrix"]["rows"] = []

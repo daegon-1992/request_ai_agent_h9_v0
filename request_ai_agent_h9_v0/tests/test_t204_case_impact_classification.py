@@ -10,20 +10,22 @@ def test_t204_case_impact_hook_is_client_side_and_preserves_case_rows():
     assert 'const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";' in ui
     assert 'const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";' in ui
     assert "function classifyCaseImpact(state)" in ui
-    assert "function resetCaseImpactBaseline()" in ui
-    assert "data-case-impact-status" in ui
+    assert "function resetCaseImpactBaseline(options={})" in ui
+    assert "data-case-impact-status" not in ui
     assert "classifyCaseImpact(collectState());" in ui
+    assert "adoptStateFromResponse(data);\n        classifyCaseImpact(requestState);" in ui
     assert "previewRefreshTimer = window.setTimeout(() => {" in ui
     assert "refreshPreview(scheduledRevision);" in ui
-    assert "Case 행은 자동으로 변경하지 않았습니다." in ui
+    assert "Case 행은 자동으로 변경하지 않았습니다." not in ui
     assert "새 소스가 추가되었거나 비참조 소스가 변경되었습니다. Case 행을 검토해 주세요." not in ui
-    assert "if (caseImpactSideState.status === CASE_REBUILD_REQUIRED)" in ui
+    assert 'function caseImpactPreviousSelection(rowId, key, selected)' in ui
 
 
-def test_t204_classifies_added_and_referenced_source_changes():
+def test_t204_classifies_only_referenced_existing_source_changes():
     ui = UI_PATH.read_text(encoding="utf-8")
 
-    assert 'reviewReasons.push(`geometry:${id}:added`)' in ui
+    assert 'reviewReasons.push(`geometry:${id}:added`)' not in ui
+    assert 'reviewReasons.push(`condition:${key}:added`)' not in ui
     assert 'rebuildReasons.push(`geometry:${id}:required_value_invalid`)' in ui
     assert 'rebuildReasons.push(`condition:${key}:required_value_invalid`)' in ui
     assert 'status:CASE_REBUILD_REQUIRED' in ui

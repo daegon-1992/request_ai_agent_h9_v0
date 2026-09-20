@@ -141,13 +141,16 @@ def test_old_taxonomy_state_is_reset_instead_of_migrated():
     assert context["context_locked"] is False
 
 
-def test_taxonomy_ui_has_five_catalog_only_selection_levels():
-    for control_id in ("quickDivisionSelect", "quickProductLineupSelect", "quickPlatformSelect", "quickChassisSelect"):
+def test_taxonomy_ui_has_five_quick_catalog_only_selection_levels():
+    for control_id in ("quickDivisionSelect", "quickProductLineupSelect", "quickPlatformSelect", "quickChassisSelect", "quickAnalysisTypeSelect"):
         assert f'id="{control_id}"' in HTML_TEMPLATE
     screen = HTML_TEMPLATE.split('<section class="screen-group" data-screen="SCREEN-01"', 1)[1].split(
         '<section class="screen-group request-content-screen" data-screen="SCREEN-02"', 1
     )[0]
-    assert "Product Line-up 선택" in screen and "Platform 선택" in screen and "Chassis 선택" in screen
+    assert '<label>Product Line-up<select id="quickProductLineupSelect"></select></label>' in screen
+    assert '<label>Platform<select id="quickPlatformSelect"></select></label>' in screen
+    assert '<label>Chassis<select id="quickChassisSelect"></select></label>' in screen
+    assert '<label>해석유형<select id="quickAnalysisTypeSelect"></select></label>' in screen
     assert "직접 입력" not in screen and ">미정<" not in screen
     assert 'platformSelectionMode(context.division) === "derived_from_product_lineup"' in HTML_TEMPLATE
     assert 'const platformDisabled = !context.product_lineup || platformDerived;' in HTML_TEMPLATE

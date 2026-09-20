@@ -94,7 +94,8 @@ def test_request_content_has_navigation_only_action_bar_without_save_or_preview_
     assert 'class="screen-action-bar"' in screen
     assert 'data-screen-action="SCREEN-01">이전: 의뢰 대상·시작</button>' in screen
     assert 'data-screen-action="SCREEN-03">다음: 해석 제품</button>' in screen
-    assert 'navigateScreen(screenAction.dataset.screenAction || "SCREEN-01")' in HTML_TEMPLATE
+    assert 'const targetScreen = screenAction.dataset.screenAction || "SCREEN-01";' in HTML_TEMPLATE
+    assert 'navigateScreen(targetScreen);' in HTML_TEMPLATE
 
 
 def test_screen_two_sections_are_always_expanded_and_shell_uses_content_row():

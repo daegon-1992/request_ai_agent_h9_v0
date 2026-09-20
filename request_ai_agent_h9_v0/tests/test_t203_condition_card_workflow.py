@@ -92,11 +92,7 @@ def test_case_matrix_uses_live_values_after_any_condition_row_is_removed():
     source_reference = HTML_TEMPLATE.split('function caseSourceReferenceHtml()', 1)[1].split('function caseTableHtml()', 1)[0]
     case_table = HTML_TEMPLATE.split('function caseTableHtml()', 1)[1].split('function caseCoverageState', 1)[0]
 
-    assert 'add("fan", card.id, `운전 ${++operatingIndex}`);' in helper
-    assert 'add("heat_exchanger", card.id, `사양 ${++heatExchangerIndex}`);' in helper
-    assert 'const label = caseGroupedConditionLabel(type, fields);' in helper
-    assert 'if (label) add(type, card.id, label);' in helper
-    assert 'Object.prototype.hasOwnProperty.call(fields, key)' in helper
+    assert 'return asObj(asObj(matrix.dropdown_options_by_scope)[activeCaseScope] || matrix.dropdown_options);' in helper
     assert 'const options = liveCaseDropdownOptions();' in source_reference
     assert 'const sources = caseSelectionSources();' in source_reference
     assert 'const operatingById = sources.operatingById;' in source_reference
@@ -115,6 +111,32 @@ def test_late_preview_response_cannot_restore_a_removed_condition_row():
     assert schedule.index('if (requestedRevision !== previewStateRevision) return false;') < schedule.index('adoptStateFromResponse(data);')
     assert 'const previousConditionIdentity = conditionCardIdentity();' in schedule
     assert 'if (previousConditionIdentity !== conditionCardIdentity()) renderConditionFields();' in schedule
+
+
+def test_failed_preview_request_always_clears_case_validation_pending_status():
+    refresh_start = HTML_TEMPLATE.index('async function refreshPreview(requestedRevision=previewStateRevision)')
+    refresh_end = HTML_TEMPLATE.index('const CASE_REVIEW_REQUIRED', refresh_start)
+    refresh_function = HTML_TEMPLATE[refresh_start:refresh_end]
+    script = '''
+(async () => {
+  let previewStateRevision = 4;
+  let caseValidationPending = true;
+  let statusRenderCount = 0;
+  const postState = async () => { throw new Error("preview failed"); };
+  const conditionCardIdentity = () => "";
+  const adoptStateFromResponse = () => {};
+  const renderConditionFields = () => {};
+  const renderDerivedPanels = () => {};
+  const renderCaseValidationStatus = () => { statusRenderCount += 1; };
+''' + refresh_function + '''
+  await refreshPreview().catch(() => {});
+  process.stdout.write(JSON.stringify({caseValidationPending, statusRenderCount}));
+})().catch(error => { console.error(error); process.exit(1); });
+'''
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=False)
+
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == '{"caseValidationPending":false,"statusRenderCount":1}'
 
 
 def test_context_confirmation_invalidates_an_inflight_preview_before_adopting_locked_state():
@@ -476,9 +498,6 @@ def test_case_matrix_live_grouped_condition_labels_follow_grouped_backend_contra
     assert 'space_environment:[["room_temp","공간 온도","°C"],["room_rh","공간 상대습도","%"]]' in helper
     assert 'supply_air:[["heat_exchanger_temp","취출 온도","°C"],["heat_exchanger_rh","취출 상대습도","%"]]' in helper
     assert 'return parts.join(" / ");' in helper
-    assert 'if (type === "space_environment" || type === "supply_air")' in helper
-    assert 'if (label) add(type, card.id, label);' in helper
-
     function_body = HTML_TEMPLATE.split('function conditionUnitFields(type)', 1)[1].split('function liveCaseDropdownOptions()', 1)[0]
     script = f'''function contextText(value){{ return String(value ?? "").trim(); }}
 function asArray(value){{ return Array.isArray(value) ? value : []; }}

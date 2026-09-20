@@ -1062,10 +1062,32 @@ def _manual_matrix_group_label(card_type: str, fields: Mapping[str, Any]) -> str
 def _manual_matrix_condition_options(
     condition_sets: list[dict[str, Any]],
     columns: list[dict[str, str]],
+    request_context: Mapping[str, Any],
 ) -> dict[str, list[dict[str, str]]]:
     """Return latest user-entered dropdown values for the active Matrix columns."""
 
     options: dict[str, list[dict[str, str]]] = {column["key"]: [] for column in columns}
+    applicable_types = {column.get("card_type") for column in columns}
+    active_fields = get_active_condition_fields({
+        SECTION_REQUEST_CONTEXT: request_context,
+        SECTION_CONDITIONS: {"condition_sets": condition_sets},
+    })
+    usable_card_ids: set[str] = set()
+    fields_by_card: dict[str, list[dict[str, Any]]] = {}
+    for field in active_fields:
+        card_id = _clean_text(field.get("card_id"))
+        if card_id:
+            fields_by_card.setdefault(card_id, []).append(field)
+    for card in condition_sets:
+        card_id = _clean_text(card.get("id"))
+        if not card_id or _clean_text(card.get("type")) not in applicable_types:
+            continue
+        required_fields = [field for field in fields_by_card.get(card_id, []) if field.get("required")]
+        if required_fields and all(
+            all(_clean_text(field_value(value)) for value in field.get("values", []))
+            for field in required_fields
+        ):
+            usable_card_ids.add(card_id)
 
     def add(key: str, value: Any, label: Any | None = None) -> None:
         text = _clean_text(value)
@@ -1075,6 +1097,8 @@ def _manual_matrix_condition_options(
 
     for card in condition_sets:
         card_type = _clean_text(card.get("type"))
+        if _clean_text(card.get("id")) not in usable_card_ids:
+            continue
         fields = card.get("fields") if isinstance(card.get("fields"), Mapping) else {}
         if card_type == "operating":
             add("fan", card.get("id"), card.get("name"))
@@ -1100,6 +1124,7 @@ def _manual_case_row(
     geometry_id: str = "",
     auto_geometry_id: str = "",
     condition_values: Mapping[str, Any] | None = None,
+    invalid_selection_values: Mapping[str, Any] | None = None,
     analysis_scope: str = "",
 ) -> dict[str, Any]:
     row = {
@@ -1112,6 +1137,17 @@ def _manual_case_row(
             if _clean_text(key)
         },
     }
+    invalid_values: dict[str, dict[str, str]] = {}
+    for key, raw_value in (invalid_selection_values.items() if isinstance(invalid_selection_values, Mapping) else []):
+        clean_key = _clean_text(key)
+        raw_entry = raw_value if isinstance(raw_value, Mapping) else {}
+        value = _clean_text(raw_entry.get("value")) if raw_entry else _clean_text(raw_value)
+        if not clean_key or not value:
+            continue
+        label = _clean_text(raw_entry.get("label")) if raw_entry else ""
+        invalid_values[clean_key] = {"value": value, **({"label": label} if label else {})}
+    if invalid_values:
+        row["invalid_selection_values"] = invalid_values
     if analysis_scope:
         row["analysis_scope"] = analysis_scope
     return row
@@ -1187,7 +1223,7 @@ def _sanitize_manual_case_matrix_scope(
     raw = raw_matrix if isinstance(raw_matrix, Mapping) else {}
     condition_columns = get_active_case_matrix_columns(request_context)
     geometry_options = _manual_matrix_product_options(products)
-    condition_options = _manual_matrix_condition_options(condition_sets, condition_columns)
+    condition_options = _manual_matrix_condition_options(condition_sets, condition_columns, request_context)
     valid_geometry_ids = {item["value"] for item in geometry_options}
     valid_values = {key: {item["value"] for item in values} for key, values in condition_options.items()}
     condition_aliases = {
@@ -1215,18 +1251,35 @@ def _sanitize_manual_case_matrix_scope(
             geometry_id=_clean_text(raw_row.get("geometry_id")),
             auto_geometry_id=_clean_text(raw_row.get("auto_geometry_id")),
             condition_values=raw_row.get("condition_values", raw_row.get("selections")),
+            invalid_selection_values=raw_row.get("invalid_selection_values"),
             analysis_scope=analysis_scope,
         )
+        prior_visible_cells = raw_row.get("visible_cells") if isinstance(raw_row.get("visible_cells"), Mapping) else {}
+
+        def prior_selection(key: str, value: Any) -> dict[str, str]:
+            label = _clean_text(prior_visible_cells.get(key))
+            return {"value": _clean_text(value), **({"label": label} if label else {})}
         while row["case_id"] in seen_ids:
             row["case_id"] = f"case_{index:03d}_{len(seen_ids) + 1}"
         seen_ids.add(row["case_id"])
-        # A deleted geometry removes its automatically maintained base row;
-        # manual rows are retained with a safely-cleared selection instead.
+        # Keep an automatically maintained row when its source geometry is
+        # deleted so the user must explicitly remap its now-missing selection.
         if row["auto_geometry_id"] and row["auto_geometry_id"] not in valid_geometry_ids:
-            continue
+            row["auto_geometry_id"] = ""
+        supplied_geometry_id = row["geometry_id"]
+        invalid_selection_values = dict(row.get("invalid_selection_values", {}))
+        is_blank_manual_row = not supplied_geometry_id and not any(
+            _clean_text(value) for value in row["condition_values"].values()
+        ) and not invalid_selection_values
         if row["geometry_id"] not in valid_geometry_ids:
+            if row["geometry_id"]:
+                invalid_selection_values["geometry_id"] = prior_selection("geometry_id", row["geometry_id"])
             row["geometry_id"] = ""
-        supplied_condition_keys = set(row["condition_values"])
+        else:
+            invalid_selection_values.pop("geometry_id", None)
+        if is_blank_manual_row and geometry_options and "geometry_id" not in invalid_selection_values:
+            row["geometry_id"] = _clean_text(geometry_options[0].get("value"))
+        supplied_condition_keys = set(row["condition_values"]) | set(invalid_selection_values)
         for column in condition_columns:
             column_key = column["key"]
             if _clean_text(row["condition_values"].get(column_key)):
@@ -1240,17 +1293,26 @@ def _sanitize_manual_case_matrix_scope(
                 supplied_condition_keys.add(column_key)
             if migrated_value:
                 row["condition_values"][column_key] = migrated_value
-        row["condition_values"] = {
-            column["key"]: value
-            for column in condition_columns
-            for legacy_value in [_migrate_manual_condition_label(column["key"], row["condition_values"].get(column["key"]))]
-            for value in [condition_aliases.get(column["key"], {}).get(legacy_value, legacy_value)]
-            if value in valid_values.get(column["key"], set())
-        }
-        if row["auto_geometry_id"]:
-            for key, value in default_condition_values.items():
-                if key not in supplied_condition_keys:
-                    row["condition_values"].setdefault(key, value)
+        normalized_values: dict[str, str] = {}
+        for column in condition_columns:
+            column_key = column["key"]
+            legacy_value = _migrate_manual_condition_label(column_key, row["condition_values"].get(column_key))
+            value = condition_aliases.get(column_key, {}).get(legacy_value, legacy_value)
+            if value in valid_values.get(column_key, set()):
+                normalized_values[column_key] = value
+                invalid_selection_values.pop(column_key, None)
+            elif legacy_value:
+                invalid_selection_values[column_key] = prior_selection(column_key, legacy_value)
+        row["condition_values"] = normalized_values
+        for key, value in default_condition_values.items():
+            if row["auto_geometry_id"] and key not in supplied_condition_keys:
+                row["condition_values"].setdefault(key, value)
+            elif is_blank_manual_row:
+                row["condition_values"][key] = value
+        if invalid_selection_values:
+            row["invalid_selection_values"] = invalid_selection_values
+        else:
+            row.pop("invalid_selection_values", None)
         rows.append(row)
 
     prior_snapshot = {

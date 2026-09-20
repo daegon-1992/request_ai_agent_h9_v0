@@ -16,6 +16,13 @@ def _coverage_complete_state():
         }
     )
     state["geometry"]["base_product"]["drawing_no"] = "DRAW-A"
+    for card in state["conditions"]["condition_sets"]:
+        if card["type"] == "operating":
+            card["fans"][0]["values"]["fan_rpm"] = "900"
+        else:
+            for key, field in card["fields"].items():
+                if key != "name":
+                    field["value"] = "1"
     return sanitize_state(state)
 
 

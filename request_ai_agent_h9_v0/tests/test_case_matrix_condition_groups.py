@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from request_ai_agent_h9_v0.condition_fieldsets import default_condition_sets, make_condition_card
 from request_ai_agent_h9_v0.state import create_initial_state, sanitize_state
+from request_ai_agent_h9_v0.validator import validate_state
 
 
 def _set_field(card, field_key, value):
@@ -135,6 +136,27 @@ def test_ambiguous_legacy_pair_is_not_silently_defaulted_to_a_condition_card():
 
     assert "space_environment" not in values
     assert values["supply_air"] == "supply_air_2"
+
+
+def test_equal_complete_condition_cards_in_one_scope_are_blocking_duplicates():
+    state = _configured_state()
+    space_1 = next(card for card in state["conditions"]["condition_sets"] if card["id"] == "space_environment_1")
+    space_2 = next(card for card in state["conditions"]["condition_sets"] if card["id"] == "space_environment_2")
+    _set_field(space_2, "room_temp", space_1["fields"]["room_temp"]["value"])
+    _set_field(space_2, "room_rh", space_1["fields"]["room_rh"]["value"])
+
+    blocking = validate_state(sanitize_state(state))["blocking"]
+    duplicates = [issue for issue in blocking if issue["code"] == "conditions.duplicate"]
+
+    assert len(duplicates) == 1
+    assert duplicates[0]["field_key"] == "space_environment_2"
+    assert duplicates[0]["duplicate_of_card_id"] == "space_environment_1"
+
+
+def test_different_complete_condition_cards_are_not_duplicate_conditions():
+    blocking = validate_state(sanitize_state(_configured_state()))["blocking"]
+
+    assert not any(issue["code"] == "conditions.duplicate" for issue in blocking)
 
 
 def test_group_selection_survives_value_edit_and_updates_its_visible_label():

@@ -480,7 +480,7 @@ def test_case_matrix_lists_shape_operation_and_specification_inputs_above_the_ta
     assert 'caseSourceOperatingPresentation(operatingById.get(value), label)' in summary
     assert 'caseSourceSpecificationPresentation(specificationById.get(value), label)' in summary
     assert 'caseSourceSummaryExpanded ? "상세 닫기" : "상세 보기"' in summary
-    assert '$("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}`;' in HTML_TEMPLATE
+    assert '$("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}${caseConfigurationInfoHtml()}`;' in HTML_TEMPLATE
 
 
 def test_bootstrap_exposes_four_progress_stages_and_current_manual_matrix():

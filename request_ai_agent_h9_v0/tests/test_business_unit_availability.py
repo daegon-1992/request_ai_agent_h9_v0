@@ -12,8 +12,7 @@ def test_air_care_and_chiller_are_active_in_taxonomy_payload():
     assert payload["division_counts"]["Chiller"] == 2
 
 
-def test_both_selection_modes_show_all_divisions_without_disabled_products():
+def test_quick_selection_mode_shows_all_divisions_without_disabled_products():
     assert 'const defaultDivisions = ["SAC","RAC","Air Care","Chiller"];' in HTML_TEMPLATE
-    assert 'renderPrepChoices("prepDivisionChoices", "division", divisions, context.division);' in HTML_TEMPLATE
     assert 'renderPrepSelect("quickDivisionSelect", divisions, context.division, "Division 선택");' in HTML_TEMPLATE
     assert "defaultDisabledBusinessUnits" not in HTML_TEMPLATE
