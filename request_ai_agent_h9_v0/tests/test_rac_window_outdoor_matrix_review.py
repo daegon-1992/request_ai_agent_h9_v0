@@ -42,7 +42,7 @@ def test_both_scope_requires_outdoor_matrix_display_before_screen_six_and_keeps_
         f"""
 (async () => {{
   const action = {{disabled:false}};
-  const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:""}}, caseCoverageStatus:{{scrollIntoView:() => {{}}}}}};
+  const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:"", dataset:{{}}}}, caseCoverageStatus:{{scrollIntoView:() => {{}}}}}};
   const $ = id => id === "caseConfirmNextBtn" ? action : nodes[id];
   const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
   let both = true;
@@ -106,13 +106,374 @@ def test_both_scope_requires_outdoor_matrix_display_before_screen_six_and_keeps_
     )
 
     assert rendered == {
-        "skippedRender": False,
+        "skippedRender": True,
         "directTab": {"scope": "outdoor", "viewed": True, "matrix": "matrix-outdoor", "preserved": 1},
         "firstNext": {"screen": "", "scope": "outdoor", "viewed": True, "switches": 1},
         "secondNext": "SCREEN-06",
         "indoorOnly": "SCREEN-06",
         "outdoorOnly": "SCREEN-06",
     }
+
+
+def test_case_matrix_rerenders_for_a_scope_change_during_select_focus_but_preserves_same_scope_focus():
+    renderer = _script_between("function renderCasePreview()", "function focusCaseValidationIssue")
+
+    rendered = _run_node(
+        f"""
+let matrixHtml = "matrix-outdoor";
+let matrixWrites = 0;
+const caseMatrix = {{dataset:{{caseMatrixScope:"outdoor"}}}};
+Object.defineProperty(caseMatrix, "innerHTML", {{
+  get:() => matrixHtml,
+  set:value => {{ matrixWrites += 1; matrixHtml = value; }},
+}});
+const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix}};
+const $ = id => nodes[id];
+const requestedAnalysisScopes = () => ["indoor", "outdoor"];
+const scopeTabsHtml = (_kind, scope) => `tab-${{scope}}`;
+const caseImpactNoticeHtml = () => "";
+const caseSourceReferenceHtml = () => "";
+let activeCaseScope = "indoor";
+const caseTableHtml = () => `matrix-${{activeCaseScope}}`;
+const caseConfigurationInfoHtml = () => "";
+const renderCaseDuplicateWarning = () => {{}};
+const renderCaseCoverageStatus = () => {{}};
+const recordCaseImpactReviewMatrixRender = () => {{}};
+const recordOutdoorCaseMatrixView = () => {{}};
+const document = {{activeElement:{{matches:selector => selector === "select[data-case-field]"}}}};
+let activeScreen = "SCREEN-04";
+{renderer}
+
+renderCasePreview();
+const changedScope = {{
+  tab:nodes.caseScopeTabs.innerHTML,
+  matrix:caseMatrix.innerHTML,
+  matrixScope:caseMatrix.dataset.caseMatrixScope,
+  writes:matrixWrites,
+}};
+activeCaseScope = "outdoor";
+caseMatrix.dataset.caseMatrixScope = "outdoor";
+matrixHtml = "matrix-outdoor";
+matrixWrites = 0;
+renderCasePreview();
+const sameScope = {{
+  tab:nodes.caseScopeTabs.innerHTML,
+  matrix:caseMatrix.innerHTML,
+  matrixScope:caseMatrix.dataset.caseMatrixScope,
+  writes:matrixWrites,
+}};
+process.stdout.write(JSON.stringify({{changedScope, sameScope}}));
+"""
+    )
+
+    assert rendered == {
+        "changedScope": {"tab": "tab-indoor", "matrix": "matrix-indoor", "matrixScope": "indoor", "writes": 1},
+        "sameScope": {"tab": "tab-outdoor", "matrix": "matrix-outdoor", "matrixScope": "outdoor", "writes": 0},
+    }
+
+
+def test_rac_both_blocking_error_keeps_the_error_scope_active_over_another_scope_review():
+    renderer = _script_between("function renderCasePreview()", "function focusCaseValidationIssue")
+    validation = _script_between("function caseTableValidationPresentation()", "function renderCaseValidationStatus()")
+    classifier = _script_between("function conditionImpactScope(sources, key)", "function caseImpactNoticeHtml")
+    scope_tabs = _script_between("function scopeTabsHtml(kind, activeScope)", "function syncRequestContextDraftFromState")
+    review_pending = _script_between("function caseImpactReviewPendingForScope(scope, state=requestState)", "function caseMatrixBlockingIssuesForScope")
+    blocking_scope = _script_between("function caseMatrixBlockingIssuesForScope(scope, state=requestState)", "function geometryDrawingDuplicateIssues")
+
+    rendered = _run_node(
+        f"""
+const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+const asArray = value => Array.isArray(value) ? value : [];
+const contextText = value => String(value ?? "").trim();
+const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";
+const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
+let activeCaseScope = "outdoor";
+let activeScreen = "SCREEN-04";
+let outdoorCaseMatrixViewed = true;
+let matrixHtml = "matrix-outdoor-error";
+let matrixWrites = 0;
+const caseMatrix = {{dataset:{{caseMatrixScope:"outdoor"}}}};
+Object.defineProperty(caseMatrix, "innerHTML", {{
+  get:() => matrixHtml,
+  set:value => {{ matrixWrites += 1; matrixHtml = value; }},
+}});
+const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix}};
+const $ = id => nodes[id];
+const requestedAnalysisScopes = () => ["indoor", "outdoor"];
+const scopeLabel = scope => ({{indoor:"실내측", outdoor:"실외측"}})[scope] || "";
+const caseImpactNoticeHtml = () => "";
+const caseSourceReferenceHtml = () => "";
+const caseConfigurationInfoHtml = () => "";
+const caseTableHtml = () => `matrix-${{activeCaseScope}}-${{caseTableValidationPresentation().tone}}`;
+const renderCaseDuplicateWarning = () => {{}};
+const renderCaseCoverageStatus = () => {{}};
+const recordCaseImpactReviewMatrixRender = () => {{}};
+const recordOutdoorCaseMatrixView = () => {{}};
+const document = {{activeElement:{{matches:selector => selector === "select[data-case-field]"}}}};
+let caseValidationPending = false;
+const requestState = {{case_matrix:{{rows:[
+  {{case_id:"indoor_case", analysis_scope:"indoor", condition_values:{{fan:"indoor_card"}}}},
+  {{case_id:"outdoor_case", analysis_scope:"outdoor", condition_values:{{fan:"outdoor_card"}}}},
+]}} , request_context:{{analysis_scope:"both"}}, review:{{validator:{{blocking:[]}}}}}};
+let sourcePhase = "indoor-review";
+let caseImpactBaseline = {{
+  sources:{{
+    geometry:new Map(),
+    conditions:new Map([["indoor_card:fan_1_rpm", "900"], ["outdoor_card:fan_1_rpm", "900"]]),
+    conditionScopes:new Map([["indoor_card", "indoor"], ["outdoor_card", "outdoor"]]),
+  }},
+  rows:requestState.case_matrix.rows,
+}};
+let caseImpactSideState = {{status:"", reasons:[]}};
+let caseMatrixBlockingScope = "";
+const caseImpactSources = () => ({{
+  geometry:new Map(),
+  conditions:new Map([
+    ["indoor_card:fan_1_rpm", "1000"],
+    ...(sourcePhase === "outdoor-rebuild" ? [] : [["outdoor_card:fan_1_rpm", "900"]]),
+  ]),
+  conditionScopes:new Map([["indoor_card", "indoor"], ["outdoor_card", "outdoor"]]),
+}});
+const hasBothAnalysisScopes = () => true;
+const hasBothCaseScopes = () => true;
+const caseValidatorState = state => state.review.validator;
+const caseSelectionMissingIssues = () => [];
+const caseDuplicateIssues = () => requestState.review.validator.blocking
+  .filter(issue => issue.analysis_scope === activeCaseScope);
+const caseConfigurationIssues = () => [];
+const caseCoverageState = () => ({{complete:true}});
+const caseImpactReviewRequiredForScope = scope => caseImpactSideState.status === CASE_REVIEW_REQUIRED && scope === "indoor";
+{validation}
+{classifier}
+{review_pending}
+{blocking_scope}
+{scope_tabs}
+{renderer}
+
+const indoorReviewDetected = classifyCaseImpact(requestState);
+const indoorReview = {{status:caseImpactSideState.status, scope:activeCaseScope}};
+requestState.review.validator.blocking.push({{section:"case_matrix", code:"case_matrix.duplicate", analysis_scope:"outdoor"}});
+sourcePhase = "outdoor-rebuild";
+const outdoorRebuildDetected = classifyCaseImpact(requestState);
+const outdoorRebuild = {{status:caseImpactSideState.status, scope:activeCaseScope}};
+const outdoorError = caseTableValidationPresentation();
+renderCasePreview();
+const errorHeld = {{
+  scope:activeCaseScope,
+  indoorReview:nodes.caseScopeTabs.innerHTML.includes("확인 필요"),
+  outdoorError:nodes.caseScopeTabs.innerHTML.includes("오류"),
+  outdoorSelected:nodes.caseScopeTabs.innerHTML.includes('data-analysis-scope="outdoor" aria-selected="true"'),
+  matrix:caseMatrix.innerHTML,
+  matrixScope:caseMatrix.dataset.caseMatrixScope,
+  writes:matrixWrites,
+}};
+sourcePhase = "outdoor-corrected";
+const canonicalRefreshDetected = classifyCaseImpact(requestState);
+requestState.review.validator.blocking.length = 0;
+classifyCaseImpact(requestState);
+renderCasePreview();
+const errorResolved = {{
+  scope:activeCaseScope,
+  indoorReview:nodes.caseScopeTabs.innerHTML.includes("확인 필요"),
+  outdoorError:nodes.caseScopeTabs.innerHTML.includes("오류"),
+  matrixScope:caseMatrix.dataset.caseMatrixScope,
+}};
+process.stdout.write(JSON.stringify({{
+  indoorReviewDetected,
+  indoorReview,
+  outdoorRebuildDetected,
+  outdoorRebuild,
+  canonicalRefreshDetected,
+  outdoorError,
+  errorHeld,
+  errorResolved,
+}}));
+"""
+    )
+
+    assert rendered == {
+        "indoorReviewDetected": True,
+        "indoorReview": {"status": "CASE_REVIEW_REQUIRED", "scope": "indoor"},
+        "outdoorRebuildDetected": True,
+        "outdoorRebuild": {"status": "CASE_REBUILD_REQUIRED", "scope": "outdoor"},
+        "canonicalRefreshDetected": True,
+        "outdoorError": {"text": "중복 Case 1건", "tone": "error"},
+        "errorHeld": {
+            "scope": "outdoor",
+            "indoorReview": True,
+            "outdoorError": True,
+            "outdoorSelected": True,
+            "matrix": "matrix-outdoor-error",
+            "matrixScope": "outdoor",
+            "writes": 0,
+        },
+        "errorResolved": {
+            "scope": "indoor",
+            "indoorReview": True,
+            "outdoorError": False,
+            "matrixScope": "indoor",
+        },
+    }
+
+
+def test_rac_both_blocking_error_scope_follows_existing_validation_order_until_resolved():
+    classifier = _script_between("function classifyCaseImpact(state)", "function caseImpactNoticeHtml")
+    blocking_scope = _script_between("function caseMatrixBlockingIssuesForScope(scope, state=requestState)", "function geometryDrawingDuplicateIssues")
+
+    rendered = _run_node(
+        f"""
+const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+const asArray = value => Array.isArray(value) ? value : [];
+const contextText = value => String(value ?? "").trim();
+const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";
+const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
+let activeCaseScope = "outdoor";
+let outdoorCaseMatrixViewed = true;
+let caseImpactSideState = {{status:"", reasons:[]}};
+let caseMatrixBlockingScope = "";
+let caseImpactBaseline = {{sources:{{geometry:new Map(), conditions:new Map()}}, rows:[]}};
+const caseImpactSources = () => ({{geometry:new Map(), conditions:new Map()}});
+const hasBothAnalysisScopes = () => true;
+const hasBothCaseScopes = () => true;
+const caseValidatorState = state => state.review.validator;
+const requestState = {{
+  request_context:{{analysis_scope:"both"}},
+  case_matrix:{{rows:[]}},
+  review:{{validator:{{blocking:[
+    {{section:"case_matrix", code:"case_matrix.rows_missing", analysis_scope:"indoor"}},
+    {{section:"case_matrix", code:"case_matrix.rows_missing", analysis_scope:"outdoor"}},
+  ]}}}},
+}};
+{classifier}
+{blocking_scope}
+classifyCaseImpact(requestState);
+const bothErrors = activeCaseScope;
+requestState.review.validator.blocking.shift();
+classifyCaseImpact(requestState);
+const indoorResolved = activeCaseScope;
+process.stdout.write(JSON.stringify({{bothErrors, indoorResolved}}));
+"""
+    )
+
+    assert rendered == {"bothErrors": "indoor", "indoorResolved": "outdoor"}
+
+
+def test_rac_both_scope_tabs_keep_review_status_when_rebuild_or_errors_exist_elsewhere():
+    classifier = _script_between("function conditionImpactScope(sources, key)", "function caseImpactNoticeHtml")
+    review_pending = _script_between("function caseImpactReviewPendingForScope(scope, state=requestState)", "function caseMatrixBlockingIssuesForScope")
+    blocking_scope = _script_between("function caseMatrixBlockingIssuesForScope(scope, state=requestState)", "function geometryDrawingDuplicateIssues")
+    scope_status = _script_between("function caseMatrixScopeStatus(scope, state=requestState)", "function geometryDrawingDuplicateIssues")
+
+    rendered = _run_node(
+        f"""
+const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+const asArray = value => Array.isArray(value) ? value : [];
+const contextText = value => String(value ?? "").trim();
+const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";
+const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
+let activeCaseScope = "outdoor";
+let outdoorCaseMatrixViewed = true;
+let caseImpactSideState = {{status:"", reasons:[]}};
+let caseMatrixBlockingScope = "";
+let phase = "reverse";
+const baseline = () => ({{
+  geometry:new Map(),
+  conditions:new Map([["indoor_card:fan_1_rpm", "900"], ["outdoor_card:fan_1_rpm", "900"]]),
+  conditionScopes:new Map([["indoor_card", "indoor"], ["outdoor_card", "outdoor"]]),
+}});
+let caseImpactBaseline = {{sources:baseline(), rows:[
+  {{case_id:"indoor_case", analysis_scope:"indoor", condition_values:{{fan:"indoor_card"}}}},
+  {{case_id:"outdoor_case", analysis_scope:"outdoor", condition_values:{{fan:"outdoor_card"}}}},
+]}};
+const caseImpactSources = () => ({{
+  geometry:new Map(),
+  conditions:phase === "reverse"
+    ? new Map([["outdoor_card:fan_1_rpm", "1000"]])
+    : new Map([["indoor_card:fan_1_rpm", "1000"], ["outdoor_card:fan_1_rpm", "1000"]]),
+  conditionScopes:new Map([["indoor_card", "indoor"], ["outdoor_card", "outdoor"]]),
+}});
+const hasBothAnalysisScopes = () => true;
+const hasBothCaseScopes = () => true;
+const caseValidatorState = state => state.review.validator;
+const requestState = {{
+  request_context:{{analysis_scope:"both"}},
+  case_matrix:{{rows:caseImpactBaseline.rows}},
+  review:{{validator:{{blocking:[{{section:"case_matrix", code:"case_matrix.fan.missing", analysis_scope:"indoor"}}]}}}},
+}};
+{classifier}
+{review_pending}
+{blocking_scope}
+{scope_status}
+
+classifyCaseImpact(requestState);
+const reverse = {{
+  active:activeCaseScope,
+  impact:caseImpactSideState.status,
+  reviewIds:caseImpactSideState.reviewImpactedCaseIds,
+  indoor:caseMatrixScopeStatus("indoor"),
+  outdoor:caseMatrixScopeStatus("outdoor"),
+}};
+phase = "both-review";
+caseImpactBaseline = {{sources:baseline(), rows:caseImpactBaseline.rows}};
+caseImpactSideState = {{status:"", reasons:[]}};
+caseMatrixBlockingScope = "";
+activeCaseScope = "indoor";
+requestState.review.validator.blocking = [];
+classifyCaseImpact(requestState);
+const bothReview = {{
+  active:activeCaseScope,
+  impact:caseImpactSideState.status,
+  indoor:caseMatrixScopeStatus("indoor"),
+  outdoor:caseMatrixScopeStatus("outdoor"),
+}};
+requestState.review.validator.blocking = [
+  {{section:"case_matrix", code:"case_matrix.fan.missing", analysis_scope:"indoor"}},
+  {{section:"case_matrix", code:"case_matrix.fan.missing", analysis_scope:"outdoor"}},
+];
+classifyCaseImpact(requestState);
+const bothErrors = {{
+  active:activeCaseScope,
+  indoor:caseMatrixScopeStatus("indoor"),
+  outdoor:caseMatrixScopeStatus("outdoor"),
+}};
+process.stdout.write(JSON.stringify({{reverse, bothReview, bothErrors}}));
+"""
+    )
+
+    assert rendered == {
+        "reverse": {
+            "active": "indoor",
+            "impact": "CASE_REBUILD_REQUIRED",
+            "reviewIds": ["outdoor_case"],
+            "indoor": "오류",
+            "outdoor": "확인 필요",
+        },
+        "bothReview": {
+            "active": "indoor",
+            "impact": "CASE_REVIEW_REQUIRED",
+            "indoor": "확인 필요",
+            "outdoor": "확인 필요",
+        },
+        "bothErrors": {"active": "indoor", "indoor": "오류", "outdoor": "오류"},
+    }
+
+
+def test_case_scope_status_tabs_are_not_rendered_outside_rac_both():
+    scope_tabs = _script_between("function scopeTabsHtml(kind, activeScope)", "function syncRequestContextDraftFromState")
+
+    rendered = _run_node(
+        f"""
+const contextText = value => String(value ?? "").trim();
+const hasBothAnalysisScopes = () => false;
+const scopeLabel = scope => scope;
+let statusCalls = 0;
+const caseMatrixScopeStatus = () => {{ statusCalls += 1; return "오류"; }};
+{scope_tabs}
+process.stdout.write(JSON.stringify({{html:scopeTabsHtml("case", "indoor"), statusCalls}}));
+"""
+    )
+
+    assert rendered == {"html": "", "statusCalls": 0}
 
 
 def test_case_impact_invalidation_clears_only_the_outdoor_matrix_view_history():
@@ -184,7 +545,7 @@ const renderCaseDuplicateWarning = () => {{}};
 const renderCaseCoverageStatus = () => {{}};
 const caseImpactReviewRequiredForScope = scope => caseImpactSideState.status === CASE_REVIEW_REQUIRED
   && requestState.case_matrix.rows.some(row => row.analysis_scope === scope && caseImpactSideState.impactedCaseIds.includes(row.case_id));
-const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:""}}}};
+const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:"", dataset:{{}}}}}};
 const $ = id => nodes[id];
 const document = {{activeElement:null}};
 {review_helpers}
@@ -350,7 +711,7 @@ const recordOutdoorCaseMatrixView = () => {{}};
 const caseImpactReviewRequiredForScope = scope => caseImpactSideState.status === CASE_REVIEW_REQUIRED
   && requestState.case_matrix.rows.some(row => row.analysis_scope === scope && caseImpactSideState.impactedCaseIds.includes(row.case_id));
 const document = {{activeElement:null}};
-const $ = id => ({{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:""}}}})[id];
+const $ = id => ({{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:"", dataset:{{}}}}}})[id];
 {reset}
 {classifier}
 {renderer}
@@ -440,7 +801,7 @@ def test_screen_four_preview_then_navigation_to_screen_five_establishes_and_pres
   const renderCaseCoverageStatus = () => {{}};
   const recordOutdoorCaseMatrixView = () => {{}};
   const document = {{activeElement:null}};
-  const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:""}}}};
+  const nodes = {{caseScopeTabs:{{innerHTML:""}}, caseCommon:{{innerHTML:""}}, caseMatrix:{{innerHTML:"", dataset:{{}}}}}};
   const $ = id => nodes[id];
   const caseImpactReviewRequiredForScope = scope => caseImpactSideState.status === CASE_REVIEW_REQUIRED
     && requestState.case_matrix.rows.some(row => (!scope || row.analysis_scope === scope) && caseImpactSideState.impactedCaseIds.includes(row.case_id));
@@ -480,6 +841,134 @@ def test_screen_four_preview_then_navigation_to_screen_five_establishes_and_pres
         "reviewedVisit": {"baseline": "900", "matrix": "⚠ 확인 필요", "renderedScopes": [""]},
         "completed": {"status": "", "baseline": "1000"},
         "secondReview": True,
+    }
+
+
+def test_rac_both_review_user_flow_keeps_confirmations_until_both_scopes_are_seen_then_resets_for_new_change():
+    source_start = HTML_TEMPLATE.index("function sourceFieldValue(value)")
+    source_end = HTML_TEMPLATE.index("function resetCaseImpactBaseline(options={})", source_start)
+    source_functions = HTML_TEMPLATE[source_start:source_end]
+    reset_start = source_end
+    reset_end = HTML_TEMPLATE.index("function clearCaseConfigurationWarning()", reset_start)
+    reset = HTML_TEMPLATE[reset_start:reset_end]
+    impact_start = HTML_TEMPLATE.index("function hasConditionReference(rows, value)")
+    impact_end = HTML_TEMPLATE.index("function caseImpactNoticeHtml()", impact_start)
+    classifier = HTML_TEMPLATE[impact_start:impact_end]
+    switch_scope = _script_between("function switchAnalysisScopeTab(kind, scope)", "function requiresOutdoorCaseMatrixView")
+    review_helpers = _script_between("function requiresOutdoorCaseMatrixView()", "function renderPreviewCaseMatrixStatus")
+    renderer = _script_between("function renderCasePreview()", "function focusCaseValidationIssue")
+    confirmation = _script_between("async function confirmCaseConfiguration()", "function renderDerivedPanels()")
+    navigation = _script_between("function navigateScreen(screenId, options={})", "function updateGate()")
+
+    rendered = _run_node(
+        f"""
+(async () => {{
+  const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+  const asArray = value => Array.isArray(value) ? value : [];
+  const contextText = value => String(value ?? "").trim();
+  const CASE_REVIEW_REQUIRED = "CASE_REVIEW_REQUIRED";
+  const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
+  const window = {{clearTimeout:() => {{}}}};
+  const nodes = {{
+    caseConfirmNextBtn:{{disabled:false}},
+    caseScopeTabs:{{innerHTML:""}},
+    caseCommon:{{innerHTML:""}},
+    caseMatrix:{{innerHTML:"", dataset:{{}}}},
+  }};
+  const $ = id => nodes[id];
+  const document = {{activeElement:null}};
+  const screenOrder = ["SCREEN-01", "SCREEN-02", "SCREEN-03", "SCREEN-04", "SCREEN-05", "SCREEN-06"]
+    .map(id => ({{id, tab:"write", requiresContext:false}}));
+  let activeScreen = "SCREEN-04";
+  let activeTopTab = "write";
+  let activeCaseScope = "indoor";
+  let outdoorCaseMatrixViewed = false;
+  let caseImpactBaseline = null;
+  let caseImpactSideState = {{status:"", reasons:[]}};
+  let caseConfigurationWarning = "";
+  let caseConfigurationWarningTimer = null;
+  let requestState = {{
+    geometry:{{base_product:{{geometry_id:"geometry_1", drawing_no:{{value:"WINDOW-001"}}}}, comparison_products:[]}},
+    conditions:{{condition_sets:[
+      {{id:"indoor_card", type:"operating", analysis_scope:"indoor", fields:{{}}, fans:[{{values:{{fan_rpm:"900"}}}}]}},
+      {{id:"outdoor_card", type:"operating", analysis_scope:"outdoor", fields:{{}}, fans:[{{values:{{fan_rpm:"900"}}}}]}},
+    ]}},
+    case_matrix:{{
+      visible_columns:[{{key:"fan", kind:"condition"}}],
+      dropdown_options_by_scope:{{
+        indoor:{{geometry_id:[{{value:"geometry_1"}}], fan:[{{value:"indoor_card"}}]}},
+        outdoor:{{geometry_id:[{{value:"geometry_1"}}], fan:[{{value:"outdoor_card"}}]}},
+      }},
+      rows:[
+        {{case_id:"indoor_case", analysis_scope:"indoor", geometry_id:"geometry_1", condition_values:{{fan:"indoor_card"}}}},
+        {{case_id:"outdoor_case", analysis_scope:"outdoor", geometry_id:"geometry_1", condition_values:{{fan:"outdoor_card"}}}},
+      ],
+    }},
+    review:{{validator:{{blocking:[], coverage:{{complete:true}}}}}},
+  }};
+  const clearCaseConfigurationWarning = () => {{ caseConfigurationWarning = ""; caseConfigurationWarningTimer = null; }};
+  const hasBothAnalysisScopes = () => true;
+  const requestedAnalysisScopes = () => ["indoor", "outdoor"];
+  const currentCaseScope = () => activeCaseScope;
+  const scopeTabsHtml = () => "";
+  const caseImpactNoticeHtml = () => "";
+  const caseSourceReferenceHtml = () => "";
+  const caseTableHtml = () => `matrix-${{activeCaseScope}}`;
+  const caseConfigurationInfoHtml = () => "";
+  const renderCaseDuplicateWarning = () => {{}};
+  const renderCaseCoverageStatus = () => {{}};
+  const preserveCaseSelections = () => {{}};
+  const caseImpactReviewRequiredForScope = scope => caseImpactSideState.status === CASE_REVIEW_REQUIRED
+    && requestState.case_matrix.rows.some(row => row.analysis_scope === scope && caseImpactSideState.impactedCaseIds.includes(row.case_id));
+  const caseConfigurationIssues = () => requestState.review.validator.blocking;
+  const focusCaseValidationIssue = () => {{}};
+  const focusCaseCoverageIssue = () => {{}};
+  const isContextLocked = () => true;
+  const firstIncompleteScreenBefore = () => null;
+  const missingRequiredControl = () => null;
+  const focusRequiredControl = () => {{}};
+  const renderScreenNavigation = () => {{}};
+  const focusScreenHeading = () => {{}};
+  {source_functions}
+  {reset}
+  {classifier}
+  {switch_scope}
+  {review_helpers}
+  {renderer}
+  const refreshPreview = async () => {{ renderCasePreview(); }};
+  {confirmation}
+  {navigation}
+
+  navigateScreen("SCREEN-05");
+  const initial = {{baseline:caseImpactBaseline.sources.conditions.get("indoor_card:fan_1_rpm"), status:caseImpactSideState.status}};
+  requestState.conditions.condition_sets[0].fans[0].values.fan_rpm = "1000";
+  requestState.conditions.condition_sets[1].fans[0].values.fan_rpm = "1000";
+  const firstReview = classifyCaseImpact(requestState);
+  renderCasePreview();
+  const indoorReview = {{scope:activeCaseScope, viewed:outdoorCaseMatrixViewed, rendered:[...caseImpactSideState.renderedScopes]}};
+  await confirmCaseConfiguration();
+  const outdoorReview = {{screen:activeScreen, scope:activeCaseScope, viewed:outdoorCaseMatrixViewed, rendered:[...caseImpactSideState.renderedScopes]}};
+  await refreshPreview();
+  const refreshedReview = {{scope:activeCaseScope, viewed:outdoorCaseMatrixViewed, rendered:[...caseImpactSideState.renderedScopes]}};
+  await confirmCaseConfiguration();
+  const completed = {{screen:activeScreen, status:caseImpactSideState.status, indoorBaseline:caseImpactBaseline.sources.conditions.get("indoor_card:fan_1_rpm"), outdoorBaseline:caseImpactBaseline.sources.conditions.get("outdoor_card:fan_1_rpm")}};
+  navigateScreen("SCREEN-04");
+  requestState.conditions.condition_sets[0].fans[0].values.fan_rpm = "1100";
+  const secondReview = classifyCaseImpact(requestState);
+  process.stdout.write(JSON.stringify({{initial, firstReview, indoorReview, outdoorReview, refreshedReview, completed, secondReview, next:{{scope:activeCaseScope, viewed:outdoorCaseMatrixViewed, rendered:caseImpactSideState.renderedScopes, impacted:caseImpactSideState.impactedCaseIds}}}}));
+}})().catch(error => {{ console.error(error); process.exit(1); }});
+"""
+    )
+
+    assert rendered == {
+        "initial": {"baseline": "900", "status": ""},
+        "firstReview": True,
+        "indoorReview": {"scope": "indoor", "viewed": False, "rendered": ["indoor"]},
+        "outdoorReview": {"screen": "SCREEN-05", "scope": "outdoor", "viewed": True, "rendered": ["indoor", "outdoor"]},
+        "refreshedReview": {"scope": "outdoor", "viewed": True, "rendered": ["indoor", "outdoor"]},
+        "completed": {"screen": "SCREEN-06", "status": "", "indoorBaseline": "1000", "outdoorBaseline": "1000"},
+        "secondReview": True,
+        "next": {"scope": "indoor", "viewed": False, "rendered": [], "impacted": ["indoor_case"]},
     }
 
 

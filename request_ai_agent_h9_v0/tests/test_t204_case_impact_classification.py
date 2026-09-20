@@ -221,7 +221,9 @@ def test_case_matrix_dropdown_changes_refresh_validator_feedback_without_rebuild
     assert '!event.target.matches("select[data-case-field]")' in ui
     assert 'if (event.target.matches("select[data-case-field]")) preserveCaseSelections(event.target);' in ui
     assert 'const activeCaseSelect = document.activeElement?.matches?.("select[data-case-field]");' in ui
-    assert 'if (!activeCaseSelect) $("caseMatrix").innerHTML' in ui
+    assert 'const matrixScopeMatchesActiveScope = caseMatrix?.dataset?.caseMatrixScope === activeCaseScope;' in ui
+    assert 'const renderCaseMatrix = !activeCaseSelect || !matrixScopeMatchesActiveScope;' in ui
+    assert 'if (renderCaseMatrix) {' in ui
     assert 'lastCaseDeleteNoticeVisible = false;' in preserve
     assert 'schedulePreviewRefresh();' in preserve
     assert 'else if (event.target.matches("select[data-case-field]")) refreshPreview();' not in ui

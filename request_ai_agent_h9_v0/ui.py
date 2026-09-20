@@ -265,6 +265,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .direct-choice button,.analysis-scope-tabs button{min-height:34px;padding:6px 13px;border:1px solid var(--ui-border);border-radius:7px;background:var(--ui-surface);color:var(--ui-text-secondary);font-size:13px;font-weight:500}
     .direct-choice button[aria-pressed="true"],.analysis-scope-tabs button[aria-selected="true"]{border-color:#34373E;background:#34373E;color:#fff;font-weight:600;box-shadow:0 0 0 2px rgba(52,55,62,.12)}
     .analysis-scope-tabs{margin:0 0 8px;padding-bottom:12px;border-bottom:1px solid var(--ui-border-subtle)}
+    .analysis-scope-tab-status{font-weight:400}
     .analysis-scope-context{margin:0 0 18px;color:var(--ui-text-primary);font-size:14px;font-weight:600}
     .analysis-type-detail{min-width:0;padding-left:24px;border-left:1px solid var(--ui-border-subtle)}
     .analysis-type-detail-eyebrow{margin:0 0 8px;color:var(--ui-text-muted);font-size:12px;font-weight:500}
@@ -1886,7 +1887,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     function scopeTabsHtml(kind, activeScope){
       if (!hasBothAnalysisScopes()) return "";
       const contextLabel = kind === "conditions" ? `${scopeLabel(activeScope)} 해석 조건` : `${scopeLabel(activeScope)} Case 구성`;
-      return `<div class="analysis-scope-tabs" role="tablist" aria-label="${kind === "conditions" ? "해석 조건" : "Case Matrix"} 해석 범위">${["indoor","outdoor"].map(scope => `<button type="button" role="tab" data-scope-tab="${kind}" data-analysis-scope="${scope}" aria-selected="${String(scope === activeScope)}">${scopeLabel(scope)}</button>`).join("")}</div><div class="analysis-scope-context" aria-live="polite">${contextLabel}</div>`;
+      return `<div class="analysis-scope-tabs" role="tablist" aria-label="${kind === "conditions" ? "해석 조건" : "Case Matrix"} 해석 범위">${["indoor","outdoor"].map(scope => {
+        const status = kind === "case" ? caseMatrixScopeStatus(scope) : "";
+        return `<button type="button" role="tab" data-scope-tab="${kind}" data-analysis-scope="${scope}" aria-selected="${String(scope === activeScope)}">${scopeLabel(scope)}${status ? ` <span class="analysis-scope-tab-status">· ${status}</span>` : ""}</button>`;
+      }).join("")}</div><div class="analysis-scope-context" aria-live="polite">${contextLabel}</div>`;
     }
 
     function syncRequestContextDraftFromState(){
@@ -3368,6 +3372,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
     let caseImpactBaseline = null;
     let caseImpactSideState = {status:"", reasons:[]};
+    let caseMatrixBlockingScope = "";
     let caseConfigurationWarning = "";
     let caseConfigurationWarningTimer = null;
     let lastCaseDeleteNoticeVisible = false;
@@ -3409,6 +3414,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         ? null
         : {sources:caseImpactSources(requestState), rows:asArray(asObj(requestState.case_matrix).rows).map(row => JSON.parse(JSON.stringify(row)))};
       caseImpactSideState = {status:"", reasons:[]};
+      if (typeof caseMatrixBlockingScope !== "undefined") caseMatrixBlockingScope = "";
       clearCaseConfigurationWarning();
     }
 
@@ -3449,6 +3455,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       const changedConditionScopes = new Set();
       let commonSourceChanged = false;
       const impactedCaseIds = new Set();
+      const reviewImpactedCaseIds = new Set();
       const invalidSelections = new Map();
       const invalidSelectionValue = (row, key) => {
         const invalid = asObj(asObj(row).invalid_selection_values)[key];
@@ -3470,6 +3477,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       const markImpacted = impacted => impacted.forEach(row => {
         const caseId = contextText(asObj(row).case_id);
         if (caseId) impactedCaseIds.add(caseId);
+      });
+      const markReviewImpacted = impacted => impacted.forEach(row => {
+        const caseId = contextText(asObj(row).case_id);
+        if (caseId) reviewImpactedCaseIds.add(caseId);
       });
       const markInvalid = (impacted, key) => impacted.forEach(row => {
         const item = asObj(row), caseId = contextText(item.case_id);
@@ -3501,7 +3512,10 @@ HTML_TEMPLATE = r"""<!doctype html>
             rebuildReasons.push(`geometry:${id}:identifier_changed`);
             rebuildReasons.push(`geometry:${id}:required_value_invalid`);
             markInvalid(impacted, "geometry_id");
-          } else if (referenced) reviewReasons.push(`geometry:${id}:identifier_changed`);
+          } else if (referenced) {
+            reviewReasons.push(`geometry:${id}:identifier_changed`);
+            markReviewImpacted(impacted);
+          }
           commonSourceChanged = true;
         }
       });
@@ -3523,7 +3537,10 @@ HTML_TEMPLATE = r"""<!doctype html>
             rebuildReasons.push(`condition:${key}:identifier_changed`);
             rebuildReasons.push(`condition:${key}:required_value_invalid`);
             markInvalidCondition(impacted, cardId);
-          } else if (referenced) reviewReasons.push(`condition:${key}:identifier_changed`);
+          } else if (referenced) {
+            reviewReasons.push(`condition:${key}:identifier_changed`);
+            markReviewImpacted(impacted);
+          }
           const scope = conditionImpactScope(current, key) || conditionImpactScope(baseline, key);
           if (scope) changedConditionScopes.add(scope);
         }
@@ -3539,15 +3556,23 @@ HTML_TEMPLATE = r"""<!doctype html>
         && contextText(previousImpact.reviewKey) === reviewKey;
       const renderedReviewScopes = sameReview ? asArray(previousImpact.renderedScopes) : [];
       caseImpactSideState = rebuildReasons.length
-        ? {status:CASE_REBUILD_REQUIRED, reasons:rebuildReasons, impactedCaseIds:[...impactedCaseIds], invalidSelections:[...invalidSelections.values()]}
-        : reviewReasons.length ? {status:CASE_REVIEW_REQUIRED, reasons:reviewReasons, impactedCaseIds:[...impactedCaseIds], invalidSelections:[], reviewKey, renderedScopes:renderedReviewScopes} : {status:"", reasons:[]};
+        ? {status:CASE_REBUILD_REQUIRED, reasons:rebuildReasons, impactedCaseIds:[...impactedCaseIds], reviewImpactedCaseIds:[...reviewImpactedCaseIds], invalidSelections:[...invalidSelections.values()]}
+        : reviewReasons.length ? {status:CASE_REVIEW_REQUIRED, reasons:reviewReasons, impactedCaseIds:[...impactedCaseIds], reviewImpactedCaseIds:[...reviewImpactedCaseIds], invalidSelections:[], reviewKey, renderedScopes:renderedReviewScopes} : {status:"", reasons:[]};
       const caseImpactDetected = Boolean(caseImpactSideState.status);
-      if (caseImpactDetected && !sameReview) {
+      const blockingScope = typeof caseMatrixBlockingErrorScope === "function" ? caseMatrixBlockingErrorScope(state) : "";
+      const previousBlockingScope = typeof caseMatrixBlockingScope === "string" ? caseMatrixBlockingScope : "";
+      if (typeof caseMatrixBlockingScope !== "undefined") caseMatrixBlockingScope = blockingScope;
+      const preferredImpactScope = !commonSourceChanged && changedConditionScopes.size === 1
+        ? Array.from(changedConditionScopes)[0]
+        : "indoor";
+      if (blockingScope) {
+        activeCaseScope = blockingScope;
+      } else if (previousBlockingScope && contextText(caseImpactSideState.status) === CASE_REVIEW_REQUIRED && hasBothAnalysisScopes()) {
+        activeCaseScope = preferredImpactScope;
+      } else if (caseImpactDetected && !sameReview) {
         outdoorCaseMatrixViewed = false;
         if (hasBothAnalysisScopes()) {
-          activeCaseScope = !commonSourceChanged && changedConditionScopes.size === 1
-            ? Array.from(changedConditionScopes)[0]
-            : "indoor";
+          activeCaseScope = preferredImpactScope;
         }
       }
       return caseImpactDetected;
@@ -3899,6 +3924,40 @@ HTML_TEMPLATE = r"""<!doctype html>
       });
     }
 
+    function caseImpactReviewPendingForScope(scope, state=requestState){
+      const impact = typeof caseImpactSideState === "undefined" ? {} : asObj(caseImpactSideState);
+      const reviewIds = asArray(impact.reviewImpactedCaseIds);
+      const impactedIds = reviewIds.length || contextText(impact.status) !== CASE_REVIEW_REQUIRED
+        ? reviewIds
+        : asArray(impact.impactedCaseIds);
+      if (!impactedIds.length) return false;
+      return asArray(asObj(state.case_matrix).rows).some(row => {
+        const item = asObj(row);
+        return contextText(item.analysis_scope) === scope && impactedIds.includes(contextText(item.case_id));
+      });
+    }
+
+    function caseMatrixBlockingIssuesForScope(scope, state=requestState){
+      if (!hasBothCaseScopes(state) || !["indoor","outdoor"].includes(scope)) return [];
+      return asArray(caseValidatorState(state).blocking).filter(rawIssue => {
+        const issue = asObj(rawIssue);
+        return contextText(issue.section) === "case_matrix" && contextText(issue.analysis_scope) === scope;
+      });
+    }
+
+    function caseMatrixBlockingErrorScope(state=requestState){
+      if (!hasBothCaseScopes(state)) return "";
+      const issue = asArray(caseValidatorState(state).blocking).map(asObj).find(item =>
+        contextText(item.section) === "case_matrix" && ["indoor","outdoor"].includes(contextText(item.analysis_scope))
+      );
+      return issue ? contextText(issue.analysis_scope) : "";
+    }
+
+    function caseMatrixScopeStatus(scope, state=requestState){
+      if (caseMatrixBlockingIssuesForScope(scope, state).length) return "오류";
+      return caseImpactReviewPendingForScope(scope, state) ? "확인 필요" : "";
+    }
+
     function geometryDrawingDuplicateIssues(state=requestState){
       return asArray(caseValidatorState(state).blocking)
         .filter(issue => contextText(asObj(issue).code) === "geometry.product.drawing_no.duplicate");
@@ -4160,9 +4219,15 @@ HTML_TEMPLATE = r"""<!doctype html>
       const scopeTabs = $("caseScopeTabs");
       if (scopeTabs) scopeTabs.innerHTML = scopeTabsHtml("case", activeCaseScope);
       $("caseCommon").innerHTML = caseImpactNoticeHtml();
+      const caseMatrix = $("caseMatrix");
       const activeCaseSelect = document.activeElement?.matches?.("select[data-case-field]");
-      if (!activeCaseSelect) $("caseMatrix").innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}${caseConfigurationInfoHtml()}`;
-      if (!activeCaseSelect) {
+      const matrixScopeMatchesActiveScope = caseMatrix?.dataset?.caseMatrixScope === activeCaseScope;
+      const renderCaseMatrix = !activeCaseSelect || !matrixScopeMatchesActiveScope;
+      if (renderCaseMatrix) {
+        caseMatrix.innerHTML = `${caseSourceReferenceHtml()}${caseTableHtml()}${caseConfigurationInfoHtml()}`;
+        caseMatrix.dataset.caseMatrixScope = activeCaseScope;
+      }
+      if (renderCaseMatrix) {
         if (activeScreen === "SCREEN-05" && typeof caseImpactBaseline !== "undefined" && !caseImpactBaseline) resetCaseImpactBaseline();
         recordCaseImpactReviewMatrixRender();
         recordOutdoorCaseMatrixView();
