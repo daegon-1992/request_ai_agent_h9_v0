@@ -3575,7 +3575,6 @@ HTML_TEMPLATE = r"""<!doctype html>
         caseImpactSideState = {...caseImpactSideState, invalidSelections:remaining};
         return;
       }
-      resetCaseImpactBaseline();
     }
 
     function caseImpactPreviousSelection(rowId, key, selected){
@@ -4212,7 +4211,6 @@ HTML_TEMPLATE = r"""<!doctype html>
         const unresolvedSelections = typeof unresolvedCaseImpactSelections === "function" && unresolvedCaseImpactSelections().length;
         const reviewPending = typeof caseImpactSideState !== "undefined"
           && contextText(asObj(caseImpactSideState).status) === "CASE_REVIEW_REQUIRED";
-        if (!unresolvedSelections && !reviewPending) resetCaseImpactBaseline();
         renderCasePreview();
         const blockingIssues = caseConfigurationIssues();
         const coverageBlocked = asObj(asObj(asObj(requestState).review).validator).coverage?.complete === false;
@@ -4225,6 +4223,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           switchAnalysisScopeTab("case", "outdoor");
           return;
         }
+        if (!unresolvedSelections && !reviewPending) resetCaseImpactBaseline();
         navigateScreen("SCREEN-06");
       } finally {
         if (action) action.disabled = false;

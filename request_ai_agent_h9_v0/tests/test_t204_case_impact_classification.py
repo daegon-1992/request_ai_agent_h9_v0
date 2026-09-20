@@ -148,6 +148,70 @@ def test_case_configuration_confirmation_revalidates_before_entering_preview():
     assert 'case_matrix.duplicate' in ui
 
 
+def test_rebuild_baseline_waits_for_successful_case_configuration():
+    ui = UI_PATH.read_text(encoding="utf-8")
+    resolve_start = ui.index("function unresolvedCaseImpactSelections(")
+    resolve_end = ui.index("function caseImpactPreviousSelection", resolve_start)
+    resolve_functions = ui[resolve_start:resolve_end]
+    confirm_start = ui.index("async function confirmCaseConfiguration()")
+    confirm_end = ui.index("function renderDerivedPanels()", confirm_start)
+    confirmation = ui[confirm_start:confirm_end]
+
+    assert "resetCaseImpactBaseline();" not in resolve_functions
+    assert confirmation.index("if (blockingIssues.length || coverageBlocked)") < confirmation.index(
+        "if (!unresolvedSelections && !reviewPending) resetCaseImpactBaseline();"
+    )
+    assert confirmation.index("if (requiresOutdoorCaseMatrixView() && !outdoorCaseMatrixViewed)") < confirmation.index(
+        "if (!unresolvedSelections && !reviewPending) resetCaseImpactBaseline();"
+    )
+
+    script = f'''
+(async () => {{
+  const action = {{disabled:false}};
+  const $ = id => id === "caseConfirmNextBtn" ? action : null;
+  const asObj = value => value && typeof value === "object" && !Array.isArray(value) ? value : {{}};
+  const asArray = value => Array.isArray(value) ? value : [];
+  const contextText = value => String(value ?? "").trim();
+  const CASE_REBUILD_REQUIRED = "CASE_REBUILD_REQUIRED";
+  let resets = 0;
+  let nextScreen = "";
+  let caseImpactSideState = {{status:CASE_REBUILD_REQUIRED, invalidSelections:[]}};
+  let requestState = {{
+    case_matrix:{{rows:[{{case_id:"case_001", geometry_id:"geometry_2", condition_values:{{}}}}]}},
+    review:{{validator:{{blocking:[{{code:"case_matrix.duplicate"}}], coverage:{{complete:true}}}}}},
+  }};
+  const refreshPreview = async () => true;
+  const renderCasePreview = () => {{}};
+  const caseConfigurationIssues = () => requestState.review.validator.blocking;
+  const focusCaseValidationIssue = () => {{}};
+  const focusCaseCoverageIssue = () => {{}};
+  const requiresOutdoorCaseMatrixView = () => false;
+  let outdoorCaseMatrixViewed = false;
+  const resetCaseImpactBaseline = () => {{ resets += 1; caseImpactSideState = {{status:"", reasons:[]}}; }};
+  const navigateScreen = screen => {{ nextScreen = screen; }};
+  {resolve_functions}
+  {confirmation}
+
+  resolveCaseImpactSelections();
+  const afterResolve = resets;
+  await confirmCaseConfiguration();
+  const afterBlocked = resets;
+  requestState.review.validator.blocking = [];
+  await confirmCaseConfiguration();
+  process.stdout.write(JSON.stringify({{afterResolve, afterBlocked, resets, nextScreen}}));
+}})().catch(error => {{ console.error(error); process.exit(1); }});
+'''
+    result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=False)
+
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout) == {
+        "afterResolve": 0,
+        "afterBlocked": 0,
+        "resets": 1,
+        "nextScreen": "SCREEN-06",
+    }
+
+
 def test_case_matrix_dropdown_changes_refresh_validator_feedback_without_rebuilding_active_select():
     ui = UI_PATH.read_text(encoding="utf-8")
     preserve_start = ui.index("function preserveCaseSelections(changedSelect=null)")
