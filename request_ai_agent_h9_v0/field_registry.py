@@ -153,7 +153,9 @@ def get_field_registry(state: Mapping[str, Any] | None = None) -> tuple[FieldReg
     """
 
     source = state or {}
-    general = tuple(_general_field(spec) for spec in _GENERAL_SPECS)
+    # PMS reference metadata is set only by the explicit PMS selection flow;
+    # it is not a general agent-editable form field.
+    general = tuple(_general_field(spec) for spec in _GENERAL_SPECS if not spec.derived)
     request_context = source.get("request_context", {}) if isinstance(source, Mapping) else {}
     analysis_type = request_context.get("analysis_type", "") if isinstance(request_context, Mapping) else ""
     if isinstance(analysis_type, Mapping):

@@ -69,8 +69,7 @@ def test_initial_context_and_future_fan_value_are_preserved_then_proposed(monkey
                         "analysis_type": "이슬맺힘",
                     },
                 },
-                {"op": "set", "path": "analysis_overview.project_name", "value": "ABC"},
-                {"op": "set", "path": "analysis_overview.development_grade", "value": "B"},
+                {"op": "set", "path": "analysis_overview.request_description", "value": "ABC"},
                 {"op": "list_values", "path": "geometry.products", "values": ["A100", "B200"]},
             ],
             deferred_facts=[
@@ -101,8 +100,7 @@ def test_initial_context_and_future_fan_value_are_preserved_then_proposed(monkey
     approved = _approve(client, first["proposal"]["proposal_id"])
     after_context = app.extensions["request_state_store"].read(request_id)
     assert after_context.state["request_context"]["context_locked"] is True
-    assert after_context.state["analysis_overview"]["project_name"]["value"] == "ABC"
-    assert after_context.state["analysis_overview"]["development_grade"]["value"] == "B"
+    assert after_context.state["analysis_overview"]["request_description"]["value"] == "ABC"
     assert after_context.state["geometry"]["base_product"]["drawing_no"]["value"] == "A100"
     assert after_context.state["geometry"]["comparison_products"][0]["drawing_no"]["value"] == "B200"
     assert _fan_rpm(after_context.state) == ""
@@ -198,7 +196,7 @@ def test_newer_form_value_supersedes_old_deferred_value(monkeypatch):
     latest = app.extensions["request_state_store"].read(request_id)
 
     unrelated_edit = deepcopy(latest.state)
-    unrelated_edit["analysis_overview"]["project_name"] = {"value": "FORM-PROJECT", "source": "user"}
+    unrelated_edit["analysis_overview"]["request_description"] = {"value": "FORM-PROJECT", "source": "user"}
     unrelated = client.put(
         f"/api/request/versioned/{request_id}",
         json={"expected_version": latest.version, "state": unrelated_edit},
@@ -323,8 +321,8 @@ def test_form_version_change_invalidates_pending_clarification_candidates(monkey
     def decider(_context, _contract):
         return _decision(
             "clarify",
-            "프로젝트명만 확인해 주세요.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "OLD"}],
+            "해석 요청 배경을 확인해 주세요.",
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "OLD"}],
         )
 
     app, client, request_id, conversation_id = _runtime(monkeypatch, decider, locked=True)
@@ -337,7 +335,7 @@ def test_form_version_change_invalidates_pending_clarification_candidates(monkey
 
     latest = app.extensions["request_state_store"].read(request_id)
     edited = deepcopy(latest.state)
-    edited["analysis_overview"]["project_name"] = {"value": "NEW", "source": "user"}
+    edited["analysis_overview"]["request_description"] = {"value": "NEW", "source": "user"}
     replaced = client.put(
         f"/api/request/versioned/{request_id}",
         json={"expected_version": latest.version, "state": edited},
@@ -351,8 +349,8 @@ def test_second_conversation_reuses_request_pending_proposal_instead_of_creating
         value = "FIRST" if "첫" in context["current_message"] else "SECOND"
         return _decision(
             "propose",
-            "프로젝트명 변경을 제안합니다.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": value}],
+            "해석 요청 배경 변경을 제안합니다.",
+            [{"op": "set", "path": "analysis_overview.request_description", "value": value}],
         )
 
     app, client, request_id, conversation_a = _runtime(monkeypatch, decider, locked=True)

@@ -4,8 +4,9 @@ import pytest
 
 from request_ai_agent_h9_v0.agent_next_question import plan_next_question
 from request_ai_agent_h9_v0.condition_fieldsets import default_condition_sets, make_condition_card
+from request_ai_agent_h9_v0.pms_project_master import search_pms_projects
 from request_ai_agent_h9_v0.request_state_store import RequestStateSnapshot
-from request_ai_agent_h9_v0.state import create_initial_state, make_field, sanitize_complete_product, sanitize_state
+from request_ai_agent_h9_v0.state import apply_pms_project_selection, create_initial_state, make_field, sanitize_complete_product, sanitize_state
 from request_ai_agent_h9_v0.validator import validate_state
 
 
@@ -13,6 +14,7 @@ def _complete_state(analysis_type="풍량"):
     state = create_initial_state()
     state["request_context"].update(
         {
+            "division": "RAC",
             "business_unit": "RAC",
             "product_group": "벽걸이",
             "platform": "SK",
@@ -20,9 +22,16 @@ def _complete_state(analysis_type="풍량"):
             "context_locked": True,
         }
     )
+    state["basic_info"].update(
+        {
+            "division": "RAC",
+            "department": "테스트부서",
+            "requester_name": "테스트 사용자",
+            "requester_role": "책임연구원",
+        }
+    )
     values = {
         "request_type": "개발 프로젝트",
-        "project_name": "T2-01B",
         "development_grade": "A",
         "npi_stage": "DV",
         "model_suffix": "MODEL-A",
@@ -44,6 +53,7 @@ def _complete_state(analysis_type="풍량"):
                 field["value"] = "1"
     state["conditions"]["condition_sets"] = cards
     state = sanitize_state(state)
+    state = apply_pms_project_selection(state, search_pms_projects("RAC")[0]["internal_id"])
     assert validate_state(state)["summary"]["can_submit"] is True
     return state
 
@@ -56,7 +66,7 @@ def _card(state, card_id):
     return next(card for card in state["conditions"]["condition_sets"] if card["id"] == card_id)
 
 
-def test_general_field_uses_fresh_validator_and_is_read_only():
+def test_pms_derived_project_name_is_not_an_agent_question_target():
     state = _complete_state()
     state["analysis_overview"]["project_name"] = make_field("")
     state["review"]["validator"] = {"summary": {"can_submit": True}, "blocking": []}
@@ -65,12 +75,9 @@ def test_general_field_uses_fresh_validator_and_is_read_only():
 
     result = plan_next_question(snapshot)
 
-    assert result == {
-        "kind": "field_question",
-        "message": "프로젝트명(PMS)를 입력해 주세요. 예: 26년향 하이드로타워 대용량 가습공청기",
-        "active_field_id": "analysis_overview.project_name",
-        "blocking_code": "analysis_overview.project_name.required_missing",
-    }
+    assert result["kind"] == "complete"
+    assert result["active_field_id"] is None
+    assert result["blocking_code"] is None
     result["message"] = "changed"
     assert snapshot == before
 

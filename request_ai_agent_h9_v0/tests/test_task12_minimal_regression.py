@@ -15,9 +15,10 @@ from request_ai_agent_h9_v0.condition_fieldsets import (
 from request_ai_agent_h9_v0.constants import SECTION_CASE_MATRIX, SECTION_CONDITIONS, SECTION_GEOMETRY, SECTION_REQUEST_CONTEXT, STATE_SCHEMA_VERSION
 from request_ai_agent_h9_v0.draft_pipeline import build_request_draft
 from request_ai_agent_h9_v0.llm_client import azure_openai_settings
+from request_ai_agent_h9_v0.pms_project_master import search_pms_projects
 from request_ai_agent_h9_v0.preview_document import build_request_preview
 from request_ai_agent_h9_v0.review_pipeline import state_with_final_review
-from request_ai_agent_h9_v0.state import compose_request_title, create_initial_state, sanitize_state
+from request_ai_agent_h9_v0.state import apply_pms_project_selection, compose_request_title, create_initial_state, sanitize_state
 from request_ai_agent_h9_v0.ui import HTML_TEMPLATE
 from request_ai_agent_h9_v0.validator import validate_state
 
@@ -44,7 +45,7 @@ def _configured_state(analysis_type: str = "이슬맺힘") -> dict[str, object]:
     state[SECTION_REQUEST_CONTEXT].update(_context(analysis_type))
     state["basic_info"].update({"division": "RAC", "department": "개발1팀", "requester_name": "테스터", "requester_role": "책임연구원"})
     state["analysis_overview"].update({
-        "request_type": "개발 프로젝트", "project_name": "T2-01B", "development_grade": "A", "npi_stage": "DV", "model_suffix": "MODEL-A",
+        "request_type": "개발 프로젝트", "development_grade": "A", "npi_stage": "DV", "model_suffix": "MODEL-A",
         "desired_completion_date": "2026-08-10",
     })
     state[SECTION_GEOMETRY]["base_product"].update({"drawing_no": "DRAW-A", "display_name": "형상 A", "display_name_custom": True})
@@ -58,7 +59,8 @@ def _configured_state(analysis_type: str = "이슬맺힘") -> dict[str, object]:
             card["fields"].update({"heat_exchanger_temp": "10", "heat_exchanger_rh": "70"})
         elif card["type"] == "space_environment":
             card["fields"].update({"room_temp": "25", "room_rh": "50"})
-    return sanitize_state(state)
+    state = sanitize_state(state)
+    return apply_pms_project_selection(state, search_pms_projects("RAC")[0]["internal_id"])
 
 
 def test_title_uses_all_request_target_values_and_has_the_required_fallback():
@@ -514,15 +516,15 @@ def test_demo_clients_do_not_share_server_state_or_recent_request_api():
     first_client = app.test_client()
     second_client = app.test_client()
     first_state = _configured_state()
-    first_state["analysis_overview"]["project_name"] = "First browser only"
+    first_state["analysis_overview"]["request_description"] = "First browser only"
 
     saved = first_client.post("/api/input/save", json={"state": first_state})
     assert saved.status_code == 200
-    assert saved.get_json()["state"]["analysis_overview"]["project_name"]["value"] == "First browser only"
+    assert saved.get_json()["state"]["analysis_overview"]["request_description"]["value"] == "First browser only"
 
     second_bootstrap = second_client.get("/api/bootstrap")
     assert second_bootstrap.status_code == 200
-    assert second_bootstrap.get_json()["state"]["analysis_overview"]["project_name"]["value"] == ""
+    assert second_bootstrap.get_json()["state"]["analysis_overview"]["request_description"]["value"] == ""
     assert second_client.get("/api/recent").status_code == 404
     assert second_client.post("/api/recent/load", json={"id": "any"}).status_code == 404
 

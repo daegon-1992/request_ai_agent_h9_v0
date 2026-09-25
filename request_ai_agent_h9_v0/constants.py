@@ -125,9 +125,12 @@ REQUEST_CONTEXT_FIELD_DEFS = (
 
 ANALYSIS_OVERVIEW_FIELD_DEFS = (
     {"key": "request_type", "label": "의뢰 유형", "required": True},
-    {"key": "project_name", "label": "프로젝트명(PMS)", "required": True},
-    {"key": "development_grade", "label": "개발 등급", "required": True},
-    {"key": "npi_stage", "label": "NPI 단계", "required": True},
+    {"key": "selected_pms_project_id", "label": "선택 PMS 프로젝트", "required": False, "derived": True},
+    {"key": "project_name", "label": "프로젝트명(PMS)", "required": False},
+    {"key": "pms_project_code", "label": "PMS Project Code", "required": False, "derived": True},
+    {"key": "region", "label": "Region", "required": False, "derived": True},
+    {"key": "development_grade", "label": "개발 등급", "required": False},
+    {"key": "npi_stage", "label": "NPI 단계", "required": False},
     {"key": "model_suffix", "label": "모델명(Model Suffix)", "required": True},
     {"key": "desired_completion_date", "label": "희망 완료일", "required": True, "value_type": "date"},
     {"key": "request_description", "label": "해석을 요청하게 된 배경", "required": True, "track_progress": True},
@@ -287,9 +290,8 @@ ANALYSIS_TYPE_ALIASES = {
 DROPDOWN_OPTION_DEFS = {
     "basic_info.division": ["SAC", "RAC", "Aircare", "Chiller", "연구소", "직접 입력"],
     "basic_info.requester_role": ["책임연구원", "선임연구원", "연구원", "직접 입력"],
-    "analysis_overview.project_name": ["미정", "직접 입력"],
-    "analysis_overview.development_grade": ["A", "B", "Ca", "Cb", "Cc", "선행", "미정", "직접 입력"],
-    "analysis_overview.npi_stage": ["CP", "DV", "PV", "MP", "미정", "직접 입력"],
+    "analysis_overview.development_grade": ["A", "B", "B_Mi", "Ca", "Ca_Mi", "Ca_SW", "Cb", "Cc", "Csw", "D", "ECM_A", "ECM_Cb", "HW", "JDM", "JDM_Ca", "JDM_Cb", "JDM_D", "JDM_파급", "ND_Cb", "ND_D", "ODM_CSKD", "ODM_ND", "ODM_OTS", "ODM_파급", "OTS_파생", "T1", "T2", "T3", "선행", "미정", "직접 입력"],
+    "analysis_overview.npi_stage": ["CP", "DV", "MP", "MQ", "PV", "Pre MP", "Pre-MP", "미정", "직접 입력"],
     "analysis_overview.model_suffix": ["미정", "직접 입력"],
     "conditions.material_type": ["", "Air", "직접 입력"],
     "conditions.working_fluid": ["air", "water"],

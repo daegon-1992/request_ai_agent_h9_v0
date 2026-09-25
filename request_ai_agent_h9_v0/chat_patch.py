@@ -35,7 +35,6 @@ _SET_ALLOWED_PATHS = {
     "basic_info.department",
     "basic_info.requester_name",
     "basic_info.requester_role",
-    "analysis_overview.project_name",
     "analysis_overview.development_grade",
     "analysis_overview.npi_stage",
     "analysis_overview.model_suffix",

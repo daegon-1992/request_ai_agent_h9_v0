@@ -98,7 +98,7 @@ def test_proposal_storage_failure_keeps_request_and_existing_ledger_unchanged():
     with pytest.raises(ProposalCapacityError):
         service.create_proposal(
             other.request_id,
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "second candidate"}],
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "second candidate"}],
             source="llm_structured_output",
         )
 
@@ -119,7 +119,7 @@ def test_request_allows_only_one_pending_proposal_until_the_first_is_terminal():
     with pytest.raises(PendingProposalExistsError) as exc_info:
         service.create_proposal(
             created.request_id,
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "second"}],
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "second"}],
             source="llm_structured_output",
         )
 

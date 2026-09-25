@@ -52,6 +52,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       --ui-radius-panel:8px;
       --ui-shadow-panel:0 1px 2px rgba(17,24,39,.04),0 5px 14px rgba(17,24,39,.045);
       --ui-shadow-control:0 1px 2px rgba(17,24,39,.035);
+      --ui-select-picker-max-height:320px;
       --ui-shadow-header:0 1px 2px rgba(17,24,39,.035),0 3px 8px rgba(17,24,39,.035);
 
       /* Compatibility aliases while screen-specific CSS is migrated in later patches. */
@@ -368,7 +369,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}
     .request-basic-grid{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:12px;row-gap:14px;align-items:end}
     .request-type-field{grid-column:span 1}
-    .request-project-field{grid-column:span 2}
+    .request-project-field{grid-column:span 3}
     .request-basic-row2-start{grid-column-start:1}
     .request-basic-divider{grid-column:1/-1;border-top:1px solid var(--line);margin:3px 0}
     .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -376,12 +377,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     .custom-input{margin-top:5px}
     .dropdown-custom-control .custom-input{margin-top:0}
     .undecided-field{display:flex;min-width:0;flex-direction:column;gap:4px}
-    .undecided-combobox{
+    .undecided-combobox,.pms-combobox{
       position:relative;min-width:0;height:36px;display:grid;grid-template-columns:minmax(0,1fr) 36px;
       border:1px solid var(--line);border-radius:7px;background:var(--paper)
     }
-    .undecided-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}
-    .undecided-combobox input{height:34px;min-height:34px;border:0;border-radius:6px 0 0 6px;padding:8px 9px;background:transparent}
+    .undecided-combobox:focus-within,.pms-combobox:focus-within{outline:2px solid rgba(52,55,62,.18);outline-offset:2px}
+    .undecided-combobox input,.pms-combobox input{height:34px;min-height:34px;border:0;border-radius:6px 0 0 6px;padding:8px 9px;background:transparent}
     .undecided-combobox input:focus-visible,
     .undecided-combobox-toggle:focus-visible{outline:0}
     .undecided-combobox input[readonly]{background:transparent;cursor:default}
@@ -391,11 +392,17 @@ HTML_TEMPLATE = r"""<!doctype html>
       background:transparent;color:var(--muted)
     }
     .undecided-combobox-toggle:hover{background:var(--soft);color:var(--ink)}
+    .pms-combobox .undecided-combobox-toggle:hover{background:transparent;color:#525252}
     .undecided-combobox-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
-    .undecided-combobox-menu{
+    .undecided-combobox-menu,.pms-combobox-menu{
       position:absolute;z-index:40;top:calc(100% + 4px);left:-1px;right:-1px;padding:0;
+      max-height:var(--ui-select-picker-max-height);overflow-y:auto;overscroll-behavior:contain;
       border:1px solid var(--line);border-radius:0;background:var(--paper);box-shadow:none
     }
+    .select-picker-menu{position:fixed;z-index:200;max-height:var(--ui-select-picker-max-height);overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--ui-surface);box-shadow:0 8px 20px rgba(17,24,39,.14)}
+    .select-picker-option{display:block;width:100%;min-height:40px;border:0;border-radius:0;background:transparent;padding:8px 10px;color:var(--ui-field-value);font:inherit;text-align:left;cursor:pointer}
+    .select-picker-option:hover,.select-picker-option:focus,.select-picker-option[aria-selected="true"]{background:var(--soft);outline:0}
+    .select-picker-option:disabled{color:var(--disabled-text);cursor:not-allowed}
     .undecided-combobox-option{
       width:100%;min-height:30px;display:flex;align-items:center;
       border:0;border-radius:0;background:transparent;padding:5px 8px;text-align:left;cursor:default
@@ -405,6 +412,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .undecided-combobox-option[data-undecided-active="true"]{
       background-color:var(--brand)!important;color:#ffffff!important;outline:0
     }
+    .pms-combobox-option{width:100%;display:block;border:0;background:transparent;padding:7px 8px;text-align:left;cursor:default}
+    .pms-combobox-option:hover,.pms-combobox-option:focus,.pms-combobox-option[data-pms-active="true"]{background-color:var(--brand)!important;color:#fff!important;outline:0}
+    .pms-combobox-option small{display:block;margin-top:2px;color:var(--muted);font-size:12px}.pms-combobox-option:hover small,.pms-combobox-option:focus small,.pms-combobox-option[data-pms-active="true"] small{color:inherit}
+    .pms-project-helper{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
     .request-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
     .request-detail-grid textarea{min-height:52px}
     .custom-input[hidden]{display:none}
@@ -861,11 +872,17 @@ HTML_TEMPLATE = r"""<!doctype html>
     /* SCREEN-04 group heading typography and spacing are owned by the base condition-input-screen component. */
     .workspace-shell .condition-group-head-actions button{min-height:24px;height:24px;padding:2px 7px}
     .workspace-shell .request-content-screen input,.workspace-shell .request-content-screen select{height:40px;min-height:40px;padding:0 10px;background-color:var(--paper);color:var(--ui-field-value);font-weight:500}
-    .workspace-shell .request-content-screen .undecided-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}
+    .workspace-shell .request-content-screen :is(.undecided-combobox,.pms-combobox){height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;border:1.5px solid var(--ui-control-border);border-radius:var(--ui-radius-control);background:var(--paper);box-shadow:var(--ui-shadow-control)}
     .workspace-shell .request-content-screen .undecided-combobox:hover{border-color:var(--ui-control-hover);box-shadow:0 1px 3px rgba(17,24,39,.05)}
     .workspace-shell .request-content-screen .undecided-combobox:focus-within{border-color:var(--ui-control-focus);outline:0;box-shadow:0 0 0 2px rgba(52,55,62,.10),0 1px 3px rgba(17,24,39,.05)}
-    .workspace-shell .request-content-screen .undecided-combobox input{height:38px;min-height:38px;padding:0 10px;border:0;border-radius:6px 0 0 6px;background:transparent;box-shadow:none;font-weight:500}
+    .workspace-shell .request-content-screen .pms-combobox:hover{border-color:var(--ui-control-hover);box-shadow:0 1px 3px rgba(17,24,39,.05)}
+    .workspace-shell .request-content-screen .pms-combobox:focus-within{border-color:var(--ui-control-focus);outline:0;box-shadow:0 0 0 2px rgba(52,55,62,.10),0 1px 3px rgba(17,24,39,.05)}
+    .workspace-shell .request-content-screen .pms-combobox[data-disabled="true"]{border-color:var(--ui-disabled-border);background:var(--ui-disabled-bg);box-shadow:none}
+    .workspace-shell .request-content-screen .pms-combobox[data-disabled="true"] input:disabled{background:transparent;color:var(--ui-disabled-text);cursor:not-allowed;opacity:1}
+    .workspace-shell .request-content-screen .pms-combobox[data-disabled="true"] .undecided-combobox-toggle:disabled{background:transparent;color:var(--ui-disabled-text);cursor:not-allowed;opacity:1}
+    .workspace-shell .request-content-screen :is(.undecided-combobox,.pms-combobox) input{height:38px;min-height:38px;padding:0 10px;border:0;border-radius:6px 0 0 6px;background:transparent;box-shadow:none;font-weight:500}
     .workspace-shell .request-content-screen .undecided-combobox input:focus-visible,
+    .workspace-shell .request-content-screen .pms-combobox input:focus-visible,
     .workspace-shell .request-content-screen .undecided-combobox-toggle:focus-visible{border:0;outline:0;outline-offset:0}
     .workspace-shell .request-content-screen .undecided-combobox-toggle{width:38px;height:38px;min-height:38px;border:0;border-radius:0 6px 6px 0;background:transparent;color:#525252}
     .workspace-shell .request-content-screen .request-model-field .undecided-combobox{position:relative;grid-template-columns:minmax(0,1fr)}
@@ -1189,8 +1206,8 @@ HTML_TEMPLATE = r"""<!doctype html>
             <div class="section-body">
               <div class="grid request-basic-grid">
                 <label>사업부<select data-dropdown-path="basic_info.division"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="basic_info.division" hidden><input class="custom-input" data-path="basic_info.division" aria-label="사업부 직접 입력" /><button type="button" data-dropdown-restore-path="basic_info.division" title="사업부 드롭다운으로 돌아가기" aria-label="사업부 드롭다운으로 돌아가기">↩</button></span></label>
-                <label>부서<input data-path="basic_info.department" /></label>
-                <label>요청자<input data-path="basic_info.requester_name" /></label>
+                <label>부서<input data-path="basic_info.department" placeholder="부서를 입력하세요" /></label>
+                <label>요청자<input data-path="basic_info.requester_name" placeholder="성함을 입력하세요" /></label>
                 <label>직급<select data-dropdown-path="basic_info.requester_role"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="basic_info.requester_role" hidden><input class="custom-input" data-path="basic_info.requester_role" aria-label="직급 직접 입력" /><button type="button" data-dropdown-restore-path="basic_info.requester_role" title="직급 드롭다운으로 돌아가기" aria-label="직급 드롭다운으로 돌아가기">↩</button></span></label>
               </div>
             </div>
@@ -1203,16 +1220,14 @@ HTML_TEMPLATE = r"""<!doctype html>
             <div class="section-body">
               <div class="grid request-basic-grid">
                 <label class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.request_type" hidden><input class="custom-input" data-path="analysis_overview.request_type" aria-label="의뢰 유형 직접 입력" placeholder="의뢰 유형을 직접 입력해 주세요." /><button type="button" data-dropdown-restore-path="analysis_overview.request_type" title="의뢰 유형 목록으로 돌아가기" aria-label="의뢰 유형 목록으로 돌아가기">↩</button></span></label>
-                <div class="undecided-field request-project-field">
+                <div class="undecided-field request-project-field" id="pmsProjectField">
                   <label for="projectNameInput">프로젝트명(PMS)</label>
-                  <div class="undecided-combobox" data-undecided-combobox>
-                    <input id="projectNameInput" data-path="analysis_overview.project_name" data-undecided-input role="combobox" aria-autocomplete="none" aria-haspopup="listbox" aria-controls="projectNameMenu" aria-expanded="false" autocomplete="off" />
-                    <button class="undecided-combobox-toggle" type="button" data-undecided-toggle aria-label="프로젝트명 입력 방식 선택" aria-controls="projectNameMenu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button>
-                    <div class="undecided-combobox-menu" id="projectNameMenu" data-undecided-menu role="listbox" aria-label="프로젝트명 입력 방식" hidden>
-                      <button class="undecided-combobox-option" type="button" role="option" data-undecided-mode="custom" aria-selected="true">직접 입력</button>
-                      <button class="undecided-combobox-option" type="button" role="option" data-undecided-mode="undecided" aria-selected="false">미정</button>
-                    </div>
+                  <div class="pms-combobox" data-pms-combobox>
+                    <input id="projectNameInput" data-path="analysis_overview.project_name" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="projectNameMenu" aria-expanded="false" autocomplete="off" />
+                    <button class="undecided-combobox-toggle" type="button" data-pms-toggle aria-label="PMS 프로젝트 검색" aria-controls="projectNameMenu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg></button>
+                    <div class="pms-combobox-menu" id="projectNameMenu" data-pms-menu role="listbox" aria-label="PMS 프로젝트 검색 결과" hidden></div>
                   </div>
+                  <p class="pms-project-helper" id="pmsProjectHelper" hidden></p>
                 </div>
                 <label class="request-basic-row2-start">개발 등급<select data-dropdown-path="analysis_overview.development_grade"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.development_grade" hidden><input class="custom-input" data-path="analysis_overview.development_grade" aria-label="개발 등급 직접 입력" /><button type="button" data-dropdown-restore-path="analysis_overview.development_grade" title="개발 등급 드롭다운으로 돌아가기" aria-label="개발 등급 드롭다운으로 돌아가기">↩</button></span></label>
                 <label>NPI 단계<select data-dropdown-path="analysis_overview.npi_stage"></select><span class="prep-custom-control dropdown-custom-control" data-dropdown-custom-path="analysis_overview.npi_stage" hidden><input class="custom-input" data-path="analysis_overview.npi_stage" aria-label="NPI 단계 직접 입력" /><button type="button" data-dropdown-restore-path="analysis_overview.npi_stage" title="NPI 단계 드롭다운으로 돌아가기" aria-label="NPI 단계 드롭다운으로 돌아가기">↩</button></span></label>
@@ -1454,8 +1469,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       "basic_info.division": ["SAC","RAC","Aircare","Chiller","연구소","직접 입력"],
       "basic_info.requester_role": ["책임연구원","선임연구원","연구원","직접 입력"],
       "analysis_overview.request_type": ["개발 프로젝트","품질 개선","필드 이슈","선행 검토","기타(직접 입력)"],
-      "analysis_overview.development_grade": ["A","B","Ca","Cb","Cc","선행","미정","직접 입력"],
-      "analysis_overview.npi_stage": ["CP","DV","PV","MP","미정","직접 입력"],
+      "analysis_overview.development_grade": ["A","B","B_Mi","Ca","Ca_Mi","Ca_SW","Cb","Cc","Csw","D","ECM_A","ECM_Cb","HW","JDM","JDM_Ca","JDM_Cb","JDM_D","JDM_파급","ND_Cb","ND_D","ODM_CSKD","ODM_ND","ODM_OTS","ODM_파급","OTS_파생","T1","T2","T3","선행","미정","직접 입력"],
+      "analysis_overview.npi_stage": ["CP","DV","MP","MQ","PV","Pre MP","Pre-MP","미정","직접 입력"],
       "conditions.material_type": ["","Air","직접 입력"],
       "conditions.working_fluid": ["air","water"],
       "conditions.outlet_condition": ["pressure outlet"],
@@ -1496,6 +1511,9 @@ HTML_TEMPLATE = r"""<!doctype html>
     const fanCountCustomCards = new Set();
     let expandedFanCardId = "";
     let requestContextDraft = {};
+    let pmsSearchTimer = null;
+    let pmsSearchItems = [];
+    let pmsActiveIndex = -1;
     let activeConditionScope = "indoor";
     let activeCaseScope = "indoor";
     let outdoorCaseMatrixViewed = false;
@@ -1729,6 +1747,88 @@ HTML_TEMPLATE = r"""<!doctype html>
       input.value = text;
     }
 
+    let activeSelectPicker = null;
+
+    function closeSelectPicker({focusSelect=false}={}){
+      const active = activeSelectPicker;
+      activeSelectPicker = null;
+      active?.menu.remove();
+      if (focusSelect) active?.select.focus({preventScroll:true});
+    }
+
+    function selectPickerButtons(menu){
+      return Array.from(menu.querySelectorAll("button:not(:disabled)"));
+    }
+
+    function openSelectPicker(select){
+      if (select.disabled || select.multiple) return;
+      if (activeSelectPicker?.select === select) { closeSelectPicker({focusSelect:true}); return; }
+      closeSelectPicker();
+      const menu = document.createElement("div");
+      menu.className = "select-picker-menu";
+      menu.setAttribute("role", "listbox");
+      menu.setAttribute("aria-label", select.getAttribute("aria-label") || select.closest("label")?.childNodes[0]?.textContent?.trim() || "선택");
+      Array.from(select.options).forEach(option => {
+        if (option.hidden) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "select-picker-option";
+        button.textContent = option.textContent;
+        button.disabled = option.disabled;
+        button.setAttribute("role", "option");
+        button.setAttribute("aria-selected", String(option.selected));
+        button.addEventListener("click", () => {
+          select.value = option.value;
+          select.dispatchEvent(new Event("input", {bubbles:true}));
+          select.dispatchEvent(new Event("change", {bubbles:true}));
+          closeSelectPicker({focusSelect:true});
+        });
+        menu.append(button);
+      });
+      document.body.append(menu);
+      const rect = select.getBoundingClientRect();
+      const height = Math.min(menu.scrollHeight, 320);
+      const below = window.innerHeight - rect.bottom - 4;
+      menu.style.width = `${rect.width}px`;
+      menu.style.left = `${Math.max(4, Math.min(rect.left, window.innerWidth - rect.width - 4))}px`;
+      menu.style.top = `${below >= height ? rect.bottom + 4 : Math.max(4, rect.top - height - 4)}px`;
+      activeSelectPicker = {select, menu};
+      const selected = menu.querySelector('[aria-selected="true"]:not(:disabled)');
+      window.requestAnimationFrame(() => (selected || selectPickerButtons(menu)[0])?.focus({preventScroll:true}));
+      menu.addEventListener("keydown", event => {
+        const buttons = selectPickerButtons(menu);
+        const index = buttons.indexOf(document.activeElement);
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSelectPicker({focusSelect:true});
+        } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          buttons[(index + direction + buttons.length) % buttons.length]?.focus({preventScroll:true});
+        }
+      });
+    }
+
+    function handleSelectPickerPointerDown(event){
+      const select = event.target.closest?.("select");
+      if (select) {
+        event.preventDefault();
+        openSelectPicker(select);
+      } else if (!activeSelectPicker?.menu.contains(event.target)) {
+        closeSelectPicker();
+      }
+    }
+
+    function handleSelectPickerKeyDown(event){
+      if (!event.target.matches?.("select") || ![" ", "Enter", "ArrowDown", "ArrowUp"].includes(event.key)) return;
+      event.preventDefault();
+      openSelectPicker(event.target);
+    }
+
+    function handleSelectPickerScroll(event){
+      if (event.target !== activeSelectPicker?.menu) closeSelectPicker();
+    }
+
     function contextText(value){
       return String(value ?? "").trim();
     }
@@ -1788,6 +1888,155 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (!combobox) return;
       renderUndecidedComboboxMode(combobox, contextText(value) === undecidedComboboxSpecialValue(combobox) ? "undecided" : "custom");
       setUndecidedComboboxOpen(combobox, false);
+    }
+
+    function isDevelopmentProject(){
+      return contextText(fieldDisplayValue(asObj(requestState.analysis_overview).request_type)) === "개발 프로젝트";
+    }
+
+    function clearPmsProjectDraft(){
+      const overview = {...asObj(requestState.analysis_overview)};
+      ["selected_pms_project_id","project_name","pms_project_code","region","development_grade","npi_stage","model_suffix"].forEach(key => { overview[key] = ""; });
+      requestState = {...requestState, analysis_overview:overview};
+    }
+
+    function setRequestControlDisabled(path, disabled){
+      const select = document.querySelector(`select[data-dropdown-path="${CSS.escape(path)}"]`);
+      const input = document.querySelector(`input[data-path="${CSS.escape(path)}"]`);
+      const customControl = document.querySelector(`[data-dropdown-custom-path="${CSS.escape(path)}"]`);
+      if (select) select.disabled = disabled;
+      if (input) input.disabled = disabled;
+      customControl?.querySelectorAll?.("input, button").forEach(control => { control.disabled = disabled; });
+    }
+
+    function syncPmsProjectControl(){
+      const field = $("pmsProjectField");
+      const input = $("projectNameInput");
+      const helper = $("pmsProjectHelper");
+      const toggle = document.querySelector("[data-pms-toggle]");
+      const combobox = document.querySelector("[data-pms-combobox]");
+      const overview = asObj(requestState.analysis_overview);
+      const enabled = isDevelopmentProject();
+      if (!input || !field) return;
+      input.disabled = !enabled;
+      input.setAttribute?.("aria-disabled", String(!enabled));
+      if (toggle) toggle.disabled = !enabled;
+      if (field.dataset) field.dataset.disabled = String(!enabled);
+      field.setAttribute?.("aria-disabled", String(!enabled));
+      if (combobox) combobox.dataset.disabled = String(!enabled);
+      ["development_grade", "npi_stage"].forEach(key => {
+        const path = `analysis_overview.${key}`;
+        syncDropdownForPath(path, fieldDisplayValue(overview[key]));
+        setRequestControlDisabled(path, !enabled);
+      });
+      const modelInput = pathInput("analysis_overview", "model_suffix");
+      if (modelInput) modelInput.value = fieldDisplayValue(overview.model_suffix);
+      syncUndecidedCombobox("analysis_overview.model_suffix", fieldDisplayValue(overview.model_suffix));
+      if (!enabled) {
+        input.value = "";
+        helper.hidden = true;
+        helper.textContent = "";
+        setPmsMenuOpen(false);
+        return;
+      }
+      input.value = fieldDisplayValue(overview.project_name);
+      input.placeholder = "프로젝트명 또는 모델명으로 검색";
+      const code = fieldDisplayValue(overview.pms_project_code);
+      const region = fieldDisplayValue(overview.region);
+      helper.hidden = !(code || region);
+      helper.textContent = code || region ? `PMS ${code} · ${region}` : "";
+    }
+
+    function setPmsMenuOpen(open){
+      const combobox = document.querySelector("[data-pms-combobox]");
+      const input = $("projectNameInput");
+      const toggle = document.querySelector("[data-pms-toggle]");
+      const menu = document.querySelector("[data-pms-menu]");
+      if (!combobox || !input || !toggle || !menu) return;
+      const isOpen = Boolean(open) && !input.disabled && !toggle.disabled;
+      menu.hidden = !isOpen;
+      input.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      if (!isOpen) setPmsActiveResult(-1);
+    }
+
+    function setPmsActiveResult(index){
+      const options = Array.from(document.querySelectorAll("[data-pms-index]"));
+      pmsActiveIndex = options.length ? ((index % options.length) + options.length) % options.length : -1;
+      options.forEach((option, optionIndex) => {
+        const active = optionIndex === pmsActiveIndex;
+        option.dataset.pmsActive = String(active);
+        option.setAttribute("aria-selected", String(active));
+      });
+    }
+
+    function renderPmsSearchResults(){
+      const menu = document.querySelector("[data-pms-menu]");
+      if (!menu) return;
+      menu.innerHTML = pmsSearchItems.length
+        ? pmsSearchItems.map((item, index) => `<button type="button" class="pms-combobox-option" role="option" data-pms-index="${index}" data-pms-active="false" aria-selected="false"><span>${esc(item.project)}</span><small>${esc(item.grade || "-")} · ${esc(item.event || "-")} · ${esc(item.rep_model || "-")} · ${esc(item.region || "-")}</small></button>`).join("")
+        : `<div class="pms-combobox-option"><small>검색 결과가 없습니다.</small></div>`;
+      setPmsActiveResult(-1);
+    }
+
+    async function searchPmsProjects(query=""){
+      if (!isDevelopmentProject()) return;
+      const division = contextText(collectRequestContextDraft().division);
+      if (!division) { pmsSearchItems = []; renderPmsSearchResults(); setPmsMenuOpen(true); return; }
+      const res = await fetch(`/api/pms-projects?division=${encodeURIComponent(division)}&query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      pmsSearchItems = asArray(data.projects);
+      renderPmsSearchResults();
+      setPmsMenuOpen(true);
+    }
+
+    async function selectPmsProject(item){
+      const data = await postJson("/api/pms-projects/select", {state:collectState(), internal_id:item.internal_id});
+      adoptStateFromResponse(data);
+      syncEditorFromState();
+      setPmsMenuOpen(false);
+      touchedFields.add("analysis_overview.selected_pms_project_id");
+      schedulePreviewRefresh();
+    }
+
+    function wirePmsProjectCombobox(){
+      const input = $("projectNameInput");
+      const toggle = document.querySelector("[data-pms-toggle]");
+      const menu = document.querySelector("[data-pms-menu]");
+      if (!input || input.dataset.pmsWired === "true") return;
+      input.dataset.pmsWired = "true";
+      input.addEventListener("focus", () => searchPmsProjects().catch(console.error));
+      input.addEventListener("input", () => {
+        clearPmsProjectDraft();
+        touchedFields.add("analysis_overview.project_name");
+        window.clearTimeout(pmsSearchTimer);
+        pmsSearchTimer = window.setTimeout(() => searchPmsProjects(input.value).catch(console.error), 180);
+      });
+      input.addEventListener("keydown", async event => {
+        if (event.key === "Escape") {
+          setPmsMenuOpen(false);
+          return;
+        }
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          if (menu?.hidden) await searchPmsProjects(input.value);
+          if (!pmsSearchItems.length) return;
+          const direction = event.key === "ArrowDown" ? 1 : -1;
+          setPmsActiveResult(pmsActiveIndex === -1 ? (direction > 0 ? 0 : pmsSearchItems.length - 1) : pmsActiveIndex + direction);
+        } else if (event.key === "Enter" && pmsActiveIndex >= 0) {
+          event.preventDefault();
+          selectPmsProject(pmsSearchItems[pmsActiveIndex]).catch(console.error);
+        }
+      });
+      toggle?.addEventListener("click", () => searchPmsProjects(input.value).catch(console.error));
+      menu?.addEventListener("click", event => {
+        const option = event.target.closest("[data-pms-index]");
+        if (option) selectPmsProject(pmsSearchItems[Number(option.dataset.pmsIndex)]).catch(err => console.error(err));
+      });
+      menu?.addEventListener("pointermove", event => {
+        const option = event.target.closest("[data-pms-index]");
+        if (option) setPmsActiveResult(Number(option.dataset.pmsIndex));
+      });
     }
 
     function selectUndecidedComboboxMode(combobox, mode){
@@ -2063,6 +2312,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         next.product_lineup = "";
         next.platform = "";
         next.chassis = null;
+        clearPmsProjectDraft();
       }
       if (field === "product_lineup") {
         next.platform = platformSelectionMode(next.division) === "derived_from_product_lineup" ? next.product_lineup : "";
@@ -2212,6 +2462,13 @@ HTML_TEMPLATE = r"""<!doctype html>
       pushMessage("assistant", "조합 변경을 다시 진행할 수 있습니다. 기존 조건 입력값은 보존되어 있지만 조합과 맞지 않으면 다음 단계에서 사용되지 않습니다.");
     }
 
+    function applyRequestTypeChange(value){
+      requestState = {...requestState, analysis_overview:{...asObj(requestState.analysis_overview), request_type:value}};
+      clearPmsProjectDraft();
+      syncPmsProjectControl();
+      renderScreenNavigation();
+    }
+
     function handleDropdownChange(select){
       const path = select.dataset.dropdownPath || "";
       const input = document.querySelector(`input[data-path="${CSS.escape(path)}"]`);
@@ -2229,6 +2486,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         else input.hidden = true;
         input.value = select.value;
       }
+      if (path === "analysis_overview.request_type") applyRequestTypeChange(input.value);
       touchedFields.add(path);
       schedulePreviewRefresh();
     }
@@ -2245,7 +2503,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (customControl) customControl.hidden = true;
       else input.hidden = true;
       touchedFields.add(path);
-      renderScreenNavigation();
+      if (path === "analysis_overview.request_type") applyRequestTypeChange(input.value);
+      else renderScreenNavigation();
       schedulePreviewRefresh();
       select.focus();
     }
@@ -3132,6 +3391,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         syncDropdownForPath(`analysis_overview.${key}`, value);
         syncUndecidedCombobox(`analysis_overview.${key}`, value);
       });
+      syncPmsProjectControl();
       const geometry = asObj(requestState.geometry);
       renderProductCards(geometry.base_product, geometry.comparison_products);
       renderConditionFields();
@@ -3271,6 +3531,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       };
       basicKeys.forEach(key => { const input = pathInput("basic_info", key); next.basic_info[key] = input ? input.value : ""; });
       overviewInputKeys.forEach(key => { const input = pathInput("analysis_overview", key); next.analysis_overview[key] = input ? input.value : ""; });
+      ["selected_pms_project_id", "pms_project_code", "region"].forEach(key => { next.analysis_overview[key] = fieldValue(asObj(requestState.analysis_overview)[key], ""); });
       return next;
     }
 
@@ -5527,18 +5788,29 @@ HTML_TEMPLATE = r"""<!doctype html>
     function wireEvents(){
       initPanelResizer();
       document.addEventListener("pointerdown", handlePendingChatFocusPointerDown, true);
+      document.addEventListener("pointerdown", handleSelectPickerPointerDown, true);
       document.addEventListener("keydown", handlePendingChatFocusKeyDown, true);
+      document.addEventListener("keydown", handleSelectPickerKeyDown, true);
       window.addEventListener("blur", cancelChatFocusRestore);
+      window.addEventListener("resize", () => closeSelectPicker());
+      document.addEventListener("scroll", handleSelectPickerScroll, true);
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) cancelChatFocusRestore();
       });
       configureDesiredCompletionDateMinimum();
       pathInput("analysis_overview", "desired_completion_date")?.addEventListener("focus", configureDesiredCompletionDateMinimum);
       wireUndecidedComboboxes();
+      wirePmsProjectCombobox();
+      pathInput("analysis_overview", "request_type")?.addEventListener("change", event => {
+        applyRequestTypeChange(event.target.value);
+        touchedFields.add("analysis_overview.request_type");
+        schedulePreviewRefresh();
+      });
       document.addEventListener("click", event => {
         document.querySelectorAll("[data-undecided-combobox]").forEach(combobox => {
           if (!combobox.contains(event.target)) setUndecidedComboboxOpen(combobox, false);
         });
+        if (!event.target.closest("[data-pms-combobox]")) setPmsMenuOpen(false);
       });
       document.addEventListener("focusin", event => {
         document.querySelectorAll("[data-undecided-combobox]").forEach(combobox => {

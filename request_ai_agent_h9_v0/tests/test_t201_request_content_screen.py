@@ -57,8 +57,8 @@ def test_request_content_uses_canonical_heading_and_control_density():
 
 
 def test_request_content_combobox_density_is_scoped_to_screen_two():
-    assert '.workspace-shell .request-content-screen .undecided-combobox{height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen .undecided-combobox input{height:38px;min-height:38px;padding:0 10px;' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen :is(.undecided-combobox,.pms-combobox){height:40px;min-height:40px;grid-template-columns:minmax(0,1fr) 38px;' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen :is(.undecided-combobox,.pms-combobox) input{height:38px;min-height:38px;padding:0 10px;' in HTML_TEMPLATE
     assert '.workspace-shell .request-content-screen .undecided-combobox-toggle{width:38px;height:38px;min-height:38px;' in HTML_TEMPLATE
 
 
@@ -140,7 +140,7 @@ def test_screen_two_request_details_are_two_line_fields_in_two_columns():
     assert screen.count('rows="2"') == 2
 
 
-def test_screen_two_uses_divider_sections_and_request_type_two_column_project_layout():
+def test_screen_two_uses_divider_sections_and_request_type_four_column_project_layout():
     screen_start = HTML_TEMPLATE.index('class="screen-group request-content-screen" data-screen="SCREEN-02"')
     screen_end = HTML_TEMPLATE.index('data-screen="SCREEN-03"', screen_start)
     screen = HTML_TEMPLATE[screen_start:screen_end]
@@ -150,7 +150,8 @@ def test_screen_two_uses_divider_sections_and_request_type_two_column_project_la
     assert 'class="request-type-field">의뢰 유형<select data-dropdown-path="analysis_overview.request_type"' in screen
     assert 'class="undecided-field request-project-field"' in screen
     assert '.request-type-field{grid-column:span 1}' in HTML_TEMPLATE
-    assert '.request-project-field{grid-column:span 2}' in HTML_TEMPLATE
+    assert '.request-basic-grid{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:12px;row-gap:14px;align-items:end}' in HTML_TEMPLATE
+    assert '.request-project-field{grid-column:span 3}' in HTML_TEMPLATE
     assert '.request-basic-row2-start{grid-column-start:1}' in HTML_TEMPLATE
     assert 'class="request-basic-row2-start">개발 등급<select data-dropdown-path="analysis_overview.development_grade"' in screen
     assert '의뢰 요청일' not in screen

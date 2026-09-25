@@ -10,14 +10,14 @@ def test_direct_form_endpoints_keep_state_without_chat_notifications():
     app.config.update(TESTING=True)
     client = app.test_client()
     state = create_initial_state()
-    state["analysis_overview"]["project_name"] = "TASK6"
+    state["analysis_overview"]["request_description"] = "TASK6"
 
     saved = client.post("/api/input/save", json={"state": state})
     refreshed = client.post("/api/preview", json={"state": state})
 
     assert saved.status_code == refreshed.status_code == 200
-    assert saved.get_json()["state"]["analysis_overview"]["project_name"]["value"] == "TASK6"
-    assert refreshed.get_json()["state"]["analysis_overview"]["project_name"]["value"] == "TASK6"
+    assert saved.get_json()["state"]["analysis_overview"]["request_description"]["value"] == "TASK6"
+    assert refreshed.get_json()["state"]["analysis_overview"]["request_description"]["value"] == "TASK6"
     assert "chat_notifications" not in saved.get_json()
     assert "chat_notifications" not in refreshed.get_json()
 
@@ -32,14 +32,14 @@ def test_form_save_does_not_add_a_recent_turn():
     before = deepcopy(conversations.read(conversation["conversation_id"]).recent_turns)
 
     state = deepcopy(created["state"])
-    state["analysis_overview"]["project_name"] = "DIRECT-FORM"
+    state["analysis_overview"]["request_description"] = "DIRECT-FORM"
     saved = client.put(
         f"/api/request/versioned/{created['request_id']}",
         json={"expected_version": created["request_version"], "state": state},
     )
 
     assert saved.status_code == 200
-    assert saved.get_json()["state"]["analysis_overview"]["project_name"]["value"] == "DIRECT-FORM"
+    assert saved.get_json()["state"]["analysis_overview"]["request_description"]["value"] == "DIRECT-FORM"
     assert conversations.read(conversation["conversation_id"]).recent_turns == before
 
 
@@ -54,7 +54,7 @@ def test_legacy_proposal_status_response_has_no_duplicate_success_message():
         "operations": [
             {
                 "op": "set",
-                "path": "analysis_overview.project_name",
+                "path": "analysis_overview.request_description",
                 "value": "TASK6",
             }
         ],

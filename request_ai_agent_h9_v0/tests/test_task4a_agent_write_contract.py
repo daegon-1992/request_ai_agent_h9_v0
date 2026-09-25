@@ -27,7 +27,7 @@ def _configured_state():
             "context_locked": True,
         }
     )
-    state["analysis_overview"]["project_name"] = "Before"
+    state["analysis_overview"]["request_description"] = "Before"
     state["geometry"].update(
         {
             "base_product": {
@@ -104,7 +104,7 @@ def test_contract_exposes_only_current_writable_general_geometry_and_condition_t
         for target in contract["operations"]["set_condition_field"]["targets"]
     }
 
-    assert "analysis_overview.project_name" in general_paths
+    assert "analysis_overview.project_name" not in general_paths
     requester_targets = {
         target["path"]: target
         for target in contract["operations"]["set"]["targets"]
@@ -143,7 +143,7 @@ def test_multiple_general_and_instance_operations_share_one_proposal_and_apply_e
     before_case_geometry = [row["geometry_id"] for row in before.state["case_matrix"]["rows"]]
     before_validation = validate_state(before.state)
     operations = [
-        {"op": "set", "path": "analysis_overview.project_name", "value": "After"},
+        {"op": "set", "path": "analysis_overview.request_description", "value": "After"},
         {"op": "set_condition_field", "card_id": "operating_1", "field_key": "fan_rpm", "fan_id": "fan_1", "value": "700"},
         {"op": "set_condition_field", "card_id": "operating_2", "field_key": "fan_rpm", "fan_id": "fan_1", "value": "900"},
         {"op": "set_condition_field", "card_id": "heat_exchanger_2", "field_key": "fpi", "value": "18"},
@@ -163,7 +163,7 @@ def test_multiple_general_and_instance_operations_share_one_proposal_and_apply_e
 
     assert approved.status == "approved"
     assert latest.version == created.version + 1
-    assert latest.state["analysis_overview"]["project_name"]["value"] == "After"
+    assert latest.state["analysis_overview"]["request_description"]["value"] == "After"
     assert _fan(latest.state, "operating_1", "fan_1")["values"]["fan_rpm"] == "700"
     assert _fan(latest.state, "operating_2", "fan_1")["values"]["fan_rpm"] == "900"
     assert _fan(latest.state, "operating_1", "fan_2")["values"]["fan_rpm"] == "800"
@@ -207,7 +207,7 @@ def test_invalid_instance_target_rejects_the_whole_proposal(operation):
         service.create_proposal(
             created.request_id,
             [
-                {"op": "set", "path": "analysis_overview.project_name", "value": "must not be selected"},
+                {"op": "set", "path": "analysis_overview.request_description", "value": "must not be selected"},
                 operation,
             ],
             source="agent_write_contract",
@@ -224,7 +224,7 @@ def test_canonical_noop_does_not_create_pending_proposal():
     with pytest.raises(ProposalValidationError, match="do not change canonical"):
         service.create_proposal(
             created.request_id,
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "Before"}],
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "Before"}],
             source="agent_write_contract",
         )
 

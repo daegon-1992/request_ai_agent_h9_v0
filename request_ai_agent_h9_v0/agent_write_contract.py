@@ -48,7 +48,11 @@ def _as_mapping(value: Any) -> Mapping[str, Any]:
 def _general_targets(state: Mapping[str, Any], form_fields: Mapping[str, Any]) -> list[dict[str, Any]]:
     targets: list[dict[str, Any]] = []
     for field in get_field_registry(state):
-        if not field.active or not field.field_id.startswith(("basic_info.", "analysis_overview.")):
+        if (
+            not field.active
+            or not field.field_id.startswith(("basic_info.", "analysis_overview."))
+            or field.field_id == "analysis_overview.project_name"
+        ):
             continue
         context = form_fields.get(field.field_id)
         if context is None or context.system_generated or context.read_only:

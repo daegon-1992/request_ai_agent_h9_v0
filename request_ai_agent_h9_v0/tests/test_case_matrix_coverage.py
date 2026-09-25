@@ -7,7 +7,8 @@ import subprocess
 import request_ai_agent_h9_v0.app as app_module
 from request_ai_agent_h9_v0.app import create_app
 from request_ai_agent_h9_v0.condition_fieldsets import default_condition_sets
-from request_ai_agent_h9_v0.state import create_initial_state, sanitize_state
+from request_ai_agent_h9_v0.pms_project_master import search_pms_projects
+from request_ai_agent_h9_v0.state import apply_pms_project_selection, create_initial_state, sanitize_state
 from request_ai_agent_h9_v0.ui import HTML_TEMPLATE
 from request_ai_agent_h9_v0.validator import case_matrix_coverage, validate_state
 
@@ -48,6 +49,7 @@ def _complete_state() -> dict[str, object]:
     state = create_initial_state()
     state["request_context"].update(
         {
+            "division": "RAC",
             "business_unit": "RAC",
             "product_group": "벽걸이",
             "platform": "SK",
@@ -61,7 +63,6 @@ def _complete_state() -> dict[str, object]:
     state["analysis_overview"].update(
         {
             "request_type": "개발 프로젝트",
-            "project_name": "COVERAGE",
             "development_grade": "A",
             "npi_stage": "DV",
             "model_suffix": "MODEL-A",
@@ -80,7 +81,8 @@ def _complete_state() -> dict[str, object]:
                 if key != "name":
                     field["value"] = "1"
     state["conditions"]["condition_sets"] = cards
-    return sanitize_state(state)
+    state = sanitize_state(state)
+    return apply_pms_project_selection(state, search_pms_projects("RAC")[0]["internal_id"])
 
 
 def _state_with_unused_operation() -> dict[str, object]:

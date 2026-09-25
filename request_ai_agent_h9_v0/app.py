@@ -88,13 +88,14 @@ from .product_taxonomy import (
     product_taxonomy_answer,
     taxonomy_path_by_id,
 )
+from .pms_project_master import search_pms_projects
 from .proposal_store import PendingProposalExistsError, ProposalNotFoundError, ProposalService, ProposalStore, ProposalValidationError
 from .rag_qa import looks_like_current_input_question, run_rag_qa, summarize_current_state
 from .review_pipeline import build_final_review, state_with_final_review
 from .request_state_store import RequestNotFoundError, RequestStateSnapshot, RequestStateStore, RequestVersionConflictError
 from .request_context_confirmation import confirm_request_context_state
 from .schema import ANALYSIS_OVERVIEW_SPECS, CONDITION_FIELD_SPECS, get_public_schema
-from .state import apply_analysis_overview_defaults, create_initial_state, decision_use_is_complete, field_value, generate_request_no, make_field
+from .state import apply_analysis_overview_defaults, apply_pms_project_selection, create_initial_state, decision_use_is_complete, field_value, generate_request_no, make_field
 from .ui import HTML_TEMPLATE
 from .validator import state_with_validation, validate_state
 from .word_export import DOCX_MIMETYPE, build_word_docx, word_filename
@@ -570,11 +571,26 @@ def _stage_progress(raw_state: Mapping[str, Any]) -> dict[str, Any]:
     geometry = _as_mapping(state.get("geometry"))
     conditions = _as_mapping(state.get("conditions"))
 
-    overview_total = len(ANALYSIS_FIELD_LABELS)
+    overview_fields = dict(ANALYSIS_FIELD_LABELS)
+    if _clean_text(field_value(overview.get("request_type"))) == "개발 프로젝트":
+        overview_fields.update(
+            {
+                "selected_pms_project_id": "프로젝트명(PMS)",
+                "development_grade": "개발 등급",
+                "npi_stage": "NPI 단계",
+            }
+        )
+    overview_total = len(overview_fields)
     overview_filled = 0
     overview_missing: list[str] = []
-    for key, label in ANALYSIS_FIELD_LABELS.items():
-        is_complete = decision_use_is_complete(overview.get(key)) if key == "decision_use" else _field_is_user_provided(overview.get(key))
+    for key, label in overview_fields.items():
+        is_complete = (
+            decision_use_is_complete(overview.get(key))
+            if key == "decision_use"
+            else _field_is_filled(overview.get(key))
+            if key in {"selected_pms_project_id", "development_grade", "npi_stage"}
+            else _field_is_user_provided(overview.get(key))
+        )
         if is_complete:
             overview_filled += 1
         else:
@@ -2323,6 +2339,28 @@ def create_app(*, orchestrator_extractor: Extractor | None = None) -> Flask:
                 **build_heat_exchanger_catalog_payload(),
             }
         )
+
+    @app.get("/api/pms-projects")
+    def pms_projects():
+        division = request.args.get("division", "")
+        query = request.args.get("query", "")
+        try:
+            projects = search_pms_projects(division, query)
+        except (FileNotFoundError, ValueError) as exc:
+            return jsonify({"ok": False, "message": str(exc), "projects": []}), 503
+        return jsonify({"ok": True, "division": division, "query": query, "projects": projects})
+
+    @app.post("/api/pms-projects/select")
+    def select_pms_project():
+        default_state = _derive_state()
+        payload_map = _payload_mapping()
+        try:
+            state = _derive_state(apply_pms_project_selection(_state_from_request(default_state), payload_map.get("internal_id")))
+        except ValueError:
+            return jsonify({"ok": False, "message": "현재 Division의 PMS 프로젝트를 선택해 주세요."}), 400
+        response = _response_payload(state, timestamp_key="pms_project_selected_at")
+        response["state_changed"] = True
+        return jsonify(response)
 
     @app.post("/api/request-context/confirm")
     def request_context_confirm():

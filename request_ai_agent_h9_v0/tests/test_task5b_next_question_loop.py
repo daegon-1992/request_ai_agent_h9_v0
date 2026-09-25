@@ -6,7 +6,8 @@ import pytest
 import request_ai_agent_h9_v0.app as app_module
 from request_ai_agent_h9_v0.app import create_app
 from request_ai_agent_h9_v0.condition_fieldsets import default_condition_sets
-from request_ai_agent_h9_v0.state import create_initial_state, field_value, infer_field_status, make_field, sanitize_state
+from request_ai_agent_h9_v0.pms_project_master import search_pms_projects
+from request_ai_agent_h9_v0.state import apply_pms_project_selection, create_initial_state, field_value, infer_field_status, make_field, sanitize_state
 from request_ai_agent_h9_v0.ui import HTML_TEMPLATE
 from request_ai_agent_h9_v0.validator import validate_state
 
@@ -36,6 +37,7 @@ def _complete_state():
     state = create_initial_state()
     state["request_context"].update(
         {
+            "division": "RAC",
             "business_unit": "RAC",
             "product_group": "벽걸이",
             "platform": "SK",
@@ -43,9 +45,16 @@ def _complete_state():
             "context_locked": True,
         }
     )
+    state["basic_info"].update(
+        {
+            "division": "RAC",
+            "department": "테스트부서",
+            "requester_name": "테스트 사용자",
+            "requester_role": "책임연구원",
+        }
+    )
     for key, value in {
         "request_type": "개발 프로젝트",
-        "project_name": "PROJECT",
         "development_grade": "A",
         "npi_stage": "DV",
         "model_suffix": "MODEL-A",
@@ -65,6 +74,7 @@ def _complete_state():
                     field["value"] = "1"
     state["conditions"]["condition_sets"] = cards
     state = sanitize_state(state)
+    state = apply_pms_project_selection(state, search_pms_projects("RAC")[0]["internal_id"])
     assert validate_state(state)["summary"]["can_submit"] is True
     return state
 
@@ -94,25 +104,25 @@ def _start_question(client, conversation_id):
 
 def test_approve_applies_latest_state_then_records_exactly_one_next_question(monkeypatch):
     def decider(context, _contract):
-        if context["current_message"] == "PROJECT-A":
+        if context["current_message"] == "B":
             return _decision(
                 "propose",
                 "프로젝트명 변경을 제안합니다.",
-                [{"op": "set", "path": "analysis_overview.project_name", "value": "PROJECT-A"}],
+                [{"op": "set", "path": "analysis_overview.development_grade", "value": "B"}],
             )
         return _decision("answer", "현재 입력 상태를 확인했습니다.")
 
     app, client, request_id, conversation_id = _runtime(
         monkeypatch,
-        _missing_overview("project_name", "development_grade"),
+        _missing_overview("development_grade", "npi_stage"),
         decider,
     )
     first = _start_question(client, conversation_id)
-    assert first["next_question"]["active_field_id"] == "analysis_overview.project_name"
+    assert first["next_question"]["active_field_id"] == "analysis_overview.development_grade"
 
     proposed = client.post(
         "/api/chat/send",
-        json={"conversation_id": conversation_id, "message": "PROJECT-A"},
+        json={"conversation_id": conversation_id, "message": "B"},
     ).get_json()
     proposal_id = proposed["proposal"]["proposal_id"]
     assert "next_question" not in proposed
@@ -124,29 +134,29 @@ def test_approve_applies_latest_state_then_records_exactly_one_next_question(mon
     conversation = app.extensions["conversation_store"].read(conversation_id)
 
     assert approved["status"] == "approved"
-    assert field_value(app.extensions["request_state_store"].read(request_id).state["analysis_overview"]["project_name"]) == "PROJECT-A"
-    assert approved["next_question"]["active_field_id"] == "analysis_overview.development_grade"
-    assert conversation.active_field_id == "analysis_overview.development_grade"
+    assert field_value(app.extensions["request_state_store"].read(request_id).state["analysis_overview"]["development_grade"]) == "B"
+    assert approved["next_question"]["active_field_id"] == "analysis_overview.npi_stage"
+    assert conversation.active_field_id == "analysis_overview.npi_stage"
     assert conversation.question_history == [first["next_question"]["message"], approved["next_question"]["message"]]
     assert conversation.recent_turns[-1] == {"role": "assistant", "content": approved["next_question"]["message"]}
 
 
 def test_reject_keeps_state_and_reasks_the_same_blocking_field(monkeypatch):
     def decider(context, _contract):
-        if context["current_message"] == "PROJECT-A":
+        if context["current_message"] == "B":
             return _decision(
                 "propose",
                 "프로젝트명 변경을 제안합니다.",
-                [{"op": "set", "path": "analysis_overview.project_name", "value": "PROJECT-A"}],
+                [{"op": "set", "path": "analysis_overview.development_grade", "value": "B"}],
             )
         return _decision("answer", "현재 입력 상태를 확인했습니다.")
 
-    app, client, request_id, conversation_id = _runtime(monkeypatch, _missing_overview("project_name"), decider)
+    app, client, request_id, conversation_id = _runtime(monkeypatch, _missing_overview("development_grade"), decider)
     first = _start_question(client, conversation_id)
     before = app.extensions["request_state_store"].read(request_id)
     proposal_id = client.post(
         "/api/chat/send",
-        json={"conversation_id": conversation_id, "message": "PROJECT-A"},
+        json={"conversation_id": conversation_id, "message": "B"},
     ).get_json()["proposal"]["proposal_id"]
 
     rejected = client.post(
@@ -155,15 +165,15 @@ def test_reject_keeps_state_and_reasks_the_same_blocking_field(monkeypatch):
     ).get_json()
 
     assert rejected["status"] == "rejected"
-    assert rejected["next_question"]["active_field_id"] == "analysis_overview.project_name"
+    assert rejected["next_question"]["active_field_id"] == "analysis_overview.development_grade"
     assert app.extensions["request_state_store"].read(request_id) == before
     conversation = app.extensions["conversation_store"].read(conversation_id)
-    assert conversation.active_field_id == "analysis_overview.project_name"
+    assert conversation.active_field_id == "analysis_overview.development_grade"
     assert conversation.question_history == [first["next_question"]["message"], rejected["next_question"]["message"]]
 
 
-def test_active_project_name_interprets_no_decided_value_as_undecided_proposal(monkeypatch):
-    operation = {"op": "set", "path": "analysis_overview.project_name", "value": "미정"}
+def test_active_model_suffix_interprets_no_decided_value_as_undecided_proposal(monkeypatch):
+    operation = {"op": "set", "path": "analysis_overview.model_suffix", "value": "미정"}
 
     def decider(context, _contract):
         if context["current_message"] == "없어.":
@@ -179,7 +189,7 @@ def test_active_project_name_interprets_no_decided_value_as_undecided_proposal(m
 
     app, client, request_id, conversation_id = _runtime(
         monkeypatch,
-        _missing_overview("project_name", "development_grade"),
+        _missing_overview("model_suffix"),
         decider,
     )
     first = _start_question(client, conversation_id)
@@ -202,8 +212,7 @@ def test_active_project_name_interprets_no_decided_value_as_undecided_proposal(m
         json={"proposal_id": proposed["proposal"]["proposal_id"], "decision": "approve"},
     ).get_json()
 
-    assert field_value(requests.read(request_id).state["analysis_overview"]["project_name"]) == "미정"
-    assert approved["next_question"]["active_field_id"] == "analysis_overview.development_grade"
+    assert field_value(requests.read(request_id).state["analysis_overview"]["model_suffix"]) == "미정"
 
 
 def test_active_free_text_geometry_value_proposes_on_first_input_then_asks_next_field_once(monkeypatch):
@@ -303,16 +312,16 @@ def test_side_question_returns_to_fpi_then_short_answer_still_proposes(monkeypat
 def test_clarify_and_pending_answer_do_not_add_planner_questions(monkeypatch):
     def decider(context, _contract):
         if context["current_message"] == "모호한 변경":
-            return _decision("clarify", "변경할 값을 알려주세요.", active_field_id="analysis_overview.project_name")
+            return _decision("clarify", "변경할 값을 알려주세요.", active_field_id="analysis_overview.model_suffix")
         if context["current_message"] == "왜?":
             return _decision("answer", "요청한 변경을 반영하기 위한 제안입니다.")
         return _decision(
             "propose",
             "프로젝트명 변경을 제안합니다.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "PROJECT-A"}],
+            [{"op": "set", "path": "analysis_overview.model_suffix", "value": "PROJECT-A"}],
         )
 
-    app, client, _request_id, conversation_id = _runtime(monkeypatch, _missing_overview("project_name"), decider)
+    app, client, _request_id, conversation_id = _runtime(monkeypatch, _missing_overview("model_suffix"), decider)
     clarified = client.post(
         "/api/chat/send",
         json={"conversation_id": conversation_id, "message": "모호한 변경"},
@@ -339,7 +348,7 @@ def test_server_form_save_resynchronizes_stale_active_field_on_next_chat_only(mo
         seen_contexts.append(deepcopy(context))
         return _decision("answer", "최신 입력 상태를 확인했습니다.")
 
-    state = _missing_overview("project_name", "development_grade", "npi_stage")
+    state = _missing_overview("model_suffix")
     app, client, request_id, conversation_id = _runtime(monkeypatch, state, decider)
     first = _start_question(client, conversation_id)
     conversations = app.extensions["conversation_store"]
@@ -348,8 +357,7 @@ def test_server_form_save_resynchronizes_stale_active_field_on_next_chat_only(mo
 
     current = requests.read(request_id)
     form_state = deepcopy(current.state)
-    form_state["analysis_overview"]["project_name"] = make_field("PROJECT-A")
-    form_state["analysis_overview"]["development_grade"] = make_field("A")
+    form_state["analysis_overview"]["model_suffix"] = make_field("FORM-SAVED")
     requests.replace(request_id, current.version, form_state)
 
     assert conversations.read(conversation_id).recent_turns == before_form_turns
@@ -358,11 +366,12 @@ def test_server_form_save_resynchronizes_stale_active_field_on_next_chat_only(mo
         json={"conversation_id": conversation_id, "message": "다음 입력은 뭐야?"},
     ).get_json()
 
-    assert first["next_question"]["active_field_id"] == "analysis_overview.project_name"
+    assert first["next_question"]["active_field_id"] == "analysis_overview.model_suffix"
     assert seen_contexts[-1]["conversation"]["active_field_id"] is None
-    assert next_chat["next_question"]["active_field_id"] == "analysis_overview.npi_stage"
-    assert conversations.read(conversation_id).active_field_id == "analysis_overview.npi_stage"
-    assert not any(turn["content"] in {"PROJECT-A", "A"} for turn in conversations.read(conversation_id).recent_turns)
+    assert next_chat["next_question"]["kind"] == "complete"
+    assert next_chat["next_question"]["active_field_id"] is None
+    assert conversations.read(conversation_id).active_field_id is None
+    assert not any(turn["content"] == "FORM-SAVED" for turn in conversations.read(conversation_id).recent_turns)
 
 
 def test_stale_proposal_conflicts_after_server_form_save_without_next_question(monkeypatch):
@@ -370,7 +379,7 @@ def test_stale_proposal_conflicts_after_server_form_save_without_next_question(m
         return _decision(
             "propose",
             "프로젝트명 변경을 제안합니다.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "OLD-PROPOSAL"}],
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "OLD-PROPOSAL"}],
         )
 
     app, client, request_id, conversation_id = _runtime(monkeypatch, _complete_state(), decider)
@@ -394,7 +403,7 @@ def test_stale_proposal_conflicts_after_server_form_save_without_next_question(m
 
     assert conflicted["status"] == "conflicted" and "next_question" not in conflicted
     assert latest.version == saved.version
-    assert field_value(latest.state["analysis_overview"]["project_name"]) == "PROJECT"
+    assert field_value(latest.state["analysis_overview"]["request_description"]) != "OLD-PROPOSAL"
     assert field_value(latest.state["analysis_overview"]["development_grade"]) == "FORM-SAVED"
     assert conversations.read(conversation_id).recent_turns == before_terminal_turns
     assert conversations.read(conversation_id).workflow_status == "proposal_completed"
@@ -407,7 +416,7 @@ def test_complete_clears_focus_without_submit_close_or_terminal_workflow(monkeyp
         lambda _context, _contract: _decision("answer", "현재 상태를 확인했습니다."),
     )
     conversations = app.extensions["conversation_store"]
-    conversations.set_active_field(conversation_id, "analysis_overview.project_name")
+    conversations.set_active_field(conversation_id, "analysis_overview.model_suffix")
     before = app.extensions["request_state_store"].read(request_id)
 
     response = _start_question(client, conversation_id)
@@ -502,13 +511,13 @@ function navigateScreen(screenId, options={{}}) {{
 }}
 function pushMessage(_role, message) {{ events.push(["message", message]); }}
 {helper}
-renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"analysis_overview.project_name", message:"project"}}}});
+renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"analysis_overview.model_suffix", message:"model"}}}});
 renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"geometry.base_product.drawing_no", message:"geometry"}}}});
 renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"conditions.operating_1.fan_rpm", message:"condition"}}}});
 activeScreen = "SCREEN-02";
 renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"conditions.operating_1.fan_rpm", message:"same condition"}}}});
 renderNextQuestion({{action:"answer", next_question:{{kind:"field_question", active_field_id:"geometry.base_product.drawing_no", message:"answer"}}}});
-renderNextQuestion({{action:"clarify", next_question:{{kind:"field_question", active_field_id:"analysis_overview.project_name", message:"clarify"}}}});
+renderNextQuestion({{action:"clarify", next_question:{{kind:"field_question", active_field_id:"analysis_overview.model_suffix", message:"clarify"}}}});
 failedScreens.add("SCREEN-03");
 renderNextQuestion({{next_question:{{kind:"field_question", active_field_id:"geometry.base_product.description", message:"failed geometry"}}}});
 failedScreens.clear();
@@ -523,7 +532,7 @@ if (JSON.stringify(navigations) !== JSON.stringify([
 ])) throw new Error(JSON.stringify(events));
 const messages = events.filter(event => event[0] === "message").map(event => event[1]);
 if (JSON.stringify(messages) !== JSON.stringify([
-  "project",
+  "model",
   "다음은 해석 제품 정보입니다.\\ngeometry",
   "다음은 해석 조건입니다.\\ncondition",
   "same condition",
@@ -619,7 +628,7 @@ def test_active_npi_stage_accepts_undecided_as_its_canonical_choice(monkeypatch)
 
     app, client, request_id, conversation_id = _runtime(
         monkeypatch,
-        _missing_overview("npi_stage", "model_suffix"),
+        _missing_overview("npi_stage"),
         decider,
     )
     first = _start_question(client, conversation_id)
@@ -642,7 +651,7 @@ def test_active_npi_stage_accepts_undecided_as_its_canonical_choice(monkeypatch)
     assert proposed["action"] == "propose"
     assert field_value(latest.state["analysis_overview"]["npi_stage"]) == "미정"
     assert latest.state["analysis_overview"]["npi_stage"]["status"] == "provided"
-    assert approved["next_question"]["active_field_id"] == "analysis_overview.model_suffix"
+    assert approved["next_question"]["active_field_id"] is None
 
 
 def test_explicit_current_value_question_keeps_answer_without_proposal(monkeypatch):

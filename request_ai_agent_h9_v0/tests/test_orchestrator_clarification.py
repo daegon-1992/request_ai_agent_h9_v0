@@ -33,7 +33,7 @@ def _before(app, request_id, conversation_id):
             "two values",
             [
                 {"op": "set", "path": "analysis_overview.request_description", "value": "first"},
-                {"op": "set", "path": "analysis_overview.project_name", "value": "second"},
+                {"op": "set", "path": "analysis_overview.additional_result_request", "value": "second"},
             ],
             ["intent_patch", "tool_candidates", "multiple_candidates"],
             "한 번에 하나의 변경 항목과 값을 명확히 알려주세요.",

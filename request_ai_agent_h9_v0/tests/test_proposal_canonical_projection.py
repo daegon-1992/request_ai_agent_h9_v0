@@ -62,9 +62,9 @@ def test_single_field_proposal_keeps_existing_display():
     current = _state()
     proposed = apply_patch_operations(
         current,
-        [{"op": "set", "path": "analysis_overview.project_name", "value": "PROJECT-X"}],
+        [{"op": "set", "path": "analysis_overview.request_description", "value": "PROJECT-X"}],
     )
 
     assert proposal_changes(current, proposed) == [
-        {"label": "프로젝트명(PMS)", "current_value": "", "new_value": "PROJECT-X"}
+        {"label": "해석을 요청하게 된 배경", "current_value": "", "new_value": "PROJECT-X"}
     ]

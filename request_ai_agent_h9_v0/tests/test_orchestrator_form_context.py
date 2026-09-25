@@ -4,6 +4,7 @@ import pytest
 
 import request_ai_agent_h9_v0.form_context as form_context_module
 from request_ai_agent_h9_v0.condition_fieldsets import make_condition_card
+from request_ai_agent_h9_v0.constants import DROPDOWN_OPTION_DEFS
 from request_ai_agent_h9_v0.field_registry import get_field_registry
 from request_ai_agent_h9_v0.form_context import ANALYSIS_TYPE_CONTEXT, build_form_context
 from request_ai_agent_h9_v0.heat_exchanger_catalog import HeatExchangerCatalogError
@@ -104,7 +105,7 @@ def test_llm_facing_screen_names_use_navigation_labels_without_internal_ids():
     assert ANALYSIS_TYPE_CONTEXT["screen"] == "01 의뢰 대상·시작"
     assert all("SCREEN-" not in field.screen for field in fields.values())
     assert fields["request_context.division"].screen == "01 의뢰 대상·시작"
-    assert fields["analysis_overview.project_name"].screen == "02 요청 내용"
+    assert "analysis_overview.project_name" not in fields
     assert fields["geometry.base_product.drawing_no"].screen == "03 해석 제품"
     assert fields["conditions.operating_1.fan_rpm"].screen == "04 해석 조건"
 
@@ -112,16 +113,18 @@ def test_llm_facing_screen_names_use_navigation_labels_without_internal_ids():
 def test_choice_fields_reuse_dropdown_options_for_llm_context():
     fields = _by_id(build_form_context(_locked_state()))
 
-    project_name = fields["analysis_overview.project_name"].to_dict()
-    assert project_name["allowed_values"] == ["미정"]
-    assert project_name["allow_custom_input"] is True
+    assert "analysis_overview.project_name" not in fields
 
     development_grade = fields["analysis_overview.development_grade"].to_dict()
-    assert development_grade["allowed_values"] == ["A", "B", "Ca", "Cb", "Cc", "선행", "미정"]
+    assert development_grade["allowed_values"] == [
+        value for value in DROPDOWN_OPTION_DEFS["analysis_overview.development_grade"] if value != "직접 입력"
+    ]
     assert development_grade["allow_custom_input"] is True
 
     npi_stage = fields["analysis_overview.npi_stage"].to_dict()
-    assert npi_stage["allowed_values"] == ["CP", "DV", "PV", "MP", "미정"]
+    assert npi_stage["allowed_values"] == [
+        value for value in DROPDOWN_OPTION_DEFS["analysis_overview.npi_stage"] if value != "직접 입력"
+    ]
     assert npi_stage["allow_custom_input"] is True
 
     model_suffix = fields["analysis_overview.model_suffix"].to_dict()

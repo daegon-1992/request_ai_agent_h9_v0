@@ -19,6 +19,7 @@ from .constants import (
     SECTION_REVIEW,
 )
 from .geometry_engine import state_with_geometry_axis
+from .pms_project_master import find_pms_project, normalize_pms_division
 from .schema import ANALYSIS_OVERVIEW_SPECS, BASIC_INFO_SPECS, FieldSpec
 from .state import decision_use_is_complete, field_value, normalize_decision_use_field, sanitize_state
 
@@ -224,6 +225,44 @@ def _validate_required_field_section(
             message=f"Required {section_label} field is missing: {spec.label}.",
             action="Provide a value or explicitly revise the request scope.",
         )
+
+
+def _validate_pms_project_selection(result: ValidationResult, state: Mapping[str, Any]) -> None:
+    """Require a real Division-scoped PMS selection only for development work."""
+
+    overview = _as_mapping(state.get(SECTION_ANALYSIS_OVERVIEW))
+    if clean_text(field_value(overview.get("request_type"))) != "개발 프로젝트":
+        return
+    selected_id = clean_text(field_value(overview.get("selected_pms_project_id")))
+    selected = find_pms_project(selected_id) if selected_id else None
+    division = normalize_pms_division(_as_mapping(state.get(SECTION_REQUEST_CONTEXT)).get("division"))
+    if selected is not None and selected["division"] == division:
+        for key, label in (("development_grade", "개발 등급"), ("npi_stage", "NPI 단계")):
+            if _field_is_provided(overview.get(key)):
+                continue
+            _add_issue(
+                result,
+                SEVERITY_BLOCKING,
+                code=f"analysis_overview.{key}.required_missing",
+                section=SECTION_ANALYSIS_OVERVIEW,
+                path=f"analysis_overview.{key}",
+                field_key=key,
+                field_label=label,
+                message=f"Required analysis overview field is missing: {label}.",
+                action="Provide a value or explicitly revise the request scope.",
+            )
+        return
+    _add_issue(
+        result,
+        SEVERITY_BLOCKING,
+        code="analysis_overview.selected_pms_project_id.required_missing",
+        section=SECTION_ANALYSIS_OVERVIEW,
+        path="analysis_overview.selected_pms_project_id",
+        field_key="project_name",
+        field_label="프로젝트명(PMS)",
+        message="개발 프로젝트는 현재 Division의 PMS 프로젝트를 선택해야 합니다.",
+        action="프로젝트명(PMS)에서 Project 또는 Rep Model로 검색한 뒤 선택해 주세요.",
+    )
 
 
 def _validate_geometry(result: ValidationResult, state: Mapping[str, Any]) -> None:
@@ -750,6 +789,7 @@ def validate_state(source: Mapping[str, Any]) -> ValidationResult:
         specs=ANALYSIS_OVERVIEW_SPECS,
         section_label="analysis overview",
     )
+    _validate_pms_project_selection(result, state)
     _validate_geometry(result, state)
     _validate_conditions(result, state)
     _validate_case_matrix(result, state)

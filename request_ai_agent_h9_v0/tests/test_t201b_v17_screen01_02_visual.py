@@ -55,4 +55,4 @@ def test_screen02_form_density_matches_approved_contract():
     assert 'column-gap:12px;row-gap:14px;align-items:end' in HTML_TEMPLATE
     assert 'grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start' in HTML_TEMPLATE
     assert '.workspace-shell .request-content-screen textarea{min-height:96px;padding:10px 11px;' in HTML_TEMPLATE
-    assert '.workspace-shell .request-content-screen .undecided-combobox{height:40px;min-height:40px;' in HTML_TEMPLATE
+    assert '.workspace-shell .request-content-screen :is(.undecided-combobox,.pms-combobox){height:40px;min-height:40px;' in HTML_TEMPLATE

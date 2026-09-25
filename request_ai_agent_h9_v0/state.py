@@ -51,6 +51,7 @@ from .condition_fieldsets import (
     sanitize_condition_sets,
 )
 from .product_taxonomy import load_product_taxonomy, taxonomy_path_by_id
+from .pms_project_master import find_pms_project, normalize_pms_division
 from .schema import ANALYSIS_OVERVIEW_SPECS, BASIC_INFO_SPECS, CONDITION_FIELD_SPECS, FieldSpec
 
 
@@ -318,6 +319,53 @@ def apply_analysis_overview_defaults(raw_state: Mapping[str, Any]) -> State:
     state = dict(raw_state or {})
     overview = dict(state.get(SECTION_ANALYSIS_OVERVIEW) if isinstance(state.get(SECTION_ANALYSIS_OVERVIEW), Mapping) else {})
     overview.pop("request_date", None)
+    request_type = _clean_text(field_value(overview.get("request_type")))
+    pms_keys = ("selected_pms_project_id", "project_name", "pms_project_code", "region")
+    if request_type != "개발 프로젝트":
+        for key in (*pms_keys, "development_grade", "npi_stage"):
+            overview[key] = make_field("")
+        # A non-development request may use a manually entered/undecided
+        # model. Only discard a value that was automatically populated by PMS.
+        if _field_source(overview.get("model_suffix")) == VALUE_SOURCE_SYSTEM:
+            overview["model_suffix"] = make_field("")
+    else:
+        selected = find_pms_project(field_value(overview.get("selected_pms_project_id")))
+        division = normalize_pms_division((state.get(SECTION_REQUEST_CONTEXT) or {}).get("division"))
+        if selected is None or selected["division"] != division:
+            for key in (*pms_keys, "development_grade", "npi_stage", "model_suffix"):
+                overview[key] = make_field("")
+        else:
+            # The immutable PMS reference fields always come from the selected
+            # master record. Grade, event, and model remain user-editable after
+            # their initial selection defaults have been applied.
+            for key in pms_keys:
+                source_key = {"selected_pms_project_id": "internal_id", "project_name": "project"}.get(key, key)
+                overview[key] = make_field(selected[source_key], source=VALUE_SOURCE_SYSTEM)
+    state[SECTION_ANALYSIS_OVERVIEW] = overview
+    return state
+
+
+def apply_pms_project_selection(raw_state: Mapping[str, Any], internal_id: Any) -> State:
+    """Apply one verified PMS selection and reset its editable defaults."""
+
+    state = sanitize_state(raw_state)
+    selected = find_pms_project(internal_id)
+    division = normalize_pms_division(state.get(SECTION_REQUEST_CONTEXT, {}).get("division"))
+    request_type = _clean_text(field_value(state[SECTION_ANALYSIS_OVERVIEW].get("request_type")))
+    if selected is None or selected["division"] != division or request_type != "개발 프로젝트":
+        raise ValueError("invalid_pms_project_selection")
+    overview = dict(state[SECTION_ANALYSIS_OVERVIEW])
+    values = {
+        "selected_pms_project_id": selected["internal_id"],
+        "project_name": selected["project"],
+        "pms_project_code": selected["pms_project_code"],
+        "region": selected["region"],
+        "development_grade": selected["grade"],
+        "npi_stage": selected["event"],
+        "model_suffix": selected["rep_model"],
+    }
+    for key, value in values.items():
+        overview[key] = make_field(value, source=VALUE_SOURCE_SYSTEM)
     state[SECTION_ANALYSIS_OVERVIEW] = overview
     return state
 
@@ -1468,10 +1516,6 @@ def create_initial_state() -> State:
     basic_info = _initial_fields(BASIC_INFO_SPECS)
     request_no = ""
     basic_info["request_no"] = make_field(request_no, source=VALUE_SOURCE_SYSTEM)
-    basic_info["division"] = make_field("연구소", source=VALUE_SOURCE_SYSTEM)
-    basic_info["department"] = make_field("ES CAE팀", source=VALUE_SOURCE_SYSTEM)
-    basic_info["requester_name"] = make_field("김대곤", source=VALUE_SOURCE_SYSTEM)
-    basic_info["requester_role"] = make_field("선임연구원", source=VALUE_SOURCE_SYSTEM)
     analysis_overview = _initial_fields(ANALYSIS_OVERVIEW_SPECS)
 
     state: State = {

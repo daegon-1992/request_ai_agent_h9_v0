@@ -8,8 +8,9 @@ from request_ai_agent_h9_v0.app import create_app
 from request_ai_agent_h9_v0.chat_patch import apply_patch_operations
 from request_ai_agent_h9_v0.condition_fieldsets import default_condition_sets
 from request_ai_agent_h9_v0.heat_exchanger_catalog import validate_heat_exchanger_proposal
+from request_ai_agent_h9_v0.pms_project_master import search_pms_projects
 from request_ai_agent_h9_v0.product_hierarchy import find_product_hierarchy_matches, product_hierarchy_answer
-from request_ai_agent_h9_v0.state import field_value
+from request_ai_agent_h9_v0.state import apply_pms_project_selection, field_value
 
 
 def _runtime(monkeypatch, decider, analysis_type="열교환기 유속 프로파일"):
@@ -19,6 +20,7 @@ def _runtime(monkeypatch, decider, analysis_type="열교환기 유속 프로파�
     state = client.get("/api/bootstrap").get_json()["state"]
     state["request_context"].update(
         {
+            "division": "RAC",
             "business_unit": "RAC",
             "product_group": "벽걸이",
             "platform": "SK",
@@ -26,12 +28,21 @@ def _runtime(monkeypatch, decider, analysis_type="열교환기 유속 프로파�
             "context_locked": True,
         }
     )
+    state["basic_info"].update(
+        {
+            "division": "SAC",
+            "department": "테스트부서",
+            "requester_name": "테스트 사용자",
+            "requester_role": "연구원",
+        }
+    )
     state["analysis_overview"]["request_type"] = {"value": "개발 프로젝트"}
-    state["analysis_overview"]["project_name"] = {"value": "ABC"}
     cards = default_condition_sets(state["request_context"])
     operating = next(card for card in cards if card["type"] == "operating")
     operating["fans"][0]["values"]["fan_rpm"] = "650"
     state["conditions"]["condition_sets"] = cards
+    state = apply_pms_project_selection(state, search_pms_projects("RAC")[0]["internal_id"])
+    state["analysis_overview"]["development_grade"] = {"value": ""}
     created = client.post("/api/request/versioned", json={"state": state}).get_json()
     conversation = client.post("/api/conversations", json={"request_id": created["request_id"]}).get_json()
     return app, client, created["request_id"], conversation["conversation_id"]
@@ -443,12 +454,12 @@ def test_delegated_active_field_drafting_uses_grounded_state_and_waits_for_appro
 
 def test_delegated_active_field_drafting_clarifies_when_required_fact_has_no_basis(monkeypatch):
     def decider(context, _contract):
-        assert context["conversation"]["active_field_id"] == "analysis_overview.model_suffix"
-        assert not field_value(context["request_state"]["analysis_overview"]["model_suffix"])
+        assert context["conversation"]["active_field_id"] == "analysis_overview.desired_completion_date"
+        assert not field_value(context["request_state"]["analysis_overview"]["desired_completion_date"])
         return _decision(
             "clarify",
             "모델명을 확인할 근거가 없어 해당 정보를 알려주세요.",
-            active_field_id="analysis_overview.model_suffix",
+            active_field_id="analysis_overview.desired_completion_date",
         )
 
     app, client, request_id, conversation_id = _runtime(monkeypatch, decider)
@@ -457,14 +468,14 @@ def test_delegated_active_field_drafting_clarifies_when_required_fact_has_no_bas
         "plan_next_question",
         lambda _snapshot, **_kwargs: {
             "kind": "field_question",
-            "message": "모델명을 입력해 주세요.",
-            "active_field_id": "analysis_overview.model_suffix",
-            "blocking_code": "analysis_overview.model_suffix.required_missing",
+            "message": "희망 완료일을 입력해 주세요.",
+            "active_field_id": "analysis_overview.desired_completion_date",
+            "blocking_code": "analysis_overview.desired_completion_date.required_missing",
         },
     )
     app.extensions["conversation_store"].set_active_field(
         conversation_id,
-        "analysis_overview.model_suffix",
+        "analysis_overview.desired_completion_date",
     )
     requests = app.extensions["request_state_store"]
     before = requests.read(request_id)
@@ -497,7 +508,7 @@ def test_product_hierarchy_side_questions_use_canonical_matches_and_keep_workflo
 
     app, client, request_id, conversation_id = _runtime(monkeypatch, decider)
     conversations = app.extensions["conversation_store"]
-    conversations.set_active_field(conversation_id, "analysis_overview.development_grade")
+    conversations.set_active_field(conversation_id, "analysis_overview.desired_completion_date")
     before = app.extensions["request_state_store"].read(request_id)
 
     first = client.post(
@@ -513,7 +524,7 @@ def test_product_hierarchy_side_questions_use_canonical_matches_and_keep_workflo
     assert "SAC > Applied > Ventilation" in first["assistant"]
     assert "RAC > PTAC > PTAC > YA" in second["assistant"]
     assert "next_question" not in first and "next_question" not in second
-    assert conversations.read(conversation_id).active_field_id == "analysis_overview.development_grade"
+    assert conversations.read(conversation_id).active_field_id == "analysis_overview.desired_completion_date"
     assert seen_contexts[1]["conversation"]["recent_turns"][-1]["content"] == first["assistant"]
     assert app.extensions["proposal_service"].proposal_count() == 0
     assert app.extensions["request_state_store"].read(request_id) == before
@@ -565,7 +576,7 @@ def test_explicit_semantic_resume_uses_existing_planner(monkeypatch):
         json={"conversation_id": conversation_id, "message": "이제 작성하던 흐름을 이어가자."},
     ).get_json()
 
-    assert resumed["next_question"]["active_field_id"] == "analysis_overview.development_grade"
+    assert resumed["next_question"]["active_field_id"] == "analysis_overview.desired_completion_date"
 
 
 def test_product_hierarchy_read_only_lookup_handles_zero_one_and_multiple_results():
@@ -588,7 +599,7 @@ def test_product_hierarchy_read_only_lookup_handles_zero_one_and_multiple_result
 
 def test_multiple_operations_create_one_proposal_and_apply_once_through_existing_cas(monkeypatch):
     operations = [
-        {"op": "set", "path": "analysis_overview.project_name", "value": "XYZ"},
+        {"op": "set", "path": "analysis_overview.request_description", "value": "XYZ"},
         {
             "op": "set_condition_field",
             "card_id": "operating_1",
@@ -619,7 +630,7 @@ def test_multiple_operations_create_one_proposal_and_apply_once_through_existing
 
     assert approved.get_json()["status"] == "approved"
     assert latest.version == before.version + 1
-    assert field_value(latest.state["analysis_overview"]["project_name"]) == "XYZ"
+    assert field_value(latest.state["analysis_overview"]["request_description"]) == "XYZ"
     assert _fan_rpm(latest.state) == "900"
 
 
@@ -895,7 +906,7 @@ def test_unrelated_proposal_discards_stale_clarification_candidates(monkeypatch)
         {"op": "set", "path": "basic_info.department", "value": "개발2팀"},
     ]
     unrelated = [
-        {"op": "set", "path": "analysis_overview.project_name", "value": "NEW-PROJECT"},
+        {"op": "set", "path": "analysis_overview.request_description", "value": "NEW-PROJECT"},
     ]
     call_count = 0
 
@@ -938,7 +949,7 @@ def test_unrelated_proposal_discards_stale_clarification_candidates(monkeypatch)
     proposal = app.extensions["proposal_service"].read_proposal(proposed["proposal"]["proposal_id"])
 
     assert [(operation["path"], operation["value"]) for operation in proposal.operations] == [
-        ("analysis_overview.project_name", "NEW-PROJECT")
+        ("analysis_overview.request_description", "NEW-PROJECT")
     ]
     assert app.extensions["conversation_store"].read(conversation_id).pending_write_candidates == []
     assert requests.read(request_id) == before
@@ -987,8 +998,8 @@ def test_pending_proposal_allows_answer_but_blocks_second_proposal(monkeypatch):
         value = "XYZ" if context["current_message"] == "첫 변경" else "SECOND"
         return _decision(
             "propose",
-            f"프로젝트명을 {value}로 변경하는 내용을 제안합니다.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": value}],
+            f"해석 요청 배경을 {value}로 변경하는 내용을 제안합니다.",
+            [{"op": "set", "path": "analysis_overview.request_description", "value": value}],
         )
 
     app, client, _request_id, conversation_id = _runtime(monkeypatch, decider)
@@ -1016,8 +1027,8 @@ def test_stale_request_after_decision_does_not_create_proposal_or_record_turns(m
         requests.replace(current.request_id, current.version, current.state)
         return _decision(
             "propose",
-            "프로젝트명 변경을 제안합니다.",
-            [{"op": "set", "path": "analysis_overview.project_name", "value": "STALE"}],
+            "해석 요청 배경 변경을 제안합니다.",
+            [{"op": "set", "path": "analysis_overview.request_description", "value": "STALE"}],
         )
 
     app, client, request_id, conversation_id = _runtime(monkeypatch, decider)
